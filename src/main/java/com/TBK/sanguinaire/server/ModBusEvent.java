@@ -43,7 +43,7 @@ public class ModBusEvent {
             VampirePlayerCapability cap = SGCapability.getEntityVam(event.getEntity(), VampirePlayerCapability.class);
             if(cap!=null){
                 boolean isVampire=cap.isVampire();
-                event.getEntity().sendSystemMessage(Component.nullToEmpty(cap.isVampire() ?  "Te convertiste humano chad" :"Te convertiste Sos vampiro gay" ));
+                event.getEntity().sendSystemMessage(Component.nullToEmpty(cap.isVampire() ?  "Te convertiste humano beta" :"Te convertiste en Vampiro Gigachad" ));
                 cap.convert(isVampire);
             }
         }

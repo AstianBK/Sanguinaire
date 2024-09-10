@@ -126,7 +126,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
         if(this.isDurationEffectTick(player.tickCount,this.age/10)){
             if (player.getHealth() < player.getMaxHealth()) {
-                player.heal(1.0F);
+                player.heal(2.0F);
             }
         }
     }
