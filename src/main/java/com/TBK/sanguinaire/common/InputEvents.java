@@ -1,14 +1,12 @@
 package com.TBK.sanguinaire.common;
 
-import com.AstianBk.the_gifted.common.keybind.BKKeybinds;
-import com.AstianBk.the_gifted.server.network.PacketHandler;
-import com.AstianBk.the_gifted.server.network.message.PacketKeySync;
+import com.TBK.sanguinaire.Sanguinaire;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-@Mod.EventBusSubscriber(modid = TheGifted.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@Mod.EventBusSubscriber(modid = Sanguinaire.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class InputEvents {
     @SubscribeEvent
     public static void onKeyPress(InputEvent.Key event) {
@@ -25,10 +23,10 @@ public class InputEvents {
     }
 
     private static void onInput(Minecraft mc, int key, int action) {
-        if (mc.screen == null && BKKeybinds.attackKey1.consumeClick()) {
+        /*if (mc.screen == null && BKKeybinds.attackKey1.consumeClick()) {
             PacketHandler.sendToServer(new PacketKeySync(key));
         }else if (mc.screen == null && BKKeybinds.attackKey2.consumeClick()) {
             PacketHandler.sendToServer(new PacketKeySync(key));
-        }
+        }*/
     }
 }
