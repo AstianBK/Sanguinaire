@@ -30,6 +30,12 @@ public class PacketHandler {
                 .decoder(PacketSyncCooldown::new)
                 .consumerNetworkThread(PacketSyncCooldown::handle).add();
 
+        channel.messageBuilder(PacketConvertVampire.class,index++)
+                .encoder(PacketConvertVampire::toBytes)
+                .decoder(PacketConvertVampire::new)
+                .consumerNetworkThread(PacketConvertVampire::handle).add();
+
+
         channel.messageBuilder(PacketSyncDurationEffect.class,index++)
                 .encoder(PacketSyncDurationEffect::toBytes)
                 .decoder(PacketSyncDurationEffect::new)

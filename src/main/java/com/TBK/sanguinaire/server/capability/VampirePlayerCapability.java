@@ -2,10 +2,14 @@ package com.TBK.sanguinaire.server.capability;
 
 import com.TBK.sanguinaire.common.api.Clan;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
+import com.TBK.sanguinaire.common.registry.SGAttribute;
 import com.TBK.sanguinaire.server.manager.*;
+import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.network.messager.PacketConvertVampire;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -65,6 +69,17 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public Clan getClan() {
         return this.clan;
     }
+    public void convert(boolean isVampire){
+        this.setIsVampire(!isVampire);
+        if(!isVampire){
+            this.age=0;
+            this.setGeneration(1);
+            this.setClan(Clan.DRAKUL);
+        }
+        if(!this.level.isClientSide){
+            PacketHandler.sendToPlayer(new PacketConvertVampire(isVampire), (ServerPlayer) this.player);
+        }
+    }
 
     @Override
     public void setGeneration(int generation) {
@@ -79,6 +94,12 @@ public class VampirePlayerCapability implements IVampirePlayer {
     @Override
     public void bite(Player player, LivingEntity target) {
 
+    }
+
+    public void drainBlood(int blood){
+        double bloodActually=player.getAttributeValue(SGAttribute.BLOOD_VALUE.get());
+        double finalBlood=Math.min(blood+bloodActually,20);
+        player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(finalBlood);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.TBK.sanguinaire;
 
 import com.TBK.sanguinaire.common.registry.SGAttribute;
 import com.TBK.sanguinaire.server.capability.SGCapability;
+import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -29,7 +30,7 @@ public class Sanguinaire
         MinecraftForge.EVENT_BUS.register(this);
         modEventBus.addListener(SGCapability::registerCapabilities);
         SGAttribute.ATTRIBUTES.register(modEventBus);
-
+        PacketHandler.registerMessages();
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 

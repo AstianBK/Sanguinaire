@@ -26,7 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 @OnlyIn(Dist.CLIENT)
 public class RegenerationLayer<T extends Player,M extends EntityModel<T>> extends RenderLayer<T,M>{
     private static final ResourceLocation SKELETON_LOCATION = new ResourceLocation("textures/entity/skeleton/skeleton.png");
-    private static final ResourceLocation MUSCLE_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/muscle.png");
+    private static final ResourceLocation MUSCLE_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/muscles.png");
     private static final ResourceLocation TRANS_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/trans.png");
     private static final RenderType DECAL_RENDER=RenderType.entityDecal(MUSCLE_LOCATION);
     

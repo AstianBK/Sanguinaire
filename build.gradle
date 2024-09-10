@@ -18,7 +18,10 @@ plugins {
     id 'maven-publish'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
-
+apply plugin: 'org.spongepowered.mixin'
+mixin {
+    add sourceSets.main, mod_id+".refmap.json"
+}
 version = mod_version
 group = mod_group_id
 
@@ -84,7 +87,6 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 repositories {
     maven { url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/' }
-
 }
 
 dependencies {
