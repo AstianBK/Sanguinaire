@@ -1,0 +1,8 @@
+{
+  "blood_drink": {
+    "subtitle": "sounds.sanguinaire.blood_drink",
+    "sounds": [
+      "sanguinaire:blood_drink"
+    ]
+  }
+}
