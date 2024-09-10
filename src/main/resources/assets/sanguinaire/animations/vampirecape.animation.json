@@ -1,0 +1,24 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"vampirecape.idle": {
+			"loop": true
+		},
+		"vampirecape.move": {
+			"loop": true,
+			"bones": {
+				"UpperCape": {
+					"rotation": {
+						"vector": ["-17-math.cos(query.anim_time*180*1)*7", 0, 0]
+					}
+				},
+				"LowerCape": {
+					"rotation": {
+						"vector": ["-12.5-math.sin(query.anim_time*180*1)*7", 0, 0]
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}
