@@ -1,7 +1,6 @@
 package com.TBK.sanguinaire.server;
 
 import com.TBK.sanguinaire.Sanguinaire;
-import com.TBK.sanguinaire.common.api.Clan;
 import com.TBK.sanguinaire.server.capability.BiterEntityCap;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
@@ -20,6 +19,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,6 +32,10 @@ public class ModBusEvent {
             SkillPlayerCapability cap = SGCapability.getEntityCap(event.getEntity(), SkillPlayerCapability.class);
             if(cap!=null){
                 cap.onJoinGame((Player) event.getEntity(),event);
+            }
+            VampirePlayerCapability cap1 = SGCapability.getEntityVam(event.getEntity(), VampirePlayerCapability.class);
+            if(cap1!=null){
+                cap1.syncCap((Player) event.getEntity());
             }
         }
     }
@@ -107,42 +111,19 @@ public class ModBusEvent {
         }*/
     }
     @SubscribeEvent
-    public static void hurtEntity(LivingHurtEvent event){
-        LivingEntity target=event.getEntity();
-        DamageSource source=event.getSource();
-        if(target instanceof Player player){
-            VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-            if(cap!=null){
-                if(cap.isVampire()){
-                    if(source.is(DamageTypeTags.IS_FALL) && source.getEntity()==null){
-                        if(!cap.legsLess()){
-                            loseLegs(cap,player);
-                        }else if(!cap.bodyLess()){
-                            loseBody(cap,player);
-                        }else {
-                            cap.losePart("head",new RegenerationInstance(50),player);
-                        }
-                    }else if(source.is(DamageTypeTags.IS_EXPLOSION)){
-                        cap.losePart("head",new RegenerationInstance(200),player);
-                        loseBody(cap,player);
-                        event.setCanceled(true);
-                        player.setHealth(1.0F);
-                    }else if(source.getEntity()!=null){
-                        cap.losePart("right_arm",new RegenerationInstance(50),player);
-                    }
-                }
-            }
+    public static void clonePlayer(PlayerEvent.Clone event){
+        Player player=event.getOriginal();
+        Player newPlayer=event.getEntity();
+        VampirePlayerCapability cap=VampirePlayerCapability.get(player);
+        VampirePlayerCapability newCap=VampirePlayerCapability.get(newPlayer);
+        if(newCap==null){
+            VampirePlayerCapability.VampirePlayerProvider prov = new VampirePlayerCapability.VampirePlayerProvider();
+            VampirePlayerCapability capClone=prov.getCapability(SGCapability.VAMPIRE_CAPABILITY).orElse(null);
+            capClone.clone(cap,player);
+        }else if(cap!=null){
+            newCap.clone(cap,player);
+        }else {
+            newCap.init(player);
         }
-    }
-
-    public static void loseLegs(VampirePlayerCapability cap,Player player){
-        cap.losePart("right_leg",new RegenerationInstance(50),player);
-        cap.losePart("left_leg",new RegenerationInstance(50),player);
-    }
-    public static void loseBody(VampirePlayerCapability cap,Player player){
-        cap.losePart("body",new RegenerationInstance(100),player);
-        cap.losePart("right_arm",new RegenerationInstance(50),player);
-        cap.losePart("left_arm",new RegenerationInstance(50),player);
-        loseLegs(cap,player);
     }
 }

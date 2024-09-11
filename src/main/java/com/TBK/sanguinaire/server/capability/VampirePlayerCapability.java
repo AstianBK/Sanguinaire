@@ -21,10 +21,11 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+
 public class VampirePlayerCapability implements IVampirePlayer {
     Player player;
     Level level;
-    public LimbsPartRegeneration limbsPartRegeneration;
     public int generation=0;
     public Clan clan=Clan.NONE;
     boolean isVampire=false;
@@ -34,24 +35,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     public static VampirePlayerCapability get(Player player){
         return SGCapability.getEntityVam(player, VampirePlayerCapability.class);
-    }
-    public boolean legsLess(){
-        return this.getLimbsPartRegeneration().loseLimb("left_leg") || this.getLimbsPartRegeneration().loseLimb("right_leg");
-    }
-    public boolean armsLess(){
-        return this.getLimbsPartRegeneration().loseLimb("left_arm") || this.getLimbsPartRegeneration().loseLimb("right_arm");
-    }
-    public boolean bodyLess(){
-        return this.getLimbsPartRegeneration().loseLimb("body");
-    }
-    public boolean headLess(){
-        return this.getLimbsPartRegeneration().loseLimb("head");
-    }
-    public boolean noMoreLimbs(){
-        return this.legsLess() && this.bodyLess() && this.armsLess() && this.headLess();
-    }
-    public boolean cantMove(){
-        return this.legsLess() || this.bodyLess();
     }
 
 
@@ -110,18 +93,13 @@ public class VampirePlayerCapability implements IVampirePlayer {
     @Override
     public void tick(Player player) {
         if(this.player instanceof ServerPlayer){
-            if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
-                this.getLimbsPartRegeneration().tick();
-            }
             if(this.growTimer++>=this.growTimerMax){
                 this.growTimer=0;
                 this.age++;
             }
             this.syncCap(player);
         }else if(this.level.isClientSide){
-            if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
-                this.getLimbsPartRegeneration().tick();
-            }
+
         }
 
         if(this.isDurationEffectTick(player.tickCount,this.age/10)){
@@ -140,7 +118,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     }
     public void syncCap(Player player){
         if(player instanceof ServerPlayer serverPlayer){
-            this.limbsPartRegeneration.syncPlayer();
+            PacketHandler.sendToAllTracking(new PacketConvertVampire(!this.isVampire()),serverPlayer);
         }
     }
 
@@ -161,11 +139,11 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.player=player;
     }
 
-    public void losePart(String id, RegenerationInstance instance, Player player){
-        this.limbsPartRegeneration.addLoseLimb(id,instance);
-        if(player instanceof ServerPlayer serverPlayer){
-            this.limbsPartRegeneration.syncPlayer();
-        }
+    public void clone(VampirePlayerCapability capability,Player player){
+        capability.init(player);
+        capability.setClan(this.getClan());
+        capability.setIsVampire(this.isVampire());
+        capability.setGeneration(this.getGeneration());
     }
 
     @Override
@@ -187,18 +165,8 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public void init(Player player) {
         this.setPlayer(player);
         this.level=player.level();
-        if(player instanceof ServerPlayer serverPlayer){
-            this.limbsPartRegeneration=new LimbsPartRegeneration(serverPlayer);
-        }
     }
 
-    public void setLimbsPartRegeneration(LimbsPartRegeneration limbsPartRegeneration){
-        this.limbsPartRegeneration=limbsPartRegeneration;
-    }
-
-    public LimbsPartRegeneration getLimbsPartRegeneration() {
-        return this.limbsPartRegeneration;
-    }
 
     public static class VampirePlayerProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
         private final LazyOptional<IVampirePlayer> instance = LazyOptional.of(VampirePlayerCapability::new);

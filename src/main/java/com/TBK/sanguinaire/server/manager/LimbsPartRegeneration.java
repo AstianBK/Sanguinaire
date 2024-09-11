@@ -1,10 +1,8 @@
 package com.TBK.sanguinaire.server.manager;
 
 import com.TBK.sanguinaire.common.api.Limbs;
-import com.TBK.sanguinaire.server.manager.RegenerationInstance;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketRemoveActiveEffect;
-import com.TBK.sanguinaire.server.network.messager.PacketSyncLimbRegeneration;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -19,6 +17,11 @@ import java.util.Map;
 public class LimbsPartRegeneration {
     public ServerPlayer serverPlayer;
     public Map<String, RegenerationInstance> loseLimbs;
+    @OnlyIn(Dist.CLIENT)
+    public LimbsPartRegeneration(){
+        this.loseLimbs= Maps.newHashMap();
+        this.serverPlayer=null;
+    }
     public LimbsPartRegeneration(ServerPlayer player){
         this.loseLimbs= Maps.newHashMap();
         this.serverPlayer=player;
@@ -61,8 +64,9 @@ public class LimbsPartRegeneration {
         this.loseLimbs.clear();
     }
     public void syncPlayer(){
-        PacketHandler.sendToPlayer(new PacketSyncLimbRegeneration(this.loseLimbs),this.serverPlayer);
+
     }
+
     public List<Limbs> getLimbs(){
         List<Limbs> limbs=new ArrayList<>();
         this.loseLimbs.forEach((s, regenerationInstance) -> {
@@ -93,14 +97,7 @@ public class LimbsPartRegeneration {
         return false;
     }
     public boolean canRegenerateLimbs(String id,List<Limbs> limbs){
-        Limbs limbs1=Limbs.valueOf(id.toUpperCase());
-        if(limbs1==Limbs.HEAD){
-            return true;
-        }else if(limbs1==Limbs.BODY){
-            return !limbs.contains(Limbs.HEAD);
-        }else {
-            return !limbs.contains(Limbs.BODY);
-        }
+        return true;
     }
     public void tick(){
         var powers = loseLimbs.entrySet().stream().filter(x -> decrementCooldown(x.getValue(), 1,x.getKey(),this.getLimbs())).toList();

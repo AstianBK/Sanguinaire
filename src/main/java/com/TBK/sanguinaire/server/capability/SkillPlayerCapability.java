@@ -125,7 +125,6 @@ public class SkillPlayerCapability implements ISkillPlayer {
 
     @Override
     public void onJoinGame(Player player, EntityJoinLevelEvent event) {
-
     }
 
     @Override

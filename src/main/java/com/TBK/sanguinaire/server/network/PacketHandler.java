@@ -40,10 +40,6 @@ public class PacketHandler {
                 .encoder(PacketSyncDurationEffect::toBytes)
                 .decoder(PacketSyncDurationEffect::new)
                 .consumerNetworkThread(PacketSyncDurationEffect::handle).add();
-        channel.messageBuilder(PacketSyncLimbRegeneration.class,index++)
-                .encoder(PacketSyncLimbRegeneration::toBytes)
-                .decoder(PacketSyncLimbRegeneration::new)
-                .consumerNetworkThread(PacketSyncLimbRegeneration::handle).add();
         channel.messageBuilder(PacketRemoveActiveEffect.class,index++)
                 .encoder(PacketRemoveActiveEffect::toBytes)
                 .decoder(PacketRemoveActiveEffect::new)

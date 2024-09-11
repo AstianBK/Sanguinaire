@@ -29,7 +29,6 @@ public class RegenerationLayer<T extends Player,M extends EntityModel<T>> extend
     private static final ResourceLocation MUSCLE_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/muscles.png");
     private static final ResourceLocation TRANS_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/trans.png");
     private static final RenderType DECAL_RENDER=RenderType.entityDecal(MUSCLE_LOCATION);
-    
     private final HumanoidModel<T> model;
     private final HumanoidModel<T> modelHuman;
     private final HumanoidModel<T> modelHumanReg;
@@ -45,57 +44,48 @@ public class RegenerationLayer<T extends Player,M extends EntityModel<T>> extend
         VampirePlayerCapability cap=VampirePlayerCapability.get(player);
         if(cap!=null && player.isAlive()){
             if(cap.isVampire()){
-                if(cap.getLimbsPartRegeneration().hasRegenerationLimbs()){
-                    pMatrixStack.pushPose();
-                    this.initModel(this.model,player,pLimbSwing,pLimbSwingAmount,pAgeInTicks,pNetHeadYaw,pHeadPitch);
-                    this.initModel(this.modelHuman,player,pLimbSwing,pLimbSwingAmount,pAgeInTicks,pNetHeadYaw,pHeadPitch);
-                    this.initModel(this.modelHumanReg,player,pLimbSwing,pLimbSwingAmount,pAgeInTicks,pNetHeadYaw,pHeadPitch);
-                    cap.getLimbsPartRegeneration().getLimbs().forEach(limb->{
-                        RegenerationInstance instance=cap.getLimbsPartRegeneration().loseLimbs.get(limb.name().toLowerCase());
-                        int res= (int) (instance.getRegerationTimer()*0.75F);
-                        int res1= (int) ((int) instance.getRegerationTimerRemaining()*0.25F);
-                        float porcent=((float) instance.getRegerationTimerRemaining()-res)/ res1;
-                        float porcentReg= 1.0F-porcent;
-                        ModelPart part= RenderUtil.getModelPartForLimbs(limb, this.model);
-                        if(porcentReg>0.0F){
-                            part.xScale=0.9F;
-                            part.yScale=0.9F;
-                            part.zScale=0.9F;
-                            VertexConsumer vertexConsumer2=pBuffer.getBuffer(RenderType.entityTranslucent(SKELETON_LOCATION));
-                            part.render(pMatrixStack,vertexConsumer2,pPackedLight,OverlayTexture.NO_OVERLAY,1.0F,1.0F,1.0F, 1F);
-                        }
-                    });
-                    if(!cap.getLimbsPartRegeneration().getLimbsMuscle().isEmpty()){
-                        cap.getLimbsPartRegeneration().getLimbsMuscle().forEach(limb->{
-                            RegenerationInstance instance=cap.getLimbsPartRegeneration().loseLimbs.get(limb.name().toLowerCase());
-                            int res= (int) (instance.getRegerationTimer()*0.25F);
-                            int res1= (int) ((int) instance.getRegerationTimerRemaining()*0.5F);
-                            float porcent=((float) instance.getRegerationTimerRemaining()-res)/ res1;
-                            ModelPart part= RenderUtil.getModelPartForLimbs(limb, this.modelHuman);
-                            if(porcent>0.0F){
-                                VertexConsumer vertexConsumer1=pBuffer.getBuffer(RenderType.dragonExplosionAlpha(TRANS_LOCATION));
-                                part.render(pMatrixStack,vertexConsumer1,pPackedLight,OverlayTexture.NO_OVERLAY,1.0F,1.0F,1.0F,porcent);
-                                VertexConsumer vertexConsumer2=pBuffer.getBuffer(DECAL_RENDER);
-                                part.render(pMatrixStack,vertexConsumer2,pPackedLight,OverlayTexture.pack(0.0F, false),1.0F,1.0F,1.0F, 1F);
-                            }else {
-                                ModelPart part1=RenderUtil.getModelPartForLimbs(limb,this.modelHumanReg);
-                                int res2= (int) (instance.getRegerationTimer()*0.25F);
-                                float porcent1=((float) instance.getRegerationTimerRemaining())/ res2;
-                                part1.xScale=0.9F;
-                                part1.yScale=0.9F;
-                                part1.zScale=0.9F;
-                                VertexConsumer vertexConsumer1=pBuffer.getBuffer(RenderType.entityTranslucent(MUSCLE_LOCATION));
-                                part1.render(pMatrixStack,vertexConsumer1,pPackedLight,OverlayTexture.NO_OVERLAY,1.0F,1.0F,1.0F,1.0F);
-                                VertexConsumer vertexConsumer=pBuffer.getBuffer(RenderType.dragonExplosionAlpha(TRANS_LOCATION));
-                                part.render(pMatrixStack,vertexConsumer,pPackedLight,OverlayTexture.NO_OVERLAY,1.0F,1.0F,1.0F,porcent1);
-                                VertexConsumer vertexConsumer2=pBuffer.getBuffer(RenderType.entityDecal(this.getTextureLocation(player)));
-                                part.render(pMatrixStack,vertexConsumer2,pPackedLight,OverlayTexture.pack(0.0F, false),1.0F,1.0F,1.0F, 1F);
-                            }
-                        });
+                pMatrixStack.pushPose();
+                float health=player.getHealth();
+                float maxHealth=player.getMaxHealth();
+                float f0=maxHealth*0.5F;
+                float f1=maxHealth*0.25F;
+                float f2=maxHealth*0.75F;
+                float porcentReg=health/maxHealth;
+                this.initModel(this.model,player,pLimbSwing,pLimbSwingAmount,pAgeInTicks,pNetHeadYaw,pHeadPitch);
+                this.initModel(this.modelHuman,player,pLimbSwing,pLimbSwingAmount,pAgeInTicks,pNetHeadYaw,pHeadPitch);
+                this.initModel(this.modelHumanReg,player,pLimbSwing,pLimbSwingAmount,pAgeInTicks,pNetHeadYaw,pHeadPitch);
+                if(porcentReg<1.0F){
+                    float porcentRegSkin=1.0F-(health-f2)/f1;
+                    if(porcentRegSkin<=1.0F){
+                        pMatrixStack.pushPose();
+                        pMatrixStack.scale(0.9F,0.9F,0.9F);
+                        VertexConsumer vertexConsumer4=pBuffer.getBuffer(RenderType.entityTranslucent(MUSCLE_LOCATION));
+                        this.modelHuman.renderToBuffer(pMatrixStack,vertexConsumer4,pPackedLight,OverlayTexture.NO_OVERLAY,1.0F,1.0F,1.0F, 1F);
+                        pMatrixStack.popPose();
+                        VertexConsumer vertexConsumer=pBuffer.getBuffer(RenderType.dragonExplosionAlpha(TRANS_LOCATION));
+                        this.modelHuman.renderToBuffer(pMatrixStack,vertexConsumer,pPackedLight,OverlayTexture.NO_OVERLAY,1.0F,1.0F,1.0F,porcentRegSkin);
+                        VertexConsumer vertexConsumer2=pBuffer.getBuffer(RenderType.entityDecal(this.getTextureLocation(player)));
+                        this.modelHuman.renderToBuffer(pMatrixStack,vertexConsumer2,pPackedLight,OverlayTexture.pack(0.0F, false),1.0F,1.0F,1.0F, 1F);
                     }
-
-                    pMatrixStack.popPose();
+                    if(porcentReg<0.75){
+                        float porcentRegMuscles=1.0F-(health-f1)/f2;
+                        if(porcentRegMuscles<=1.0F){
+                            pMatrixStack.pushPose();
+                            VertexConsumer vertexConsumer1=pBuffer.getBuffer(RenderType.dragonExplosionAlpha(TRANS_LOCATION));
+                            pMatrixStack.scale(0.9F,0.9F,0.9F);
+                            this.modelHuman.renderToBuffer(pMatrixStack,vertexConsumer1,pPackedLight,OverlayTexture.NO_OVERLAY,1.0F,1.0F,1.0F,porcentRegMuscles);
+                            VertexConsumer vertexConsumer3=pBuffer.getBuffer(DECAL_RENDER);
+                            this.modelHuman.renderToBuffer(pMatrixStack,vertexConsumer3,pPackedLight,OverlayTexture.pack(0.0F, false),1.0F,1.0F,1.0F, 1F);
+                            pMatrixStack.popPose();
+                        }
+                        pMatrixStack.pushPose();
+                        pMatrixStack.scale(0.9F,0.9F,0.9F);
+                        VertexConsumer vertexConsumer4=pBuffer.getBuffer(RenderType.entityTranslucent(SKELETON_LOCATION));
+                        this.model.renderToBuffer(pMatrixStack,vertexConsumer4,pPackedLight,OverlayTexture.NO_OVERLAY,1.0F,1.0F,1.0F, 1F);
+                        pMatrixStack.popPose();
+                    }
                 }
+                pMatrixStack.popPose();
             }
         }
     }
