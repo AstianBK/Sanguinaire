@@ -1,0 +1,155 @@
+{
+	"format_version": "1.8.0",
+	"animations": {
+		"vampiller_drakul.idle": {
+			"loop": true,
+			"bones": {
+				"head": {
+					"rotation": {
+						"vector": ["10+math.sin(query.anim_time*180)*2", 0, 0]
+					}
+				},
+				"RightArm": {
+					"rotation": {
+						"vector": [21.93488, 2.86313, -22.32648]
+					},
+					"position": {
+						"vector": [0, "-1+math.sin(query.anim_time*180)*0.2", 0]
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"vector": [21.93488, 2.86313, 22.3265]
+					},
+					"position": {
+						"vector": [0, "-1+math.sin(query.anim_time*180)*0.2", 0]
+					}
+				},
+				"body": {
+					"rotation": {
+						"vector": [-3, 0, 0]
+					}
+				},
+				"chest": {
+					"scale": {
+						"vector": ["-math.sin(query.anim_time*180)*0.01+1", "-math.sin(query.anim_time*180)*0.01+1", "-math.sin(query.anim_time*180)*0.01+1"]
+					}
+				},
+				"Coat": {
+					"rotation": {
+						"vector": ["2.5+math.sin(query.anim_time*180)*0.8", 0, 0]
+					}
+				}
+			}
+		},
+		"vampiller_drakul.legs1": {
+			"loop": true,
+			"bones": {
+				"RightLeg": {
+					"rotation": {
+						"vector": ["math.sin(query.anim_time*180)*20", 0, 0]
+					},
+					"position": {
+						"vector": [0, "math.clamp(-math.cos(query.anim_time*180)*2,0,3)", 0]
+					}
+				},
+				"LeftLeg": {
+					"rotation": {
+						"vector": ["-math.sin(query.anim_time*180)*20", 0, 0]
+					},
+					"position": {
+						"vector": [0, "math.clamp(math.cos(query.anim_time*180)*2,0,3)", 0]
+					}
+				}
+			}
+		},
+		"vampiller_drakul.legs2": {
+			"loop": true
+		},
+		"vampiller_drakul.bloodorb": {
+			"animation_length": 0.5,
+			"bones": {
+				"head": {
+					"rotation": {
+						"vector": ["math.sin(query.anim_time*380)*-8", 0, 0]
+					}
+				},
+				"RightArm": {
+					"rotation": {
+						"vector": ["7.5+math.sin(query.anim_time*180*2)*-150", 0, "10+math.sin(query.anim_time*180*2)*15"]
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"vector": [21.93488, 2.86313, 22.3265]
+					},
+					"position": {
+						"vector": [0, -1, 0]
+					}
+				},
+				"chest": {
+					"rotation": {
+						"vector": ["math.sin(query.anim_time*380)*-5", 0, 0]
+					}
+				},
+				"Coat": {
+					"rotation": {
+						"vector": ["math.sin(query.anim_time*180*2)*-5", 0, 0]
+					}
+				}
+			}
+		},
+		"vampiller_drakul.batform": {
+			"animation_length": 1,
+			"bones": {
+				"main": {
+					"rotation": {
+						"vector": [0, "(query.anim_time*180*2)*2", 0]
+					},
+					"position": {
+						"0.125": {
+							"vector": [0, 0, 0]
+						},
+						"1.0": {
+							"vector": [0, 25, 0],
+							"easing": "easeInElastic"
+						}
+					},
+					"scale": {
+						"0.125": {
+							"vector": [1, 1, 1]
+						},
+						"1.0": {
+							"vector": [0, 0, 0],
+							"easing": "easeInElastic",
+							"easingArgs": [0.1]
+						}
+					}
+				},
+				"RightArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [21.93488, 2.86313, -22.32648]
+						},
+						"1.0": {
+							"vector": [-16.78635, -14.8333, 166.3949],
+							"easing": "easeInElastic"
+						}
+					}
+				},
+				"LeftArm": {
+					"rotation": {
+						"0.0": {
+							"vector": [21.93488, 2.86313, 22.3265]
+						},
+						"1.0": {
+							"vector": [-16.78635, 14.83333, -166.39488],
+							"easing": "easeInElastic"
+						}
+					}
+				}
+			}
+		}
+	},
+	"geckolib_format_version": 2
+}
