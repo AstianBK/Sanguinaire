@@ -10,5 +10,17 @@
     "sounds": [
       "sanguinaire:vampiller_hurt"
     ]
+  },
+  "blood_slash": {
+    "subtitle": "sounds.sanguinaire.blood_slash",
+    "sounds": [
+      "sanguinaire:blood_slash"
+    ]
+  },
+  "blood_slash_hit": {
+    "subtitle": "sounds.sanguinaire.blood_slash_hit",
+    "sounds": [
+      "sanguinaire:blood_slash_hit"
+    ]
   }
 }
