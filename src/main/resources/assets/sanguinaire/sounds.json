@@ -4,5 +4,11 @@
     "sounds": [
       "sanguinaire:blood_drink"
     ]
+  },
+  "vampiller_hurt": {
+    "subtitle": "sounds.sanguinaire.vampiller_hurt",
+    "sounds": [
+      "sanguinaire:vampiller_hurt"
+    ]
   }
 }
