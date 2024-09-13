@@ -34,7 +34,10 @@ public class PacketHandler {
                 .encoder(PacketConvertVampire::toBytes)
                 .decoder(PacketConvertVampire::new)
                 .consumerNetworkThread(PacketConvertVampire::handle).add();
-
+        channel.messageBuilder(PacketSyncLimbRegeneration.class,index++)
+                .encoder(PacketSyncLimbRegeneration::toBytes)
+                .decoder(PacketSyncLimbRegeneration::new)
+                .consumerNetworkThread(PacketSyncLimbRegeneration::handle).add();
 
         channel.messageBuilder(PacketSyncDurationEffect.class,index++)
                 .encoder(PacketSyncDurationEffect::toBytes)

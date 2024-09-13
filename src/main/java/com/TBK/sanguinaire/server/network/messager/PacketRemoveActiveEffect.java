@@ -36,6 +36,8 @@ public class PacketRemoveActiveEffect {
             assert cap!=null && cap1!=null;
             if(this.id==0){
                 cap.getActiveEffectDuration().removeDuration(powerId);
+            }else {
+                cap1.getLimbsPartRegeneration().regenerateLimbClient(powerId);
             }
         });
         return true;

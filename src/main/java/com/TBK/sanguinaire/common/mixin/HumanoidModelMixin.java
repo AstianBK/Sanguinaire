@@ -19,23 +19,21 @@ import java.util.List;
 
 @Mixin(HumanoidModel.class)
 public abstract class HumanoidModelMixin<T extends LivingEntity> {
-
-    @Shadow protected abstract Iterable<ModelPart> bodyParts();
-
-    @Shadow protected abstract Iterable<ModelPart> headParts();
-
     @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",at = @At("TAIL"))
     public void regeneration$Layer(T p_102866_, float p_102867_, float p_102868_, float p_102869_, float p_102870_, float p_102871_, CallbackInfo ci){
         if (((Object)this) instanceof PlayerModel<?> model){
             VampirePlayerCapability cap=VampirePlayerCapability.get((Player) p_102866_);
             if(cap!=null){
-                if(cap.isVampire() && p_102866_.getHealth()!=p_102866_.getMaxHealth()){
-                    bodyParts().forEach(k->k.visible=false);
-                    headParts().forEach(k->k.visible=false);
+                LimbsPartRegeneration regeneration=cap.getLimbsPartRegeneration();
+                if(regeneration!=null){
+                    regeneration.getLimbs().forEach(e->{
+                        List<ModelPart> part= RenderUtil.getModelPartForLimbs(e,model);
+                        if(part!=null){
+                            part.forEach(k->k.visible=false);
+                        }
+                    });
                 }
             }
-
         }
     }
-
 }

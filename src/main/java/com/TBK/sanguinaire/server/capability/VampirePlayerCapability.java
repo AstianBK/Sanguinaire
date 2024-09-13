@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire.server.capability;
 
+import com.TBK.sanguinaire.client.particle.SGParticles;
 import com.TBK.sanguinaire.common.api.Clan;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
 import com.TBK.sanguinaire.common.registry.SGAttribute;
@@ -7,9 +8,10 @@ import com.TBK.sanguinaire.server.manager.*;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketConvertVampire;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,7 +23,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
 
 public class VampirePlayerCapability implements IVampirePlayer {
     Player player;
@@ -32,11 +33,30 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public int age=0;
     public int growTimerMax=72000;
     public int growTimer=0;
+    public LimbsPartRegeneration limbsPartRegeneration=new LimbsPartRegeneration();
 
     public static VampirePlayerCapability get(Player player){
         return SGCapability.getEntityVam(player, VampirePlayerCapability.class);
     }
 
+    public boolean legsLess(){
+        return this.getLimbsPartRegeneration().loseLimb("left_leg") && this.getLimbsPartRegeneration().loseLimb("right_leg");
+    }
+    public boolean armsLess(){
+        return this.getLimbsPartRegeneration().loseLimb("left_arm") && this.getLimbsPartRegeneration().loseLimb("right_arm");
+    }
+    public boolean bodyLess(){
+        return this.getLimbsPartRegeneration().loseLimb("body");
+    }
+    public boolean headLess(){
+        return this.getLimbsPartRegeneration().loseLimb("head");
+    }
+    public boolean noMoreLimbs(){
+        return this.legsLess() && this.bodyLess() && this.armsLess() && this.headLess();
+    }
+    public boolean cantMove(){
+        return this.legsLess() || this.bodyLess();
+    }
 
     @Override
     public Player getPlayer() {
@@ -85,6 +105,12 @@ public class VampirePlayerCapability implements IVampirePlayer {
         player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(finalBlood);
     }
 
+    public void losePart(String id, RegenerationInstance instance, Player player){
+        this.limbsPartRegeneration.addLoseLimb(id,instance);
+        if(player instanceof ServerPlayer serverPlayer){
+            this.limbsPartRegeneration.syncPlayer();
+        }
+    }
     @Override
     public SkillPlayerCapability getSkillCap(Player player) {
         return SkillPlayerCapability.get(player);
@@ -92,22 +118,59 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     @Override
     public void tick(Player player) {
+        if(this.noMoreLimbs()){
+            player.setPos(player.getX(),player.getY(),player.getZ());
+            player.setDeltaMovement(0.0F,0.0F,0.0F);
+        }
         if(this.player instanceof ServerPlayer){
+            if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
+                this.getLimbsPartRegeneration().tick(player);
+            }
             if(this.growTimer++>=this.growTimerMax){
                 this.growTimer=0;
                 this.age++;
             }
+            if(this.isDurationEffectTick(player.tickCount,2+this.age/10)){
+                if (player.getHealth() < player.getMaxHealth()) {
+                    float f = player.getHealth();
+                    if (f > 0.0F) {
+                        player.setHealth(f + 1);
+                    }
+                }
+            }
             this.syncCap(player);
         }else if(this.level.isClientSide){
-
+            if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
+                this.getLimbsPartRegeneration().tick(player);
+            }
         }
 
-        if(this.isDurationEffectTick(player.tickCount,this.age/10)){
-            if (player.getHealth() < player.getMaxHealth()) {
-                player.heal(1.0F);
+        if(player.level().isClientSide){
+            RegenerationInstance instance=this.getLimbsPartRegeneration().loseLimbs.get("head");
+            if(instance!=null){
+                float porcentBlood=instance.getCooldownPercent();
+                float f=3.0F*porcentBlood;
+                ParticleOptions particleoptions = SGParticles.BLOOD_PARTICLES.get();
+                int i;
+                float f1;
+                i = Mth.ceil((float)Math.PI * f * f);
+                f1 = f;
+
+                for(int k=0;k<10;k++){
+                    for(int j = 0; j < i; ++j) {
+                        float f2 = player.getRandom().nextFloat() * ((float)Math.PI * 2F);
+                        float f3 = Mth.sqrt(player.getRandom().nextFloat()) * f1;
+                        double d0 = player.getX() + (double)(Mth.cos(f2) * f3);
+                        double d2 = player.getY()+0.3D;
+                        double d4 = player.getZ() + (double)(Mth.sin(f2) * f3);
+
+                        player.level().addParticle(particleoptions, d0, d2, d4, 0.0F, 0.1F, 0.0F);
+                    }
+                }
             }
         }
     }
+
     public boolean isDurationEffectTick(int p_19455_, int p_19456_) {
         int k = 100 >> p_19456_;
         if (k > 0) {
@@ -116,9 +179,13 @@ public class VampirePlayerCapability implements IVampirePlayer {
             return true;
         }
     }
+    public int getRegTimer(){
+        return (int) (140-140*(0.5F*(this.age/100)+0.36F*(1.0F-this.generation/10.0F)));
+    }
+
     public void syncCap(Player player){
         if(player instanceof ServerPlayer serverPlayer){
-            PacketHandler.sendToAllTracking(new PacketConvertVampire(!this.isVampire()),serverPlayer);
+            this.getLimbsPartRegeneration().syncPlayer();
         }
     }
 
@@ -160,11 +227,24 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.isVampire=nbt.getBoolean("isVampire");
         this.generation=nbt.getInt("generation");
         this.clan=Clan.valueOf(nbt.getString("clan"));
+        if(this.player!=null && !this.level.isClientSide){
+            PacketHandler.sendToAllTracking(new PacketConvertVampire(!this.isVampire()),this.player);
+        }
     }
 
     public void init(Player player) {
         this.setPlayer(player);
         this.level=player.level();
+        if(player instanceof ServerPlayer){
+            this.setLimbsPartRegeneration(new LimbsPartRegeneration((ServerPlayer) player));
+        }
+    }
+    public void setLimbsPartRegeneration(LimbsPartRegeneration limbsPartRegeneration){
+        this.limbsPartRegeneration=limbsPartRegeneration;
+    }
+
+    public LimbsPartRegeneration getLimbsPartRegeneration() {
+        return this.limbsPartRegeneration;
     }
 
 

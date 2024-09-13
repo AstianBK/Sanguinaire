@@ -3,10 +3,12 @@ package com.TBK.sanguinaire.server.manager;
 import com.TBK.sanguinaire.common.api.Limbs;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketRemoveActiveEffect;
+import com.TBK.sanguinaire.server.network.messager.PacketSyncLimbRegeneration;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -64,7 +66,7 @@ public class LimbsPartRegeneration {
         this.loseLimbs.clear();
     }
     public void syncPlayer(){
-
+        PacketHandler.sendToPlayer(new PacketSyncLimbRegeneration(this.loseLimbs),this.serverPlayer);
     }
 
     public List<Limbs> getLimbs(){
@@ -99,8 +101,11 @@ public class LimbsPartRegeneration {
     public boolean canRegenerateLimbs(String id,List<Limbs> limbs){
         return true;
     }
-    public void tick(){
+    public void tick(Player player){
         var powers = loseLimbs.entrySet().stream().filter(x -> decrementCooldown(x.getValue(), 1,x.getKey(),this.getLimbs())).toList();
+        if(powers.size()==loseLimbs.size()){
+            player.setInvulnerable(false);
+        }
         powers.forEach(stringRegenerationInstanceEntry -> regenerateLimb(stringRegenerationInstanceEntry.getKey()));
 
     }

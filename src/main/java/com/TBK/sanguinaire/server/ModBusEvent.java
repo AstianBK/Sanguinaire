@@ -9,15 +9,20 @@ import com.TBK.sanguinaire.server.manager.RegenerationInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TieredItem;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
+import net.minecraftforge.event.entity.living.LivingHealEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -43,12 +48,18 @@ public class ModBusEvent {
     @SubscribeEvent
     public static void onRightClick(PlayerInteractEvent.RightClickItem event){
         ItemStack stack=event.getEntity().getItemInHand(event.getHand());
-        if(stack.is(Items.STICK) && !event.getLevel().isClientSide){
+        if(stack.is(Items.STICK) && !event.getEntity().isShiftKeyDown() && !event.getLevel().isClientSide){
             VampirePlayerCapability cap = SGCapability.getEntityVam(event.getEntity(), VampirePlayerCapability.class);
             if(cap!=null){
                 boolean isVampire=cap.isVampire();
-                event.getEntity().sendSystemMessage(Component.nullToEmpty(cap.isVampire() ?  "Te convertiste en humano Cuck" :"Te convertiste en Vampiro OmegaGigaChad" ));
+                event.getEntity().sendSystemMessage(Component.nullToEmpty(cap.isVampire() ?  "Te convertiste en humano OmegaGigaChad" :"Te convertiste en Vampiro Cuck" ));
                 cap.convert(isVampire);
+            }
+        }else if(stack.is(Items.STICK) && event.getEntity().isShiftKeyDown()){
+            VampirePlayerCapability cap = SGCapability.getEntityVam(event.getEntity(), VampirePlayerCapability.class);
+            if(cap!=null){
+                cap.age++;
+                event.getEntity().sendSystemMessage(Component.nullToEmpty(String.valueOf(cap.age)));
             }
         }
     }
@@ -86,7 +97,6 @@ public class ModBusEvent {
                 SkillPlayerCapability cap=prov.getCapability(SGCapability.POWER_CAPABILITY).orElse(null);
                 cap.init(player);
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "power_cap"), prov);
-
             }
         }else if(event.getObject() instanceof LivingEntity living){
             BiterEntityCap oldVamp = SGCapability.getEntityEntity(event.getObject(), BiterEntityCap.class);
@@ -124,6 +134,43 @@ public class ModBusEvent {
             newCap.clone(cap,player);
         }else {
             newCap.init(player);
+        }
+    }
+    @SubscribeEvent
+    public static void deathEntity(LivingDeathEvent event){
+        LivingEntity target=event.getEntity();
+        if(target instanceof Player player){
+            VampirePlayerCapability cap=VampirePlayerCapability.get(player);
+            if(cap!=null && cap.isVampire()){
+                if (!cap.noMoreLimbs()){
+                    player.setHealth(1.0F);
+                    player.setInvulnerable(true);
+                    event.setCanceled(true);
+                    loseBody(cap,player);
+                }
+            }
+        }
+    }
+
+
+
+    public static void loseBody(VampirePlayerCapability cap,Player player){
+        int timer=cap.getRegTimer();
+        cap.losePart("head",new RegenerationInstance(timer),player);
+        cap.losePart("body",new RegenerationInstance(timer),player);
+        cap.losePart("right_arm",new RegenerationInstance(timer),player);
+        cap.losePart("left_arm",new RegenerationInstance(timer),player);
+        cap.losePart("right_leg",new RegenerationInstance(timer),player);
+        cap.losePart("left_leg",new RegenerationInstance(timer),player);
+    }
+
+    @SubscribeEvent
+    public static void healPlayer(LivingHealEvent event){
+        if(event.getEntity() instanceof Player player){
+            VampirePlayerCapability cap=VampirePlayerCapability.get(player);
+            if(cap!=null && cap.isVampire()){
+                event.setCanceled(true);
+            }
         }
     }
 }
