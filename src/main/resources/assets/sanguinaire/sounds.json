@@ -22,5 +22,11 @@
     "sounds": [
       "sanguinaire:blood_slash_hit"
     ]
+  },
+  "wasted_blood_music_disc": {
+    "subtitle": "sounds.sanguinaire.wasted_blood_music_disc",
+    "sounds": [
+      "sanguinaire:wasted_blood_ivan_duch"
+    ]
   }
 }
