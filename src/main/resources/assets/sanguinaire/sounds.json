@@ -23,6 +23,12 @@
       "sanguinaire:blood_slash_hit"
     ]
   },
+  "vampire_resurrect": {
+    "subtitle": "sounds.sanguinaire.vampire_resurrect",
+    "sounds": [
+      "sanguinaire:vampire_resurrect"
+    ]
+  },
   "wasted_blood_music_disc": {
     "subtitle": "sounds.sanguinaire.wasted_blood_music_disc",
     "sounds": [
