@@ -1,4 +1,4 @@
-package com.TBK.sanguinaire.client.particle;
+package com.TBK.sanguinaire.common.registry;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import net.minecraft.core.particles.ParticleType;

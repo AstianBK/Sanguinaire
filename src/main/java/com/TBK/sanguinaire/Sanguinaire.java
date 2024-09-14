@@ -1,12 +1,11 @@
 package com.TBK.sanguinaire;
 
-import com.TBK.sanguinaire.client.particle.SGParticles;
+import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.common.registry.SGAttribute;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;

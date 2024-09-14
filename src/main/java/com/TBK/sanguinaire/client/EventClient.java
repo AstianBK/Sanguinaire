@@ -2,15 +2,13 @@ package com.TBK.sanguinaire.client;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
-import com.TBK.sanguinaire.client.particle.SGParticles;
+import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.client.particle.custom.BloodBKParticles;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;

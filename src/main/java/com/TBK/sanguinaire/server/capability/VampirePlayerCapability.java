@@ -1,6 +1,6 @@
 package com.TBK.sanguinaire.server.capability;
 
-import com.TBK.sanguinaire.client.particle.SGParticles;
+import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.common.api.Clan;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
 import com.TBK.sanguinaire.common.registry.SGAttribute;
