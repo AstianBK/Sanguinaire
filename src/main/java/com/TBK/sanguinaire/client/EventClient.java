@@ -1,6 +1,8 @@
 package com.TBK.sanguinaire.client;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.client.gui.BloodOverlay;
+import com.TBK.sanguinaire.client.gui.HeartsEffect;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
 import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.client.particle.custom.BloodBKParticles;
@@ -9,6 +11,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -24,7 +27,8 @@ public class EventClient {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerGui(RegisterGuiOverlaysEvent event){
-        //event.registerAbove(VanillaGuiOverlay.PLAYER_HEALTH.id(), "actiona_actually",new HotBarGui());
+        event.registerAbove(VanillaGuiOverlay.PLAYER_HEALTH.id(), "heart_vampire",new HeartsEffect());
+        event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "blood",new BloodOverlay());
     }
     @SubscribeEvent(priority = EventPriority.LOWEST)
     @OnlyIn(Dist.CLIENT)

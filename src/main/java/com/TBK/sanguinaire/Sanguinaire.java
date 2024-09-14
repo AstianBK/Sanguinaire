@@ -2,6 +2,7 @@ package com.TBK.sanguinaire;
 
 import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.common.registry.SGAttribute;
+import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.mojang.logging.LogUtils;
@@ -31,6 +32,7 @@ public class Sanguinaire
         modEventBus.addListener(SGCapability::registerCapabilities);
         SGParticles.register(modEventBus);
         SGAttribute.ATTRIBUTES.register(modEventBus);
+        SGSounds.register(modEventBus);
         PacketHandler.registerMessages();
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
