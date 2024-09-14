@@ -11,116 +11,31 @@ import net.minecraftforge.registries.RegistryObject;
 public class SGSounds {
         public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
                 DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Sanguinaire.MODID);
-        
-        public static final RegistryObject<SoundEvent> RUNE_TABLE_USE =
-                registerSoundEvent("rune_table_use");
 
-        public static final RegistryObject<SoundEvent> DRUM_SOUND =
-                registerSoundEvent("drum_sound");
+        //SKILLS & INTERACTIONS
 
-        public static final RegistryObject<SoundEvent> DRUM_SOUND_ONCE =
-                registerSoundEvent("drum_sound_once");
+        public static final RegistryObject<SoundEvent> VAMPIRE_RESURRECT =
+                registerSoundEvent("vampire_resurrect");
 
-        public static final RegistryObject<SoundEvent> TAMER_WHISTLE =
-                registerSoundEvent("tamer_whistle");
+        public static final RegistryObject<SoundEvent> BLOOD_DRINK =
+                registerSoundEvent("blood_drink");
 
-        public static final RegistryObject<SoundEvent> RAKER_HISS =
-            registerSoundEvent("raker_hiss");
+        public static final RegistryObject<SoundEvent> BLOOD_SLASH =
+            registerSoundEvent("blood_slash");
 
-        public static final RegistryObject<SoundEvent> RAKER_MEOW =
-            registerSoundEvent("raker_meow");
+        public static final RegistryObject<SoundEvent> BLOOD_SLASH_HIT =
+                registerSoundEvent("blood_slash_hit");
 
-        public static final RegistryObject<SoundEvent> MAULER_HURT =
-                registerSoundEvent("mauler_hurt");
+        //ENTITY
 
-        public static final RegistryObject<SoundEvent> MAULER_RAGE =
-                registerSoundEvent("mauler_rage");
+        public static final RegistryObject<SoundEvent> VAMPILLER_HURT =
+                registerSoundEvent("vampiller_hurt");
 
-        public static final RegistryObject<SoundEvent> MAULER_AMBIENT1 =
-                registerSoundEvent("mauler_ambient1");
+        //MUSIC
 
-        public static final RegistryObject<SoundEvent> MAULER_AMBIENT2 =
-                registerSoundEvent("mauler_ambient2");
+        public static final RegistryObject<SoundEvent> WASTED_BLOOD_IVAN_DUCH =
+                registerSoundEvent("wasted_blood_ivan_duch");
 
-        public static final RegistryObject<SoundEvent> MAULER_STUN =
-                registerSoundEvent("mauler_stun");
-
-        public static final RegistryObject<SoundEvent> MAULER_BARK =
-                registerSoundEvent("mauler_bark");
-
-        public static final RegistryObject<SoundEvent> MAULER_SNARL =
-                registerSoundEvent("mauler_snarl");
-
-        public static final RegistryObject<SoundEvent> MAULER_BITE =
-                registerSoundEvent("mauler_bite");
-
-        public static final RegistryObject<SoundEvent> SCROUNGER_AMBIENT1 =
-                registerSoundEvent("scrounger_ambient1");
-
-        public static final RegistryObject<SoundEvent> SCROUNGER_AMBIENT2 =
-                registerSoundEvent("scrounger_ambient2");
-
-        public static final RegistryObject<SoundEvent> SCROUNGER_HURT =
-                registerSoundEvent("scrounger_hurt");
-        public static final RegistryObject<SoundEvent> SOUL_ABSORB =
-            registerSoundEvent("soul_absorb");
-
-        public static final RegistryObject<SoundEvent> SOUL_LIMIT =
-            registerSoundEvent("soul_limit");
-
-        public static final RegistryObject<SoundEvent> SOUL_RELEASE =
-            registerSoundEvent("soul_release");
-
-        public static final RegistryObject<SoundEvent> BLADE_KNIGHT_HURT =
-            registerSoundEvent("blade_knight_hurt");
-
-        public static final RegistryObject<SoundEvent> SOUL_SAGE_FIRE =
-                registerSoundEvent("soul_sage_fire");
-
-        public static final RegistryObject<SoundEvent> SOUL_SAGE_DRAIN =
-                registerSoundEvent("soul_sage_drain");
-
-        public static final RegistryObject<SoundEvent> SOUL_SAGE_SHIELD =
-                registerSoundEvent("soul_sage_shield");
-
-        public static final RegistryObject<SoundEvent> SOUL_SAGE_MISSILE =
-                registerSoundEvent("soul_sage_missile");
-
-        public static final RegistryObject<SoundEvent> BLADE_KNIGHT_SWORDHIT1 =
-            registerSoundEvent("blade_knight_swordhit1");
-
-        public static final RegistryObject<SoundEvent> BLADE_KNIGHT_SWORDHIT2 =
-            registerSoundEvent("blade_knight_swordhit2");
-
-        public static final RegistryObject<SoundEvent> BLADE_KNIGHT_BLUNT =
-                registerSoundEvent("blade_knight_blunt");
-
-        public static final RegistryObject<SoundEvent> BLADE_SLASH_1 =
-                registerSoundEvent("blade_slash_1");
-
-        public static final RegistryObject<SoundEvent> BLADE_SLASH_2 =
-                registerSoundEvent("blade_slash_2");
-
-        public static final RegistryObject<SoundEvent> BLADE_SLASH_HIT1 =
-                registerSoundEvent("blade_slash_hit1");
-
-        public static final RegistryObject<SoundEvent> BLADE_SLASH_HIT2 =
-                registerSoundEvent("blade_slash_hit2");
-
-        public static final RegistryObject<SoundEvent> SOUL_SLASH =
-            registerSoundEvent("soul_slash");
-
-        public static final RegistryObject<SoundEvent> BLADE_KNIGHT_LAUGH =
-            registerSoundEvent("blade_knight_laugh");
-
-        public static final RegistryObject<SoundEvent> FALLEN_KNIGHT_REVIVE =
-                registerSoundEvent("fallen_knight_revive");
-
-        public static final RegistryObject<SoundEvent> DEATH_MARK_SOUND =
-            registerSoundEvent("death_mark_sound");
-
-        public static final RegistryObject<SoundEvent> BLEEDING_PROC =
-            registerSoundEvent("bleeding_proc");
 
 
         public static RegistryObject<SoundEvent> registerSoundEvent(String name){

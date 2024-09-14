@@ -29,8 +29,8 @@
       "sanguinaire:vampire_resurrect"
     ]
   },
-  "wasted_blood_music_disc": {
-    "subtitle": "sounds.sanguinaire.wasted_blood_music_disc",
+  "wasted_blood_ivan_duch": {
+    "subtitle": "sounds.sanguinaire.wasted_blood_ivan_duch",
     "sounds": [
       "sanguinaire:wasted_blood_ivan_duch"
     ]
