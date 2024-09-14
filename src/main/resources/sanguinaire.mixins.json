@@ -10,7 +10,6 @@
     "defaultRequire": 1
   },
   "client": [
-    "ArmorLayerMixin",
     "EntityRendererMixin",
     "HumanoidModelMixin",
     "PlayerModelAccessor"
