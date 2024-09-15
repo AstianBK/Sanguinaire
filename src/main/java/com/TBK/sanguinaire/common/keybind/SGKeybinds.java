@@ -17,7 +17,7 @@ public class SGKeybinds {
 
     @SubscribeEvent
     public static void register(final RegisterKeyMappingsEvent event) {
-        attackKey1 = create("attack_key1", KeyEvent.VK_Z);
+        attackKey1 = create("attack_key1", KeyEvent.VK_F);
         attackKey2 = create("attack_key2", KeyEvent.VK_C);
 
         event.register(attackKey1);

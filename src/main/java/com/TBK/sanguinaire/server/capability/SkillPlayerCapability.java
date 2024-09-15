@@ -4,10 +4,12 @@ import com.TBK.sanguinaire.common.api.ISkillPlayer;
 import com.TBK.sanguinaire.server.manager.*;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import com.TBK.sanguinaire.server.skill.SkillAbstracts;
+import com.TBK.sanguinaire.server.skill.TentacleBlood;
 import com.google.common.collect.Maps;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -32,9 +34,12 @@ public class SkillPlayerCapability implements ISkillPlayer {
     int posSelectSkillAbstract=1;
     int castingTimer=0;
     public PlayerCooldowns cooldowns=new PlayerCooldowns();
-    public ActiveEffectDuration durationEffect;
+    public ActiveEffectDuration durationEffect=new ActiveEffectDuration();
     public static SkillPlayerCapability get(Player player){
         return SGCapability.getEntityCap(player,SkillPlayerCapability.class);
+    }
+    public VampirePlayerCapability getPlayerVampire(){
+        return VampirePlayerCapability.get(this.player);
     }
 
 
@@ -50,7 +55,7 @@ public class SkillPlayerCapability implements ISkillPlayer {
 
     @Override
     public SkillAbstract getSelectSkill() {
-        return this.getSkillForHotBar(this.posSelectSkillAbstract);
+        return this.getHotBarSkill().getForName("tentacle_blood");
     }
 
     @Override
@@ -102,7 +107,7 @@ public class SkillPlayerCapability implements ISkillPlayer {
                 this.cooldowns.tick(1);
             }
             if(this.durationEffect.hasDurationsActive()){
-                this.durationEffect.tickDurations();
+                this.durationEffect.tickDurations(this);
             }
         }
         if(!this.powers.getSkills().isEmpty()){
@@ -115,26 +120,21 @@ public class SkillPlayerCapability implements ISkillPlayer {
                 }
             });
         }
-        if(this.getLastUsingSkill()!=null && this.lastUsingSkill()){
-            if(this.castingTimer==this.getLastUsingSkill().lauchTime){
-                this.handledSkill(player,this.getLastUsingSkill());
-            }
-            this.castingTimer--;
-        }
     }
 
     @Override
     public void onJoinGame(Player player, EntityJoinLevelEvent event) {
+        this.powers.addSkillAbstracts(0,new TentacleBlood());
     }
 
     @Override
-    public void handledSkill(Player player, SkillAbstract power) {
-
+    public void handledSkill(SkillAbstract power) {
+        power.startSkillAbstract(this);
     }
 
     @Override
-    public void stopSkill(Player player, SkillAbstract power) {
-
+    public void stopSkill(SkillAbstract power) {
+        power.stopSkillAbstract(this);
     }
 
     @Override
@@ -144,7 +144,7 @@ public class SkillPlayerCapability implements ISkillPlayer {
 
     @Override
     public boolean canUseSkill(SkillAbstract skillAbstract) {
-        return this.getCooldowns().isOnCooldown(skillAbstract);
+        return !this.getCooldowns().isOnCooldown(skillAbstract) && this.getPlayerVampire().getBlood()>=skillAbstract.getCostBloodBase();
     }
 
     @Override
@@ -153,8 +153,8 @@ public class SkillPlayerCapability implements ISkillPlayer {
     }
 
     @Override
-    public SkillAbstract getHotBarSkill() {
-        return null;
+    public SkillAbstracts getHotBarSkill() {
+        return this.powers;
     }
 
     @Override
@@ -177,7 +177,16 @@ public class SkillPlayerCapability implements ISkillPlayer {
 
     @Override
     public void swingHand(Player player) {
-
+        if(this.canUseSkill(this.getSelectSkill())){
+            if(!this.durationEffect.hasDurationForSkill(this.getSelectSkill()) && !this.getSelectSkill().isPassive){
+                SkillAbstract power=this.getSelectSkill();
+                DurationInstance instance=new DurationInstance(power.name,power.level,power.castingDuration+50*power.level,200);
+                this.addActiveEffect(instance,player);
+                this.setLastUsingSkill(this.getSelectSkill());
+                this.getPlayer().sendSystemMessage(Component.nullToEmpty("Se lanzo el poder"));
+                this.handledSkill(power);
+            }
+        }
     }
 
 

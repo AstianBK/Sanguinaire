@@ -1,6 +1,7 @@
 package com.TBK.sanguinaire.server;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.capability.BiterEntityCap;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
@@ -44,7 +45,6 @@ public class ModBusEvent {
             }
         }
     }
-
     @SubscribeEvent
     public static void onRightClick(PlayerInteractEvent.RightClickItem event){
         ItemStack stack=event.getEntity().getItemInHand(event.getHand());
@@ -62,6 +62,7 @@ public class ModBusEvent {
                 event.getEntity().sendSystemMessage(Component.nullToEmpty(String.valueOf(cap.age)));
             }
         }
+
     }
 
     @SubscribeEvent
@@ -92,11 +93,11 @@ public class ModBusEvent {
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "vampire_cap"), prov);
             }
 
-            if (oldCap == null && oldVamp!=null) {
+            if (oldCap == null) {
                 SkillPlayerCapability.SkillPlayerProvider prov = new SkillPlayerCapability.SkillPlayerProvider();
                 SkillPlayerCapability cap=prov.getCapability(SGCapability.POWER_CAPABILITY).orElse(null);
                 cap.init(player);
-                event.addCapability(new ResourceLocation(Sanguinaire.MODID, "power_cap"), prov);
+                event.addCapability(new ResourceLocation(Sanguinaire.MODID, "skill_cap"), prov);
             }
         }else if(event.getObject() instanceof LivingEntity living){
             BiterEntityCap oldVamp = SGCapability.getEntityEntity(event.getObject(), BiterEntityCap.class);
@@ -147,6 +148,7 @@ public class ModBusEvent {
                     player.setInvulnerable(true);
                     event.setCanceled(true);
                     loseBody(cap,player);
+                    player.playSound(SGSounds.VAMPIRE_RESURRECT.get(),1.0F,1.0F);
                 }
             }
         }

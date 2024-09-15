@@ -67,9 +67,14 @@ public class ActiveEffectDuration {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void tickDurations() {
+    public void tickDurations(SkillPlayerCapability skillPlayerCapability) {
         if (!recastLookup.isEmpty()) {
-            recastLookup.values().stream().toList().forEach(x -> x.remainingTicks--);
+            recastLookup.values().stream().toList().forEach(x ->{
+                x.remainingTicks--;
+                if(x.remainingTicks<=0){
+                    skillPlayerCapability.stopSkill(skillPlayerCapability.getHotBarSkill().getForName(x.getSpellId()));
+                }
+            });
         }
     }
 
@@ -201,7 +206,7 @@ public class ActiveEffectDuration {
                         removeDuration(recastInstance, DurationResult.TIMEOUT);
                         powerPlayerCapability.powers.getSkills().forEach(e->{
                             if(Objects.equals(e.getSkillAbstract().name, recastInstance.getSpellId())){
-                                e.getSkillAbstract().stopSkillAbstract(powerPlayerCapability);
+                                powerPlayerCapability.stopSkill(e.getSkillAbstract());
                             }
                         });
                     });

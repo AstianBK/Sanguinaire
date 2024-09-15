@@ -2,20 +2,27 @@ package com.TBK.sanguinaire.server.skill;
 
 import com.TBK.sanguinaire.common.registry.SGSkillAbstract;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
+import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class SkillAbstract {
-    public static SkillAbstract NONE = new SkillAbstract("",0, 0, 0, false, false, false,false);
+    public static SkillAbstract NONE = new SkillAbstract("",0, 0, 0, false, false, false,false,0);
     private final String descriptionId;
+    private List<UUID> uuidTargets=new ArrayList<>();
+    private List<LivingEntity> targets=new ArrayList<>();
+
     public int cooldown;
     public int duration;
     public int cooldownTimer=0;
@@ -26,11 +33,12 @@ public class SkillAbstract {
     public boolean isPassive;
     public boolean continuousUse;
     public int level;
+    public int costBloodBase;
     public String name;
     public CompoundTag tag;
     public Map<Attribute, AttributeModifier> attributeModifierMap= Maps.newHashMap();
     public SkillAbstract(String name,int castingDuration,int cooldown,int lauchTime,
-                 boolean instantUse,boolean isTransform,boolean continuousUse,boolean isPassive){
+                 boolean instantUse,boolean isTransform,boolean continuousUse,boolean isPassive,int costBloodBase){
         this.castingDuration=castingDuration;
         this.cooldown=cooldown;
         this.lauchTime =lauchTime;
@@ -40,6 +48,7 @@ public class SkillAbstract {
         this.level=1;
         this.name=name;
         this.isPassive=isPassive;
+        this.costBloodBase=costBloodBase;
         this.descriptionId= Component.translatable("skill."+name).getString();
     }
 
@@ -56,13 +65,23 @@ public class SkillAbstract {
         this.isPassive=power.isPassive;
         this.read(tag);
     }
-
+    public void addTarget(LivingEntity target){
+        this.targets.add(target);
+        this.uuidTargets.add(target.getUUID());
+    }
+    public List<LivingEntity> getTargets(){
+        return this.targets;
+    }
     public void tick(SkillPlayerCapability player){
         this.effectSkillAbstractForTick(player.getPlayer());
     }
 
     public void effectSkillAbstractForTick(Player player) {
         this.updateAttributes(player);
+    }
+
+    public int getCostBloodBase() {
+        return this.costBloodBase;
     }
 
     public void effectPassiveForTick(Player player) {
@@ -88,12 +107,17 @@ public class SkillAbstract {
         return 0;
     }
 
-    public void startSkillAbstract(Player player) {
-
+    public void startSkillAbstract(SkillPlayerCapability skill) {
+        skill.getPlayerVampire().loseBlood(this.getCostBloodBase());
+        if(!skill.getPlayer().level().isClientSide){
+            PacketHandler.sendToPlayer(new PacketSyncBlood(skill.getPlayerVampire().getBlood()), (ServerPlayer) skill.getPlayer());
+        }
     }
     public void stopSkillAbstract(SkillPlayerCapability player){
         player.setLastUsingSkill(SkillAbstract.NONE);
         player.cooldowns.addCooldown(this,this.cooldown);
+        this.targets.clear();
+        this.uuidTargets.clear();
         player.syncSkill(player.getPlayer());
     }
 

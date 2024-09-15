@@ -1,7 +1,14 @@
 package com.TBK.sanguinaire.common;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.common.keybind.SGKeybinds;
+import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
+import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.network.messager.PacketKeySync;
 import net.minecraft.client.Minecraft;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -23,10 +30,8 @@ public class InputEvents {
     }
 
     private static void onInput(Minecraft mc, int key, int action) {
-        /*if (mc.screen == null && BKKeybinds.attackKey1.consumeClick()) {
+        if (mc.screen == null && SGKeybinds.attackKey1.consumeClick()) {
             PacketHandler.sendToServer(new PacketKeySync(key));
-        }else if (mc.screen == null && BKKeybinds.attackKey2.consumeClick()) {
-            PacketHandler.sendToServer(new PacketKeySync(key));
-        }*/
+        }
     }
 }

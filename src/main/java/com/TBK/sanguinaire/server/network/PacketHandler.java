@@ -47,6 +47,16 @@ public class PacketHandler {
                 .encoder(PacketRemoveActiveEffect::toBytes)
                 .decoder(PacketRemoveActiveEffect::new)
                 .consumerNetworkThread(PacketRemoveActiveEffect::handle).add();
+        channel.messageBuilder(PacketKeySync.class,index++)
+                .encoder(PacketKeySync::write)
+                .decoder(PacketKeySync::new)
+                .consumerNetworkThread(PacketKeySync::handle).add();
+
+        channel.messageBuilder(PacketSyncBlood.class,index++)
+                .encoder(PacketSyncBlood::write)
+                .decoder(PacketSyncBlood::new)
+                .consumerNetworkThread(PacketSyncBlood::handle).add();
+
         channel.messageBuilder(PacketActiveEffect.class,index++)
                 .encoder(PacketActiveEffect::toBytes)
                 .decoder(PacketActiveEffect::new)

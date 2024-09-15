@@ -15,10 +15,13 @@ import javax.management.Attribute;
 public class BloodOverlay implements IGuiOverlay {
     private final ResourceLocation icons = new ResourceLocation(Sanguinaire.MODID ,"textures/gui/icons_vampire.png");
     private final Minecraft mc = Minecraft.getInstance();
+    final int MARGIN = 52;
 
     @Override
     public void render(ForgeGui gui, @NotNull GuiGraphics graphics, float partialTicks, int width, int height) {
         if (this.mc.player != null) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 0.01);
             VampirePlayerCapability cap=VampirePlayerCapability.get(this.mc.player);
             assert cap!=null;
             if (this.mc.gameMode.hasExperience() && this.mc.player.isAlive() && cap.isVampire()) {
@@ -26,26 +29,19 @@ public class BloodOverlay implements IGuiOverlay {
                 int left = this.mc.getWindow().getGuiScaledWidth() / 2 + 91;
                 int top = this.mc.getWindow().getGuiScaledHeight() - ((ForgeGui) this.mc.gui).rightHeight;
                 ((ForgeGui) this.mc.gui).rightHeight += 10;
-                int maxBlood = 20;
-                int blood2 = blood - 20;
-                int maxBlood2 = maxBlood - 20;
                 for (int i = 0; i < 10; ++i) {
                     int idx = i * 2 + 1;
                     int x = left - i * 8 - 9;
-
-                    // Draw Background
-                    graphics.blit(icons, x, top, 0, idx <= maxBlood2 ? 9 : 0, 9, 9);
+                    graphics.blit(icons, x, top, 0,  27, 9, 9);
 
                     if (idx < blood) {
-                        graphics.blit(icons, x, top, 9, idx < blood2 ? 9 : 0, 9, 9);
-                        if (idx == blood2) {
-                            graphics.blit(icons, x, top, 18, 9, 9, 9);
-                        }
+                        graphics.blit(icons, x, top, 18, 27, 9, 9);
                     } else if (idx == blood) {
-                        graphics.blit(icons, x, top, 18, 0, 9, 9);
+                        graphics.blit(icons, x, top, 9, 27, 9, 9);
                     }
                 }
             }
+            graphics.pose().popPose();
         }
     }
 }

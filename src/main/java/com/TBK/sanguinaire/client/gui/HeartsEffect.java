@@ -80,20 +80,19 @@ public class HeartsEffect implements IGuiOverlay {
                 int heart = (i + 1) % 10;
                 int x = left + heart * 8;
                 int y = top - extraRowHeight * Math.max(0, row - healthRows + 1) - rowHeight * Math.min(row, healthRows - 1);
-                guiGraphics.blit(texture, x, y, highlight ? 9 : 0, 18, 9, 9);
+                guiGraphics.blit(texture, x, y,  highlight ? 9 : 0, 0, 9, 9);
             }
             for (int i = Mth.ceil((healthMax + absorb) / 2.0F) - 1; i >= 0; -- i) {
                 int row = i / 10;
                 int heart = i % 10;
                 int x = left + heart * 8;
                 int y = top - row * rowHeight;
-
                 if (health <= 4) y += rand.nextInt(2);
                 if (i == regen) y -= 2;
                 if (i * 2 + 1 < health){
-                    guiGraphics.blit(texture, x, y, 0, 0, 9, 9);
+                    guiGraphics.blit(texture, x, y, 36, 0, 9, 9);
                 } else if (i * 2 + 1 == health){
-                    guiGraphics.blit(texture, x, y, 9, 0, 9, 9);
+                    guiGraphics.blit(texture, x, y, 45, 0, 9, 9);
                 }
             }
             guiGraphics.pose().popPose();

@@ -12,6 +12,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -34,6 +35,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public int growTimerMax=72000;
     public int growTimer=0;
     public LimbsPartRegeneration limbsPartRegeneration=new LimbsPartRegeneration();
+    public int loseBlood=0;
 
     public static VampirePlayerCapability get(Player player){
         return SGCapability.getEntityVam(player, VampirePlayerCapability.class);
@@ -95,14 +97,27 @@ public class VampirePlayerCapability implements IVampirePlayer {
     }
 
     @Override
-    public void bite(Player player, LivingEntity target) {
-
+    public void bite(Player player, Entity target) {
+        if(target instanceof LivingEntity living){
+            this.drainBlood(1);
+            this.loseBlood=6000;
+        }
     }
-
+    public void loseBlood(int blood){
+        double bloodActually=player.getAttributeValue(SGAttribute.BLOOD_VALUE.get());
+        double finalBlood=Math.max(blood-bloodActually,0);
+        player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(finalBlood);
+    }
     public void drainBlood(int blood){
         double bloodActually=player.getAttributeValue(SGAttribute.BLOOD_VALUE.get());
         double finalBlood=Math.min(blood+bloodActually,20);
         player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(finalBlood);
+    }
+    public double getBlood(){
+        return player.getAttributeValue(SGAttribute.BLOOD_VALUE.get());
+    }
+    public void setBlood(double blood){
+        player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(blood);
     }
 
     public void losePart(String id, RegenerationInstance instance, Player player){
@@ -118,6 +133,15 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     @Override
     public void tick(Player player) {
+        if(this.loseBlood>0){
+            this.loseBlood--;
+            if(this.loseBlood==0){
+                this.loseBlood(1);
+                if(this.getBlood()>0){
+                    this.loseBlood=6000;
+                }
+            }
+        }
         if(this.noMoreLimbs()){
             player.setPos(player.getX(),player.getY(),player.getZ());
             player.setDeltaMovement(0.0F,0.0F,0.0F);
@@ -186,6 +210,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public void syncCap(Player player){
         if(player instanceof ServerPlayer serverPlayer){
             this.getLimbsPartRegeneration().syncPlayer();
+            PacketHandler.sendToPlayer(new PacketConvertVampire(!this.isVampire),serverPlayer);
         }
     }
 
@@ -219,6 +244,8 @@ public class VampirePlayerCapability implements IVampirePlayer {
         tag.putBoolean("isVampire",this.isVampire);
         tag.putInt("generation",this.generation);
         tag.putString("clan",this.clan.toString());
+        tag.putInt("loseBlood",this.loseBlood);
+        tag.putDouble("blood",this.getBlood());
         return tag;
     }
 
@@ -227,6 +254,8 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.isVampire=nbt.getBoolean("isVampire");
         this.generation=nbt.getInt("generation");
         this.clan=Clan.valueOf(nbt.getString("clan"));
+        this.loseBlood=nbt.getInt("loseBlood");
+        this.setBlood(nbt.getDouble("blood"));
         if(this.player!=null && !this.level.isClientSide){
             PacketHandler.sendToAllTracking(new PacketConvertVampire(!this.isVampire()),this.player);
         }
