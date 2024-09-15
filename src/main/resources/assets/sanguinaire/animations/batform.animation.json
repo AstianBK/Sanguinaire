@@ -6,7 +6,7 @@
 			"bones": {
 				"main": {
 					"rotation": {
-						"vector": ["40+math.sin(query.anim_time*80)*8.5", 0, 0]
+						"vector": ["40+math.sin(query.anim_time*80*1)*8.5", 0, 0]
 					}
 				},
 				"Head": {
@@ -77,7 +77,7 @@
 			"bones": {
 				"main": {
 					"rotation": {
-						"vector": [75, 0, "math.sin(query.anim_time*180)*8"]
+						"vector": [75, 0, "math.sin(query.anim_time*180*2)*8"]
 					}
 				},
 				"Head": {
