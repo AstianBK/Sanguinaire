@@ -13,5 +13,10 @@ public class SGItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, Sanguinaire.MODID);
 
+    public static final RegistryObject<Item> VAMPIRE_HEART = ITEMS.register("vampire_heart",
+            ()-> new Item(new Item.Properties().stacksTo(64)));
+
+    public static final RegistryObject<Item> CRIMSON_MIRROR = ITEMS.register("crimson_mirror",
+            ()-> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> MUSIC_DISC_WASTED_BLOOD = ITEMS.register("music_disc_wasted_blood",()->new RecordItem(14, SoundEvents.MUSIC_DISC_RELIC, (new Item.Properties()).stacksTo(1).rarity(Rarity.RARE), 218));
 }
