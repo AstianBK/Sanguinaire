@@ -105,7 +105,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     }
     public void loseBlood(int blood){
         double bloodActually=player.getAttributeValue(SGAttribute.BLOOD_VALUE.get());
-        double finalBlood=Math.max(blood-bloodActually,0);
+        double finalBlood=Math.max(bloodActually-blood,0);
         player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(finalBlood);
     }
     public void drainBlood(int blood){
