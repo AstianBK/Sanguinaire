@@ -37,7 +37,7 @@ public class RenderUtil {
                 SkillAbstract skillAbstract=cap.getHotBarSkill().getForName("tentacle_blood");
                 for (LivingEntity living : skillAbstract.getTargets()){
                     pMatrixStack.pushPose();
-                    pMatrixStack.translate(0.0F,player.getEyeHeight()+0.15F,0.0F);
+                    pMatrixStack.translate(0.0F,player.getEyeHeight()-0.6F,0.0F);
                     Vec3 vec32 = living.getEyePosition(pPartialTicks).subtract(player.getEyePosition(pPartialTicks));
                     vec32 = vec32.normalize();
                     int j = 255;

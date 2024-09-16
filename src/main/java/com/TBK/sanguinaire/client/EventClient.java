@@ -40,6 +40,9 @@ public class EventClient {
         if(SGParticles.SLASH_PARTICLES.isPresent()){
             event.registerSpriteSet(SGParticles.SLASH_PARTICLES.get(), SlashParticles.Factory::new);
         }
+        if(SGParticles.BLOOD_TRAIL_PARTICLES.isPresent()){
+            event.registerSpriteSet(SGParticles.BLOOD_TRAIL_PARTICLES.get(), SlashParticles.Factory::new);
+        }
     }
 
 }

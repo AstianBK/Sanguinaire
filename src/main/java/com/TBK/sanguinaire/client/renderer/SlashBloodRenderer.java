@@ -12,8 +12,10 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Pose;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 
 public class SlashBloodRenderer<T extends SlashBloodProjetile> extends EntityRenderer<T> {
     private static final ResourceLocation SLASH_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/blood_slash.png");
@@ -25,27 +27,32 @@ public class SlashBloodRenderer<T extends SlashBloodProjetile> extends EntityRen
     @Override
     public void render(T pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
         pMatrixStack.pushPose();
-        pMatrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.yRotO, pEntity.getYRot()) - 90.0F));
-        pMatrixStack.mulPose(Axis.ZP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.xRotO, pEntity.getXRot())));
-        pMatrixStack.mulPose(Axis.XP.rotationDegrees(45.0F));
-        pMatrixStack.translate(-4.0F, 0.0F, 0.0F);
-        VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.entityCutout(this.getTextureLocation(pEntity)));
-        PoseStack.Pose posestack$pose = pMatrixStack.last();
-        Matrix4f matrix4f = posestack$pose.pose();
-        Matrix3f matrix3f = posestack$pose.normal();
-        for(int j = 0; j < 4; ++j) {
-            pMatrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-            this.vertex(matrix4f, matrix3f, vertexconsumer, -8, -2, 0, 0.0F, 1.0F, 0, 1, 0, pPackedLight);
-        }
+        pMatrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.yRotO, pEntity.getYRot())));
+        pMatrixStack.mulPose(Axis.XP.rotationDegrees(-Mth.lerp(pPartialTicks, pEntity.xRotO, pEntity.getXRot())));
+        pMatrixStack.mulPose(Axis.ZP.rotationDegrees((float) Math.sin(pEntity.tickCount * 0.15F)*10));
 
+        float width=pEntity.getBbWidth();
+
+        PoseStack.Pose posestack$pose = pMatrixStack.last();
+        drawSlash(posestack$pose,pEntity,pBuffer,pPackedLight,width,4);
         pMatrixStack.popPose();
+        super.render(pEntity, pEntityYaw, pPackedLight, pMatrixStack, pBuffer, pPackedLight);
+
     }
 
     @Override
     public ResourceLocation getTextureLocation(T p_114482_) {
         return SLASH_LOCATION;
     }
-    public void vertex(Matrix4f p_254392_, Matrix3f p_254011_, VertexConsumer p_253902_, int p_254058_, int p_254338_, int p_254196_, float p_254003_, float p_254165_, int p_253982_, int p_254037_, int p_254038_, int p_254271_) {
-        p_253902_.vertex(p_254392_, (float)p_254058_, (float)p_254338_, (float)p_254196_).color(255, 255, 255, 255).uv(p_254003_, p_254165_).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(p_254271_).normal(p_254011_, (float)p_253982_, (float)p_254038_, (float)p_254037_).endVertex();
+    private void drawSlash(PoseStack.Pose pose, T entity, MultiBufferSource bufferSource, int light, float width, int offset) {
+        Matrix4f poseMatrix = pose.pose();
+        Matrix3f normalMatrix = pose.normal();
+
+        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
+        float halfWidth = width * .5f;
+        consumer.vertex(poseMatrix, -halfWidth, -0.1f, -halfWidth).color(255, 255, 255, 255).uv(0f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth, -0.1f, -halfWidth).color(255, 255, 255, 255).uv(1f, 1f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, halfWidth, -0.1f, halfWidth).color(255, 255, 255, 255).uv(1f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
+        consumer.vertex(poseMatrix, -halfWidth, -0.1f, halfWidth).color(255, 255, 255, 255).uv(0f, 0f).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(light).normal(normalMatrix, 0f, 1f, 0f).endVertex();
     }
 }

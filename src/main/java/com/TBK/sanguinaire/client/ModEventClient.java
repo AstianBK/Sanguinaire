@@ -1,6 +1,8 @@
 package com.TBK.sanguinaire.client;
 
 import com.TBK.sanguinaire.client.renderer.BatFormRenderer;
+import com.TBK.sanguinaire.client.renderer.SlashBloodRenderer;
+import com.TBK.sanguinaire.common.registry.SGEntityType;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import net.minecraft.client.Minecraft;
@@ -11,18 +13,13 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class ModEventClient {
-    @SubscribeEvent
-    public static void renderEvent(RenderLivingEvent.Post<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event){
-        if(event.getEntity() instanceof Player player){
-            RenderUtil.render(event.getPoseStack(),event.getMultiBufferSource(),player,event.getPartialTick());
-        }
-    }
 
     @SubscribeEvent
     public static void renderPreEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event){
@@ -39,8 +36,11 @@ public class ModEventClient {
                 event.setCanceled(true);
                 geoRenderer.renderTransform(entity,animatable,0.0F,event.getPartialTick(),event.getPoseStack(),event.getMultiBufferSource(),event.getPackedLight());
             }
-        }
 
+        }
+        if(event.getEntity() instanceof Player player){
+            RenderUtil.render(event.getPoseStack(),event.getMultiBufferSource(),player,event.getPartialTick());
+        }
     }
 
 }

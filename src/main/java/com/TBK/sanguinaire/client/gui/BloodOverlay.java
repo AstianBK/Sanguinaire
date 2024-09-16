@@ -15,7 +15,6 @@ import javax.management.Attribute;
 public class BloodOverlay implements IGuiOverlay {
     private final ResourceLocation icons = new ResourceLocation(Sanguinaire.MODID ,"textures/gui/icons_vampire.png");
     private final Minecraft mc = Minecraft.getInstance();
-    final int MARGIN = 52;
 
     @Override
     public void render(ForgeGui gui, @NotNull GuiGraphics graphics, float partialTicks, int width, int height) {
