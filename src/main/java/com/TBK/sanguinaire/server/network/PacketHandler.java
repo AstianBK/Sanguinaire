@@ -34,6 +34,7 @@ public class PacketHandler {
                 .encoder(PacketConvertVampire::toBytes)
                 .decoder(PacketConvertVampire::new)
                 .consumerNetworkThread(PacketConvertVampire::handle).add();
+
         channel.messageBuilder(PacketSyncLimbRegeneration.class,index++)
                 .encoder(PacketSyncLimbRegeneration::toBytes)
                 .decoder(PacketSyncLimbRegeneration::new)
@@ -43,19 +44,28 @@ public class PacketHandler {
                 .encoder(PacketSyncDurationEffect::toBytes)
                 .decoder(PacketSyncDurationEffect::new)
                 .consumerNetworkThread(PacketSyncDurationEffect::handle).add();
+
         channel.messageBuilder(PacketRemoveActiveEffect.class,index++)
                 .encoder(PacketRemoveActiveEffect::toBytes)
                 .decoder(PacketRemoveActiveEffect::new)
                 .consumerNetworkThread(PacketRemoveActiveEffect::handle).add();
-        channel.messageBuilder(PacketKeySync.class,index++)
-                .encoder(PacketKeySync::write)
-                .decoder(PacketKeySync::new)
-                .consumerNetworkThread(PacketKeySync::handle).add();
+
+        channel.registerMessage(index++, PacketKeySync.class, PacketKeySync::write,
+                PacketKeySync::new, PacketKeySync::handle);
 
         channel.messageBuilder(PacketSyncBlood.class,index++)
                 .encoder(PacketSyncBlood::write)
                 .decoder(PacketSyncBlood::new)
                 .consumerNetworkThread(PacketSyncBlood::handle).add();
+        channel.registerMessage(index++, PacketHandlerParticles.class, PacketHandlerParticles::write,
+                PacketHandlerParticles::new, PacketHandlerParticles::handle);
+
+
+        channel.messageBuilder(PacketSyncPosHotBar.class,index++)
+                .encoder(PacketSyncPosHotBar::write)
+                .decoder(PacketSyncPosHotBar::new)
+                .consumerNetworkThread(PacketSyncPosHotBar::handle).add();
+
 
         channel.messageBuilder(PacketActiveEffect.class,index++)
                 .encoder(PacketActiveEffect::toBytes)

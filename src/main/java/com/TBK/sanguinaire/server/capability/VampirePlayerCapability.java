@@ -4,13 +4,16 @@ import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.common.api.Clan;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
 import com.TBK.sanguinaire.common.registry.SGAttribute;
+import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.manager.*;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketConvertVampire;
+import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -101,23 +104,27 @@ public class VampirePlayerCapability implements IVampirePlayer {
         if(target instanceof LivingEntity living){
             this.drainBlood(1);
             this.loseBlood=6000;
+            player.level().playSound(null,living, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
+            if(this.level.isClientSide){
+                this.syncBlood(this.getBlood());
+            }
         }
     }
     public void loseBlood(int blood){
-        double bloodActually=player.getAttributeValue(SGAttribute.BLOOD_VALUE.get());
+        double bloodActually=player.getAttributeValue(SGAttribute.BLOOD);
         double finalBlood=Math.max(bloodActually-blood,0);
-        player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(finalBlood);
+        this.setBlood(finalBlood);
     }
     public void drainBlood(int blood){
-        double bloodActually=player.getAttributeValue(SGAttribute.BLOOD_VALUE.get());
+        double bloodActually=player.getAttributeValue(SGAttribute.BLOOD);
         double finalBlood=Math.min(blood+bloodActually,20);
-        player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(finalBlood);
+        this.setBlood(finalBlood);
     }
     public double getBlood(){
-        return player.getAttributeValue(SGAttribute.BLOOD_VALUE.get());
+        return player.getAttributeValue(SGAttribute.BLOOD);
     }
     public void setBlood(double blood){
-        player.getAttribute(SGAttribute.BLOOD_VALUE.get()).setBaseValue(blood);
+        player.getAttribute(SGAttribute.BLOOD).setBaseValue(blood);
     }
 
     public void losePart(String id, RegenerationInstance instance, Player player){
@@ -162,13 +169,11 @@ public class VampirePlayerCapability implements IVampirePlayer {
                     }
                 }
             }
-            this.syncCap(player);
         }else if(this.level.isClientSide){
             if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
                 this.getLimbsPartRegeneration().tick(player);
             }
         }
-
         if(player.level().isClientSide){
             RegenerationInstance instance=this.getLimbsPartRegeneration().loseLimbs.get("head");
             if(instance!=null){
@@ -213,6 +218,9 @@ public class VampirePlayerCapability implements IVampirePlayer {
             PacketHandler.sendToPlayer(new PacketConvertVampire(!this.isVampire),serverPlayer);
         }
     }
+    public void syncBlood(double blood){
+        PacketHandler.sendToServer(new PacketSyncBlood(blood));
+    }
 
     @Override
     public boolean isVampire() {
@@ -256,9 +264,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.clan=Clan.valueOf(nbt.getString("clan"));
         this.loseBlood=nbt.getInt("loseBlood");
         this.setBlood(nbt.getDouble("blood"));
-        if(this.player!=null && !this.level.isClientSide){
-            PacketHandler.sendToAllTracking(new PacketConvertVampire(!this.isVampire()),this.player);
-        }
     }
 
     public void init(Player player) {
@@ -275,7 +280,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public LimbsPartRegeneration getLimbsPartRegeneration() {
         return this.limbsPartRegeneration;
     }
-
 
     public static class VampirePlayerProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {
         private final LazyOptional<IVampirePlayer> instance = LazyOptional.of(VampirePlayerCapability::new);

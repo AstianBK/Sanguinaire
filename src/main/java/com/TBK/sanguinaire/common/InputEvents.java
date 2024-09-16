@@ -32,6 +32,8 @@ public class InputEvents {
     private static void onInput(Minecraft mc, int key, int action) {
         if (mc.screen == null && SGKeybinds.attackKey1.consumeClick()) {
             PacketHandler.sendToServer(new PacketKeySync(key));
+        }else if (mc.screen == null && SGKeybinds.attackKey2.consumeClick()) {
+            PacketHandler.sendToServer(new PacketKeySync(key));
         }
     }
 }

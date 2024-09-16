@@ -4,6 +4,7 @@ import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.client.gui.BloodOverlay;
 import com.TBK.sanguinaire.client.gui.HeartsEffect;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
+import com.TBK.sanguinaire.client.particle.custom.SlashParticles;
 import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.client.particle.custom.BloodBKParticles;
 import net.minecraftforge.api.distmarker.Dist;
@@ -35,6 +36,9 @@ public class EventClient {
     public static void registerParticleFactories(RegisterParticleProvidersEvent event) {
         if(SGParticles.BLOOD_PARTICLES.isPresent()){
             event.registerSpriteSet(SGParticles.BLOOD_PARTICLES.get(), BloodBKParticles.Factory::new);
+        }
+        if(SGParticles.SLASH_PARTICLES.isPresent()){
+            event.registerSpriteSet(SGParticles.SLASH_PARTICLES.get(), SlashParticles.Factory::new);
         }
     }
 

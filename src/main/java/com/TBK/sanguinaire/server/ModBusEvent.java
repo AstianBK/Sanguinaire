@@ -1,14 +1,19 @@
 package com.TBK.sanguinaire.server;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.common.registry.SGAttribute;
 import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.capability.BiterEntityCap;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.manager.RegenerationInstance;
+import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -20,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -148,7 +154,7 @@ public class ModBusEvent {
                     player.setInvulnerable(true);
                     event.setCanceled(true);
                     loseBody(cap,player);
-                    player.playSound(SGSounds.VAMPIRE_RESURRECT.get(),1.0F,1.0F);
+                    player.level().playSound(player,player,SGSounds.VAMPIRE_RESURRECT.get(), SoundSource.PLAYERS,1.0F,1.0F);
                 }
             }
         }

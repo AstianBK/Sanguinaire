@@ -23,6 +23,8 @@ import java.util.Random;
 public class HeartsEffect implements IGuiOverlay {
     long healthBlinkTime = 0;
     long lastHealthTime = 0;
+    long lastHealth=0;
+    int displayHealth;
 
     @Override
     public void render(ForgeGui gui, GuiGraphics guiGraphics, float partialTick, int screenWidth, int screenHeight) {
@@ -45,11 +47,28 @@ public class HeartsEffect implements IGuiOverlay {
             int ticks = gui.getGuiTicks();
             boolean highlight = this.healthBlinkTime > (long)ticks && (this.healthBlinkTime - (long)ticks) / 3L % 2L == 1L;
 
-            if (Util.getMillis() - this.lastHealthTime > 1000L) {
+            if (health < this.lastHealth && player.invulnerableTime > 0)
+            {
+                this.lastHealthTime = Util.getMillis();
+                this.healthBlinkTime = (long) (ticks + 20);
+            }
+            else if (health > this.lastHealth && player.invulnerableTime > 0)
+            {
+                this.lastHealthTime = Util.getMillis();
+                this.healthBlinkTime = (long) (ticks + 10);
+            }
+
+            if (Util.getMillis() - this.lastHealthTime > 1000L)
+            {
+                this.lastHealth = health;
+                this.displayHealth = health;
                 this.lastHealthTime = Util.getMillis();
             }
 
-            float f = Math.max((float)player.getAttributeValue(Attributes.MAX_HEALTH), (float)Math.max(health, health));
+            this.lastHealth = health;
+            int healthLast = this.displayHealth;
+
+            float f = Math.max((float)player.getAttributeValue(Attributes.MAX_HEALTH), (float)Math.max(health, healthLast));
             int regen = -1;
             if (player.hasEffect(MobEffects.REGENERATION)){
                 regen = ticks % Mth.ceil(f + 5.0F);
@@ -80,7 +99,7 @@ public class HeartsEffect implements IGuiOverlay {
                 int heart = (i + 1) % 10;
                 int x = left + heart * 8;
                 int y = top - extraRowHeight * Math.max(0, row - healthRows + 1) - rowHeight * Math.min(row, healthRows - 1);
-                guiGraphics.blit(texture, x, y,  highlight ? 9 : 0, 0, 9, 9);
+                guiGraphics.blit(texture, x, y,  highlight ? 0 : 9, 0, 9, 9);
             }
             for (int i = Mth.ceil((healthMax + absorb) / 2.0F) - 1; i >= 0; -- i) {
                 int row = i / 10;
@@ -89,6 +108,10 @@ public class HeartsEffect implements IGuiOverlay {
                 int y = top - row * rowHeight;
                 if (health <= 4) y += rand.nextInt(2);
                 if (i == regen) y -= 2;
+                guiGraphics.blit(texture, x, y, highlight ? 9 : 0, 0, 9, 9);
+                if (i * 2 + 1 < healthLast && highlight){
+                    guiGraphics.blit(texture, x, y,54 , 0, 9, 9);
+                }
                 if (i * 2 + 1 < health){
                     guiGraphics.blit(texture, x, y, 36, 0, 9, 9);
                 } else if (i * 2 + 1 == health){

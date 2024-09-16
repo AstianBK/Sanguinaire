@@ -27,10 +27,13 @@ public class ForgeInputEvent {
     public static void onMouseClick(InputEvent.MouseButton event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.level == null) return;
+        onInput(mc, event.getButton(), event.getAction());
     }
 
     private static void onInput(Minecraft mc, int key, int action) {
         if (mc.screen == null && SGKeybinds.attackKey1.consumeClick()) {
+            PacketHandler.sendToServer(new PacketKeySync(key));
+        }else if (mc.screen == null && SGKeybinds.attackKey2.consumeClick()) {
             PacketHandler.sendToServer(new PacketKeySync(key));
         }
     }

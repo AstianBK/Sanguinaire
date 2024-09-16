@@ -1,6 +1,7 @@
 package com.TBK.sanguinaire.common.registry;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.server.skill.BatForm;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import com.TBK.sanguinaire.server.skill.TentacleBlood;
 import com.google.common.collect.Maps;
@@ -16,7 +17,9 @@ public class SGSkillAbstract {
     }
 
     public static void init(){
-        register(new ResourceLocation(Sanguinaire.MODID,"fire_bolt"),new TentacleBlood());
+        register(new ResourceLocation(Sanguinaire.MODID,"tentacle_blood"),new TentacleBlood());
+        register(new ResourceLocation(Sanguinaire.MODID,"transform_bat"),new BatForm());
+
     }
 
     public static SkillAbstract getSkillAbstractForName(String name){
