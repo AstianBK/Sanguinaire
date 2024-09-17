@@ -5,15 +5,17 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class TentacleBlood extends SkillAbstract{
     public TentacleBlood() {
-        super("tentacle_blood", 30, 300, 1, true, false, false, false,4);
+        super("tentacle_blood", 30, 300, 1, true, false, false, false, false,4);
     }
 
     @Override
     public void tick(SkillPlayerCapability player) {
         super.tick(player);
-        this.getTargets().forEach(target->{
-            target.setDeltaMovement(0.0F,0.1f,0.0f);
-        });
+        if(!player.getPlayer().level().isClientSide){
+            this.getTargets().forEach(target->{
+                target.setDeltaMovement(0.0F,0.1f,0.0f);
+            });
+        }
     }
 
     @Override

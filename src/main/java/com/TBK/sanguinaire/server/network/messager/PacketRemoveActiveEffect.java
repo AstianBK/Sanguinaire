@@ -35,7 +35,7 @@ public class PacketRemoveActiveEffect {
             VampirePlayerCapability cap1 = VampirePlayerCapability.get(mc.player);
             assert cap!=null && cap1!=null;
             if(this.id==0){
-                cap.getActiveEffectDuration().removeDuration(powerId);
+                cap.getActiveEffectDuration().removeDuration(powerId,cap);
             }else {
                 cap1.getLimbsPartRegeneration().regenerateLimbClient(powerId);
             }

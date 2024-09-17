@@ -2,10 +2,12 @@ package com.TBK.sanguinaire.server.network.messager;
 
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
+import com.TBK.sanguinaire.server.network.HandlerParticles;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
@@ -16,20 +18,24 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class PacketKeySync implements Packet<PacketListener>{
-    private final int key;
-
-
-    public PacketKeySync(FriendlyByteBuf buf) {
-        this.key=buf.readInt();
+public class PacketHandlerParticles implements Packet<PacketListener>{
+    private final int id;
+    private final Entity entity;
+    public PacketHandlerParticles(FriendlyByteBuf buf) {
+        Minecraft mc=Minecraft.getInstance();
+        assert mc.level!=null;
+        this.entity=mc.level.getEntity(buf.readInt());
+        this.id =buf.readInt();
     }
 
-    public PacketKeySync(int key) {
-        this.key = key;
+    public PacketHandlerParticles(int key, LivingEntity entity) {
+        this.entity=entity;
+        this.id = key;
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeInt(this.key);
+        buf.writeInt(this.entity.getId());
+        buf.writeInt(this.id);
     }
 
     @Override
@@ -43,21 +49,11 @@ public class PacketKeySync implements Packet<PacketListener>{
     }
     @OnlyIn(Dist.CLIENT)
     private void handlerAnim() {
-        Minecraft mc=Minecraft.getInstance();
-        if(this.key==0x43){
-            SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
-            assert skillPlayerCapability != null;
-            upPower(skillPlayerCapability);
-        }else {
-            Player player=mc.player;
-            HitResult hit = mc.hitResult;
-            assert player!=null && hit!=null;
-            if(hit.getType() == HitResult.Type.ENTITY){
-                VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-                cap.bite(player,((EntityHitResult)hit).getEntity());
+        switch (this.id){
+            case 0->{
+                HandlerParticles.spawnCuts((LivingEntity) this.entity);
             }
         }
-
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SkillAbstract {
-    public static SkillAbstract NONE = new SkillAbstract("",0, 0, 0, false, false, false,false,0);
+    public static SkillAbstract NONE = new SkillAbstract("",0, 0, 0, false, false, false, false,false,0);
     private final String descriptionId;
     private List<UUID> uuidTargets=new ArrayList<>();
     private List<LivingEntity> targets=new ArrayList<>();
@@ -32,13 +32,14 @@ public class SkillAbstract {
     public boolean isTransform;
     public boolean isPassive;
     public boolean continuousUse;
+    public boolean canReActive;
     public int level;
     public int costBloodBase;
     public String name;
     public CompoundTag tag;
     public Map<Attribute, AttributeModifier> attributeModifierMap= Maps.newHashMap();
     public SkillAbstract(String name,int castingDuration,int cooldown,int lauchTime,
-                 boolean instantUse,boolean isTransform,boolean continuousUse,boolean isPassive,int costBloodBase){
+                 boolean instantUse,boolean isTransform,boolean canReActive,boolean continuousUse,boolean isPassive,int costBloodBase){
         this.castingDuration=castingDuration;
         this.cooldown=cooldown;
         this.lauchTime =lauchTime;
@@ -49,6 +50,7 @@ public class SkillAbstract {
         this.name=name;
         this.isPassive=isPassive;
         this.costBloodBase=costBloodBase;
+        this.canReActive=canReActive;
         this.descriptionId= Component.translatable("skill."+name).getString();
     }
 
@@ -64,6 +66,9 @@ public class SkillAbstract {
         this.descriptionId=power.descriptionId;
         this.isPassive=power.isPassive;
         this.read(tag);
+    }
+    public boolean isCanReActive(){
+        return this.canReActive;
     }
     public void addTarget(LivingEntity target){
         this.targets.add(target);
@@ -113,12 +118,7 @@ public class SkillAbstract {
             PacketHandler.sendToPlayer(new PacketSyncBlood(skill.getPlayerVampire().getBlood()), (ServerPlayer) skill.getPlayer());
         }
     }
-    public void stopSkillAbstract(SkillPlayerCapability player){
-        player.setLastUsingSkill(SkillAbstract.NONE);
-        player.cooldowns.addCooldown(this,this.cooldown);
-        this.targets.clear();
-        this.uuidTargets.clear();
-        player.syncSkill(player.getPlayer());
+    public void stopSkillAbstract(SkillPlayerCapability skill){
     }
 
     public void setCooldownTimer(int cooldownTimer) {

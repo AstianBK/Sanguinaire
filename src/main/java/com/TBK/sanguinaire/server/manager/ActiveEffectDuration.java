@@ -15,7 +15,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public class ActiveEffectDuration {
     private static final DurationInstance EMPTY = new DurationInstance(SkillAbstract.NONE.name, 0, 0, 0);
@@ -57,8 +56,11 @@ public class ActiveEffectDuration {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void removeDuration(String powerId) {
+    public void removeDuration(String powerId, SkillPlayerCapability cap) {
         recastLookup.remove(powerId);
+        if (cap!=null){
+            cap.stopSkill(cap.getHotBarSkill().getForName(powerId));
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -155,8 +157,12 @@ public class ActiveEffectDuration {
         }
     }
 
-    private void removeDuration(DurationInstance recastInstance, DurationResult recastResult, boolean doSync) {
+    public void removeDuration(DurationInstance recastInstance, DurationResult recastResult, boolean doSync) {
         recastLookup.remove(recastInstance.powerId);
+        SkillPlayerCapability capability=SkillPlayerCapability.get(this.serverPlayer);
+        if (capability!=null){
+            capability.stopSkill(capability.getHotBarSkill().getForName(recastInstance.powerId));
+        }
         if (doSync) {
             syncRemoveToPlayer(recastInstance.powerId);
         }
@@ -193,7 +199,7 @@ public class ActiveEffectDuration {
         }
     }
 
-    public void tick(int actualTicks, SkillPlayerCapability powerPlayerCapability) {
+    public void tick(int actualTicks) {
         if (serverPlayer != null && serverPlayer.level().getGameTime() % actualTicks == 0) {
             recastLookup.values()
                     .stream()
@@ -204,11 +210,6 @@ public class ActiveEffectDuration {
                     .toList()
                     .forEach(recastInstance ->{
                         removeDuration(recastInstance, DurationResult.TIMEOUT);
-                        powerPlayerCapability.powers.getSkills().forEach(e->{
-                            if(Objects.equals(e.getSkillAbstract().name, recastInstance.getSpellId())){
-                                powerPlayerCapability.stopSkill(e.getSkillAbstract());
-                            }
-                        });
                     });
         }
     }
