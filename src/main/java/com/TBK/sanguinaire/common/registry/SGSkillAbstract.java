@@ -3,7 +3,7 @@ package com.TBK.sanguinaire.common.registry;
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.server.skill.BatForm;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
-import com.TBK.sanguinaire.server.skill.TentacleBlood;
+import com.TBK.sanguinaire.server.skill.drakul.TentacleBlood;
 import com.google.common.collect.Maps;
 import net.minecraft.resources.ResourceLocation;
 

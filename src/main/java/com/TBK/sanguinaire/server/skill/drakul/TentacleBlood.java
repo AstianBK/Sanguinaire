@@ -1,11 +1,12 @@
-package com.TBK.sanguinaire.server.skill;
+package com.TBK.sanguinaire.server.skill.drakul;
 
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
+import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import net.minecraft.world.entity.LivingEntity;
 
-public class TentacleBlood extends SkillAbstract{
+public class TentacleBlood extends SkillAbstract {
     public TentacleBlood() {
-        super("tentacle_blood", 30, 300, 1, true, false, false, false, false,4);
+        super("tentacle_blood", 30,60, 300, 1, true, false, false, true, false,4);
     }
 
     @Override
