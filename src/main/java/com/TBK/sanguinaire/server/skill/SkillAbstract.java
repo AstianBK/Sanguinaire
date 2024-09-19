@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SkillAbstract {
-    public static SkillAbstract NONE = new SkillAbstract("",0, 0, 0, false, false, false, false,false,0);
+    public static SkillAbstract NONE = new SkillAbstract("",0,0, 0, 0, false, false, false, false,false,0);
     private final String descriptionId;
     private List<UUID> uuidTargets=new ArrayList<>();
     private List<LivingEntity> targets=new ArrayList<>();
@@ -31,22 +31,23 @@ public class SkillAbstract {
     public boolean instantUse;
     public boolean isTransform;
     public boolean isPassive;
-    public boolean continuousUse;
+    public boolean isCasting;
     public boolean canReActive;
     public int level;
     public int costBloodBase;
     public String name;
     public CompoundTag tag;
     public Map<Attribute, AttributeModifier> attributeModifierMap= Maps.newHashMap();
-    public SkillAbstract(String name,int castingDuration,int cooldown,int lauchTime,
-                 boolean instantUse,boolean isTransform,boolean canReActive,boolean continuousUse,boolean isPassive,int costBloodBase){
+    public SkillAbstract(String name, int duration, int castingDuration, int cooldown, int lauchTime,
+                         boolean instantUse, boolean isTransform, boolean canReActive, boolean isCasting, boolean isPassive, int costBloodBase){
         this.castingDuration=castingDuration;
         this.cooldown=cooldown;
         this.lauchTime =lauchTime;
         this.instantUse=instantUse;
         this.isTransform=isTransform;
-        this.continuousUse=continuousUse;
+        this.isCasting = isCasting;
         this.level=1;
+        this.duration=duration;
         this.name=name;
         this.isPassive=isPassive;
         this.costBloodBase=costBloodBase;
@@ -62,9 +63,11 @@ public class SkillAbstract {
         this.lauchTime= power.lauchTime;
         this.instantUse= power.instantUse;
         this.isTransform= power.isTransform;
-        this.continuousUse= power.continuousUse;
+        this.isCasting = power.isCasting;
         this.descriptionId=power.descriptionId;
         this.isPassive=power.isPassive;
+        this.costBloodBase=power.costBloodBase;
+        this.duration=power.duration;
         this.read(tag);
     }
     public boolean isCanReActive(){
@@ -96,8 +99,8 @@ public class SkillAbstract {
     public void updateAttributes(Player player){
 
     }
-    public boolean isContinuousUse() {
-        return this.continuousUse;
+    public boolean isCasting() {
+        return this.isCasting;
     }
 
     public boolean isInstantUse() {

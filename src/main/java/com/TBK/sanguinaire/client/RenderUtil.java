@@ -37,7 +37,7 @@ public class RenderUtil {
                 SkillAbstract skillAbstract=cap.getHotBarSkill().getForName("tentacle_blood");
                 for (LivingEntity living : skillAbstract.getTargets()){
                     pMatrixStack.pushPose();
-                    pMatrixStack.translate(0.0F,player.getEyeHeight()-0.6F,0.0F);
+                    pMatrixStack.translate(0.0F,0.2F,0.0F);
                     Vec3 vec32 = living.getEyePosition(pPartialTicks).subtract(player.getEyePosition(pPartialTicks));
                     vec32 = vec32.normalize();
                     int j = 255;
@@ -61,9 +61,9 @@ public class RenderUtil {
 
                     for (int i1 = 1; i1 <= distance; i1++) {
                         Vec3 wiggle = new Vec3(
-                                Mth.sin(deltaTicks * .8f) * .02f,
-                                Mth.sin(deltaTicks * .8f + 100) * .02f,
-                                Mth.cos(deltaTicks * .8f) * .02f
+                                Mth.sin(deltaTicks * 0.8f) * .02f,
+                                Mth.sin(deltaTicks * 0.8f + 100) * .02f,
+                                Mth.cos(deltaTicks * 0.8f) * .02f
                         );
                         end = new Vec3(0, 0, Math.min(i1, distance)).add(wiggle);
                         drawHull(start, end, radius, radius, posestack$pose, vertexconsumer, j, k, l, 127, min, max);

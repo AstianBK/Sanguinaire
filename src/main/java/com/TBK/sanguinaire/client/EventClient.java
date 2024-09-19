@@ -3,7 +3,9 @@ package com.TBK.sanguinaire.client;
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.client.gui.BloodOverlay;
 import com.TBK.sanguinaire.client.gui.HeartsEffect;
+import com.TBK.sanguinaire.client.layer.CastingLayer;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
+import com.TBK.sanguinaire.client.particle.custom.BloodTrailParticles;
 import com.TBK.sanguinaire.client.particle.custom.SlashParticles;
 import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.client.particle.custom.BloodBKParticles;
@@ -23,6 +25,7 @@ public class EventClient {
     public static void registerArmorRenderers(EntityRenderersEvent.AddLayers event){
         event.getSkins().forEach(s -> {
             event.getSkin(s).addLayer(new RegenerationLayer(event.getSkin(s)));
+            event.getSkin(s).addLayer(new CastingLayer(event.getSkin(s)));
         });
     }
 
@@ -41,7 +44,7 @@ public class EventClient {
             event.registerSpriteSet(SGParticles.SLASH_PARTICLES.get(), SlashParticles.Factory::new);
         }
         if(SGParticles.BLOOD_TRAIL_PARTICLES.isPresent()){
-            event.registerSpriteSet(SGParticles.BLOOD_TRAIL_PARTICLES.get(), SlashParticles.Factory::new);
+            event.registerSpriteSet(SGParticles.BLOOD_TRAIL_PARTICLES.get(), BloodTrailParticles.Factory::new);
         }
     }
 
