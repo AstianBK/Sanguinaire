@@ -6,6 +6,7 @@ import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -70,6 +71,21 @@ public class SkillAbstract {
         this.duration=power.duration;
         this.read(tag);
     }
+    public SkillAbstract(FriendlyByteBuf buf){
+        this.name= buf.readUtf();
+        this.cooldown= buf.readInt();
+        this.castingDuration= buf.readInt();
+        this.lauchTime= buf.readInt();
+        this.instantUse= buf.readBoolean();
+        this.isTransform=buf.readBoolean();
+        this.isCasting = buf.readBoolean();
+        this.isPassive=buf.readBoolean();
+        this.costBloodBase=buf.readInt();
+        this.duration=buf.readInt();
+        this.descriptionId= Component.translatable("skill."+name).getString();
+    }
+
+
     public boolean isCanReActive(){
         return this.canReActive;
     }

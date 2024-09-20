@@ -3,7 +3,9 @@ package com.TBK.sanguinaire.common.registry;
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.server.skill.BatForm;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
-import com.TBK.sanguinaire.server.skill.drakul.TentacleBlood;
+import com.TBK.sanguinaire.server.skill.drakul.BloodOrb;
+import com.TBK.sanguinaire.server.skill.drakul.BloodSlash;
+import com.TBK.sanguinaire.server.skill.drakul.BloodTendrils;
 import com.google.common.collect.Maps;
 import net.minecraft.resources.ResourceLocation;
 
@@ -17,7 +19,9 @@ public class SGSkillAbstract {
     }
 
     public static void init(){
-        register(new ResourceLocation(Sanguinaire.MODID,"tentacle_blood"),new TentacleBlood());
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_tendrils"),new BloodTendrils());
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_slash"),new BloodSlash());
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_orb"),new BloodOrb());
         register(new ResourceLocation(Sanguinaire.MODID,"transform_bat"),new BatForm());
 
     }

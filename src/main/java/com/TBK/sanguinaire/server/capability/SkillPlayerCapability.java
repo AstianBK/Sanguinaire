@@ -3,10 +3,12 @@ package com.TBK.sanguinaire.server.capability;
 import com.TBK.sanguinaire.common.api.ISkillPlayer;
 import com.TBK.sanguinaire.server.manager.*;
 import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.network.messager.PacketHandlerPowers;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncPosHotBar;
 import com.TBK.sanguinaire.server.skill.*;
-import com.TBK.sanguinaire.server.skill.drakul.SlashBlood;
-import com.TBK.sanguinaire.server.skill.drakul.TentacleBlood;
+import com.TBK.sanguinaire.server.skill.drakul.BloodOrb;
+import com.TBK.sanguinaire.server.skill.drakul.BloodSlash;
+import com.TBK.sanguinaire.server.skill.drakul.BloodTendrils;
 import com.google.common.collect.Maps;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -34,6 +36,7 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
@@ -42,7 +45,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     Player player;
     Level level;
     public SkillAbstracts powers=new SkillAbstracts(Maps.newHashMap());
-    int posSelectSkillAbstract=1;
+    int posSelectSkillAbstract=0;
     int castingTimer=0;
     int castingClientTimer=0;
     int maxCastingClientTimer=0;
@@ -62,6 +65,9 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         this.posSelectSkillAbstract=pos;
     }
 
+    public int getPosSelectSkillAbstract(){
+        return this.posSelectSkillAbstract;
+    }
     @Override
     public Player getPlayer() {
         return this.player;
@@ -87,6 +93,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         return this.getHotBarSkill().get(this.posSelectSkillAbstract);
     }
 
+    @OnlyIn(Dist.CLIENT)
     @Override
     public SkillAbstract getSkillForHotBar(int pos) {
         return this.powers.get(pos);
@@ -140,6 +147,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
             if(this.durationEffect.hasDurationsActive()){
                 this.durationEffect.tick(1);
             }
+            PacketHandler.sendToPlayer(new PacketSyncPosHotBar(this.posSelectSkillAbstract), (ServerPlayer) player);
         }else if(this.level.isClientSide){
             if (this.cooldowns.hasCooldownsActive()){
                 this.cooldowns.tick(1);
@@ -176,9 +184,16 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void onJoinGame(Player player, EntityJoinLevelEvent event) {
-        this.powers.addSkillAbstracts(0,new BatForm());
-        this.powers.addSkillAbstracts(1,new TentacleBlood());
-        this.powers.addSkillAbstracts(2,new SlashBlood());
+        SkillAbstracts skillAbstracts=new SkillAbstracts(new HashMap<>());
+        skillAbstracts.addSkillAbstracts(0,new BatForm());
+        skillAbstracts.addSkillAbstracts(1,new BloodOrb());
+        skillAbstracts.addSkillAbstracts(2,new BloodSlash());
+        skillAbstracts.addSkillAbstracts(3,new BloodTendrils());
+        skillAbstracts.addSkillAbstracts(4,SkillAbstract.NONE);
+        this.setSetHotbar(skillAbstracts);
+    }
+    public void setSetHotbar(SkillAbstracts skillAbstracts){
+        this.powers=skillAbstracts;
     }
 
     @Override
@@ -228,7 +243,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void upSkill() {
-        this.posSelectSkillAbstract=this.posSelectSkillAbstract+1==this.powers.powers.size() ? 0 : this.posSelectSkillAbstract+1;
+        this.posSelectSkillAbstract=this.posSelectSkillAbstract+1>=this.powers.powers.size() ? 0 : this.posSelectSkillAbstract+1;
         if (this.getPlayer()!=null){
             this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al"+this.getSelectSkill().name));
         }
@@ -239,11 +254,20 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void downSkill() {
-
+        this.posSelectSkillAbstract=this.posSelectSkillAbstract-1<0 ? this.powers.powers.size()-1 : this.posSelectSkillAbstract-1;
+        if (this.getPlayer()!=null){
+            this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al "+this.getSelectSkill().name));
+        }
+        if(this.level.isClientSide){
+            this.syncPos(this.posSelectSkillAbstract);
+        }
     }
 
     @Override
     public void swingHand(Player player) {
+        if(!this.level.isClientSide){
+            PacketHandler.sendToPlayer(new PacketHandlerPowers(), (ServerPlayer) player);
+        }
         if(this.canUseSkill(this.getSelectSkill())){
             boolean skillActive=this.durationEffect.hasDurationForSkill(this.getSelectSkill());
             if(!skillActive || this.getSelectSkill().isCanReActive()){
@@ -253,16 +277,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
                     this.removeActiveEffect(instance);
                 }else {
                     if(power.isCasting){
-                        DurationInstance instance=new DurationInstance(power.name,power.level,power.castingDuration,200);
-                        this.addActiveEffect(instance,player);
-                        this.setLastUsingSkill(this.getSelectSkill());
-                        this.handledSkill(power);
-                        if(this.level.isClientSide){
-                            this.castingClientTimer=power.castingDuration;
-                            this.maxCastingClientTimer=power.castingDuration;
-                        }else {
-                            this.castingTimer=power.castingDuration;
-                        }
+                        this.startCasting(power,player);
                     }else {
                         DurationInstance instance=new DurationInstance(power.name,power.level,power.duration+50*power.level,200);
                         this.addActiveEffect(instance,player);
@@ -271,6 +286,19 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
                     }
                 }
             }
+        }
+
+    }
+    public void startCasting(SkillAbstract power,Player player){
+        DurationInstance instance=new DurationInstance(power.name,power.level,power.castingDuration,200);
+        this.addActiveEffect(instance,player);
+        this.setLastUsingSkill(this.getSelectSkill());
+        this.handledSkill(power);
+        if(this.level.isClientSide){
+            this.castingClientTimer=power.castingDuration;
+            this.maxCastingClientTimer=power.castingDuration;
+        }else {
+            this.castingTimer=power.castingDuration;
         }
     }
 
@@ -314,7 +342,6 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
             ListTag listTag=nbt.getList("activeEffect",10);
             this.durationEffect.loadNBTData(listTag);
         }
-
     }
 
     public void init(Player player) {

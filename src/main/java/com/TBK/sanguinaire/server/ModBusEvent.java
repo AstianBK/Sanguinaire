@@ -7,6 +7,7 @@ import com.TBK.sanguinaire.server.capability.BiterEntityCap;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
+import com.TBK.sanguinaire.server.entity.projetile.BloodOrbProjetile;
 import com.TBK.sanguinaire.server.manager.RegenerationInstance;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
@@ -24,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -35,6 +37,8 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.List;
 
 @Mod.EventBusSubscriber()
 public class ModBusEvent {
@@ -148,15 +152,26 @@ public class ModBusEvent {
         LivingEntity target=event.getEntity();
         if(target instanceof Player player){
             VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-            if(cap!=null && cap.isVampire()){
+            if(cap!=null && cap.isVampire() && cap.canRevive()){
                 if (!cap.noMoreLimbs()){
                     player.setHealth(1.0F);
+                    cap.loseBlood(4);
                     player.setInvulnerable(true);
                     event.setCanceled(true);
                     loseBody(cap,player);
                     player.level().playSound(player,player,SGSounds.VAMPIRE_RESURRECT.get(), SoundSource.PLAYERS,1.0F,1.0F);
                 }
             }
+        }
+        if (event.getSource().getDirectEntity() instanceof BloodOrbProjetile orb){
+            List<LivingEntity> targets=target.level().getEntitiesOfClass(LivingEntity.class,target.getBoundingBox().inflate(20.0D),e->e!=orb.getOwner());
+            targets.forEach(e->{
+                BloodOrbProjetile projetile=new BloodOrbProjetile(e.level(),((LivingEntity)orb.getOwner()),Math.max(orb.getPowerLevel()-1,0));
+                projetile.setPos(target.getEyePosition());
+                Vec3 delta=e.getEyePosition().subtract(target.getEyePosition());
+                projetile.shoot(delta.x,delta.y,delta.z,1.0F,1.0F);
+                e.level().addFreshEntity(projetile);
+            });
         }
     }
 

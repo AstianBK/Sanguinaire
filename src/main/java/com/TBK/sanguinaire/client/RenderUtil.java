@@ -33,8 +33,8 @@ public class RenderUtil {
     public static void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, Player player, float pPartialTicks) {
         SkillPlayerCapability cap=SkillPlayerCapability.get(player);
         if(cap!=null){
-            if(cap.durationEffect.hasDurationForSkill("tentacle_blood")){
-                SkillAbstract skillAbstract=cap.getHotBarSkill().getForName("tentacle_blood");
+            if(cap.durationEffect.hasDurationForSkill("blood_tendrils")){
+                SkillAbstract skillAbstract=cap.getHotBarSkill().getForName("blood_tendrils");
                 for (LivingEntity living : skillAbstract.getTargets()){
                     pMatrixStack.pushPose();
                     pMatrixStack.translate(0.0F,0.2F,0.0F);

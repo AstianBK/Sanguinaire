@@ -1,6 +1,7 @@
 package com.TBK.sanguinaire.common.registry;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.server.entity.projetile.BloodOrbProjetile;
 import com.TBK.sanguinaire.server.entity.projetile.SlashBloodProjetile;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -14,7 +15,11 @@ public class SGEntityType {
             DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Sanguinaire.MODID);
 
     public static final RegistryObject<EntityType<SlashBloodProjetile>> BLOOD_SLASH = ENTITY_TYPES
-            .register("soul_slash", () -> EntityType.Builder.<SlashBloodProjetile>of(SlashBloodProjetile::new, MobCategory.MISC)
-                    .fireImmune().sized(3.0F, 0.2F).build(Sanguinaire.MODID+ "soul_slash"));
+            .register("blood_slash", () -> EntityType.Builder.<SlashBloodProjetile>of(SlashBloodProjetile::new, MobCategory.MISC)
+                    .fireImmune().sized(3.0F, 0.2F).build(Sanguinaire.MODID+ "blood_slash"));
+
+    public static final RegistryObject<EntityType<BloodOrbProjetile>> BLOOD_ORB = ENTITY_TYPES
+            .register("blood_orb", () -> EntityType.Builder.<BloodOrbProjetile>of(BloodOrbProjetile::new, MobCategory.MISC)
+                    .fireImmune().sized(0.2F, 0.2F).build(Sanguinaire.MODID+ "blood_orb"));
 
 }

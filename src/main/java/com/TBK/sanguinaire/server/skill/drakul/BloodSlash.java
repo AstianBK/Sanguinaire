@@ -1,13 +1,12 @@
 package com.TBK.sanguinaire.server.skill.drakul;
 
-import com.TBK.sanguinaire.common.registry.SGEntityType;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.entity.projetile.SlashBloodProjetile;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 
-public class SlashBlood extends SkillAbstract {
-    public SlashBlood() {
-        super("slash_blood", 0 ,20, 20, 1, true, false, false, true, false,2);
+public class BloodSlash extends SkillAbstract {
+    public BloodSlash() {
+        super("blood_slash", 0 ,20, 20, 1, true, false, false, true, false,2);
     }
 
     @Override

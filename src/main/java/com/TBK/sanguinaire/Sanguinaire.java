@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire;
 
+import com.TBK.sanguinaire.client.renderer.BloodOrbRenderer;
 import com.TBK.sanguinaire.client.renderer.SlashBloodRenderer;
 import com.TBK.sanguinaire.common.registry.*;
 import com.TBK.sanguinaire.server.capability.SGCapability;
@@ -52,6 +53,7 @@ public class Sanguinaire
     @OnlyIn(Dist.CLIENT)
     private void registerRenderers(FMLCommonSetupEvent event){
         EntityRenderers.register(SGEntityType.BLOOD_SLASH.get(), SlashBloodRenderer::new);
+        EntityRenderers.register(SGEntityType.BLOOD_ORB.get(), BloodOrbRenderer::new);
     }
 
 

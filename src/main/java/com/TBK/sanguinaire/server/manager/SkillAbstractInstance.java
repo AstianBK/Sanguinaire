@@ -1,6 +1,8 @@
 package com.TBK.sanguinaire.server.manager;
 
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
+import com.TBK.sanguinaire.server.skill.SkillAbstracts;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -31,8 +33,27 @@ public class SkillAbstractInstance implements Comparable<SkillAbstractInstance> 
     }
 
 
+
     public SkillAbstract getSkillAbstract() {
         return power == null ? SkillAbstract.NONE : power;
+    }
+
+    public void write(FriendlyByteBuf buf){
+        SkillAbstract skill=this.getSkillAbstract();
+        buf.writeUtf(skill.name);
+        buf.writeInt(skill.cooldown);
+        buf.writeInt(skill.castingDuration);
+        buf.writeInt(skill.lauchTime);
+        buf.writeBoolean(skill.instantUse);
+        buf.writeBoolean(skill.isTransform);
+        buf.writeBoolean(skill.isCasting);
+        buf.writeBoolean(skill.isPassive);
+        buf.writeInt(skill.costBloodBase);
+        buf.writeInt(skill.duration);
+        buf.writeInt(this.getLevel());
+    }
+    public SkillAbstractInstance read(FriendlyByteBuf buf){
+        return new SkillAbstractInstance(new SkillAbstract(buf),buf.readInt());
     }
 
     public int getLevel() {

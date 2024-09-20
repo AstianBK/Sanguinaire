@@ -38,23 +38,39 @@ public class PacketKeySync implements Packet<PacketListener>{
     }
 
     public void handle(Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(this::handlerAnim);
+        context.get().enqueueWork(()->{
+            handlerAnim(context);
+        });
         context.get().setPacketHandled(true);
     }
-    @OnlyIn(Dist.CLIENT)
-    private void handlerAnim() {
+
+    private void handlerAnim(Supplier<NetworkEvent.Context> contextSupplier) {
         Minecraft mc=Minecraft.getInstance();
-        if(this.key==0x43){
-            SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
-            assert skillPlayerCapability != null;
-            upPower(skillPlayerCapability);
-        }else {
-            Player player=mc.player;
-            HitResult hit = mc.hitResult;
-            assert player!=null && hit!=null;
-            if(hit.getType() == HitResult.Type.ENTITY){
-                VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-                cap.bite(player,((EntityHitResult)hit).getEntity());
+        switch (this.key){
+            case 0x56->{
+                Player player=contextSupplier.get().getSender();
+                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
+                assert skillPlayerCapability != null;
+                skillPlayerCapability.swingHand(player);
+            }
+            case 0x5A->{
+                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
+                assert skillPlayerCapability != null;
+                downPower(skillPlayerCapability);
+            }
+            case 0x43->{
+                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
+                assert skillPlayerCapability != null;
+                upPower(skillPlayerCapability);
+            }
+            default ->{
+                Player player=mc.player;
+                HitResult hit = mc.hitResult;
+                assert player!=null && hit!=null;
+                if(hit.getType() == HitResult.Type.ENTITY){
+                    VampirePlayerCapability cap=VampirePlayerCapability.get(player);
+                    cap.bite(player,((EntityHitResult)hit).getEntity());
+                }
             }
         }
 
@@ -63,6 +79,11 @@ public class PacketKeySync implements Packet<PacketListener>{
     @OnlyIn(Dist.CLIENT)
     public static void upPower(SkillPlayerCapability player){
         player.upSkill();
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void downPower(SkillPlayerCapability player){
+        player.downSkill();
     }
 
 }

@@ -18,12 +18,7 @@ import javax.annotation.Nullable;
 public abstract class LivingEntityMixin {
     @Inject(method = "swing(Lnet/minecraft/world/InteractionHand;)V",at = @At("TAIL"))
     public void onSwing(InteractionHand p_21007_, CallbackInfo ci){
-        if (((Object)this) instanceof Player player) {
-            SkillPlayerCapability cap=SkillPlayerCapability.get(player);
-            if(cap!=null){
-                cap.swingHand(player);
-            }
-        }
+
     }
 
 }

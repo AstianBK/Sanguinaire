@@ -1,9 +1,12 @@
 package com.TBK.sanguinaire.server.skill;
 
 import com.TBK.sanguinaire.server.manager.SkillAbstractInstance;
+import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.network.messager.PacketHandlerPowers;
 import com.google.common.collect.Maps;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Collection;
 import java.util.Map;

@@ -45,6 +45,7 @@ public class PacketHandler {
                 .decoder(PacketSyncDurationEffect::new)
                 .consumerNetworkThread(PacketSyncDurationEffect::handle).add();
 
+
         channel.messageBuilder(PacketRemoveActiveEffect.class,index++)
                 .encoder(PacketRemoveActiveEffect::toBytes)
                 .decoder(PacketRemoveActiveEffect::new)
@@ -57,8 +58,12 @@ public class PacketHandler {
                 .encoder(PacketSyncBlood::write)
                 .decoder(PacketSyncBlood::new)
                 .consumerNetworkThread(PacketSyncBlood::handle).add();
+
         channel.registerMessage(index++, PacketHandlerParticles.class, PacketHandlerParticles::write,
                 PacketHandlerParticles::new, PacketHandlerParticles::handle);
+
+        channel.registerMessage(index++, PacketHandlerPowers.class, PacketHandlerPowers::write,
+                PacketHandlerPowers::new, PacketHandlerPowers::handle);
 
 
         channel.messageBuilder(PacketSyncPosHotBar.class,index++)

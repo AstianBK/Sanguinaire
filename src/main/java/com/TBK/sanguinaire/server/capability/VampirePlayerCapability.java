@@ -228,6 +228,10 @@ public class VampirePlayerCapability implements IVampirePlayer {
     }
 
 
+    public boolean canRevive() {
+        return this.getBlood()>=4;
+    }
+
 
     @Override
     public void setIsVampire(boolean bol) {

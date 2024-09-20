@@ -4,9 +4,9 @@ import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import net.minecraft.world.entity.LivingEntity;
 
-public class TentacleBlood extends SkillAbstract {
-    public TentacleBlood() {
-        super("tentacle_blood", 30,60, 300, 1, true, false, false, true, false,4);
+public class BloodTendrils extends SkillAbstract {
+    public BloodTendrils() {
+        super("blood_tendrils", 30,60, 300, 1, true, false, false, true, false,4);
     }
 
     @Override
@@ -14,7 +14,7 @@ public class TentacleBlood extends SkillAbstract {
         super.tick(player);
         if(!player.getPlayer().level().isClientSide){
             this.getTargets().forEach(target->{
-                target.setDeltaMovement(0.0F,0.1f,0.0f);
+                target.setDeltaMovement(0.0F,0.2f,0.0f);
             });
         }
     }
