@@ -15,6 +15,8 @@ public class SGItems {
 
     public static final RegistryObject<Item> VAMPIRE_HEART = ITEMS.register("vampire_heart",
             ()-> new Item(new Item.Properties().stacksTo(64)));
+    public static final RegistryObject<Item> ORB = ITEMS.register("orb",
+            ()-> new Item(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> CRIMSON_MIRROR = ITEMS.register("crimson_mirror",
             ()-> new Item(new Item.Properties().stacksTo(1)));

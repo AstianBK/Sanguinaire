@@ -28,7 +28,10 @@ public class InfinityBleedingEffects extends MobEffect {
     public void applyEffectTick(LivingEntity p_19467_, int p_19468_) {
         super.applyEffectTick(p_19467_, p_19468_);
         if(!p_19467_.level().isClientSide){
-            p_19467_.hurt(p_19467_.damageSources().generic(),5);
+            if(p_19467_.hurt(p_19467_.damageSources().generic(),5)){
+                p_19467_.level().getEntitiesOfClass(LivingEntity.class, p_19467_.getBoundingBox().inflate(1.5F), e->e!=p_19467_)
+                        .forEach(e->e.hurt(p_19467_.damageSources().generic(),5));
+            }
             PacketHandler.sendToAllTracking(new PacketHandlerParticles(0,p_19467_),p_19467_);
         }
     }
