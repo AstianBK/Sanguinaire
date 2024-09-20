@@ -47,11 +47,11 @@ public class BloodOrbProjetile extends LeveableProjectile implements ItemSupplie
     }
 
     protected Item getDefaultItem(){
-        return SGItems.ORB.get();
+        return SGItems.BLOOD_ORB.get();
     }
 
     protected ItemStack getItemRaw() {
-        return new ItemStack(SGItems.ORB.get());
+        return new ItemStack(SGItems.BLOOD_ORB.get());
     }
     @Override
     public ItemStack getItem() {

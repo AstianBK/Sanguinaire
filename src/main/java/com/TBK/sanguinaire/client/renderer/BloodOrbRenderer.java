@@ -16,7 +16,7 @@ import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class BloodOrbRenderer<T extends BloodOrbProjetile> extends EntityRenderer<T> {
-    private static final ResourceLocation ORB_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/orb.png");
+    private static final ResourceLocation ORB_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/blood_orb.png");
 
     public BloodOrbRenderer(EntityRendererProvider.Context p_174008_) {
         super(p_174008_);
