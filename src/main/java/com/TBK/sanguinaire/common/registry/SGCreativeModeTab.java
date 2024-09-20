@@ -17,6 +17,7 @@ public class SGCreativeModeTab {
             .displayItems((s,a)-> {
                 a.accept(SGItems.MUSIC_DISC_WASTED_BLOOD.get());
                 a.accept(SGItems.VAMPIRE_HEART.get());
+                a.accept(SGItems.ANCIENT_BLOOD.get());
                 a.accept(SGItems.CRIMSON_MIRROR.get());
             })
             .build());
