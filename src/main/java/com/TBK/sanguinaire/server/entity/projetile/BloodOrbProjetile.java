@@ -87,12 +87,18 @@ public class BloodOrbProjetile extends LeveableProjectile implements ItemSupplie
     @Override
     protected void onHit(HitResult p_37260_) {
         super.onHit(p_37260_);
-        if(this.level().isClientSide){
-            Vec3 delta=this.getDeltaMovement();
-            this.level().addParticle(SGParticles.BLOOD_EXPLOSION_PARTICLES.get(), this.getX()-delta.x, this.getY()-delta.y, this.getZ()-delta.z, 0.0F, 0.0F, 0.0F);
-
+        if(!this.level().isClientSide){
+            this.level().broadcastEntityEvent(this,(byte) 2);
         }
         this.discard();
+    }
+
+    @Override
+    public void handleEntityEvent(byte p_19882_) {
+        if(p_19882_==2){
+            this.level().addParticle(SGParticles.BLOOD_EXPLOSION_PARTICLES.get(), this.getX(), this.getY(), this.getZ(), 0.0F, 0.0F, 0.0F);
+        }
+        super.handleEntityEvent(p_19882_);
     }
 
     @Override

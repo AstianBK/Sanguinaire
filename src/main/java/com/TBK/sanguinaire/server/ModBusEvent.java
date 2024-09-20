@@ -21,6 +21,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -158,14 +159,16 @@ public class ModBusEvent {
             }
         }
         if (event.getSource().getDirectEntity() instanceof BloodOrbProjetile orb){
-            List<LivingEntity> targets=target.level().getEntitiesOfClass(LivingEntity.class,target.getBoundingBox().inflate(20.0D),e->e!=orb.getOwner());
-            targets.forEach(e->{
-                BloodOrbProjetile projetile=new BloodOrbProjetile(e.level(),((LivingEntity)orb.getOwner()),Math.max(orb.getPowerLevel()-1,0));
-                projetile.setPos(target.getEyePosition());
-                Vec3 delta=e.getEyePosition().subtract(target.getEyePosition());
-                projetile.shoot(delta.x,delta.y,delta.z,1.0F,1.0F);
-                e.level().addFreshEntity(projetile);
-            });
+            if(!orb.level().isClientSide){
+                LivingEntity collateral=target.level().getNearestEntity(LivingEntity.class, TargetingConditions.DEFAULT,null,target.getX(),target.getY(),target.getZ(),target.getBoundingBox().inflate(10.0D));
+                if(collateral!=null){
+                    BloodOrbProjetile projetile=new BloodOrbProjetile(collateral.level(),((LivingEntity)orb.getOwner()),Math.max(orb.getPowerLevel()-1,0));
+                    projetile.setPos(target.getEyePosition());
+                    Vec3 delta=collateral.getEyePosition().subtract(target.getEyePosition());
+                    projetile.shoot(delta.x,delta.y,delta.z,1.0F,1.0F);
+                    collateral.level().addFreshEntity(projetile);
+                }
+            }
         }
     }
 
