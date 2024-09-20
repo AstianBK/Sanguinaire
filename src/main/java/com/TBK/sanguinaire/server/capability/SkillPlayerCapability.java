@@ -266,7 +266,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     @Override
     public void swingHand(Player player) {
         if(!this.level.isClientSide){
-            PacketHandler.sendToPlayer(new PacketHandlerPowers(), (ServerPlayer) player);
+            PacketHandler.sendToPlayer(new PacketHandlerPowers(0,player, player), (ServerPlayer) player);
         }
         if(this.canUseSkill(this.getSelectSkill())){
             boolean skillActive=this.durationEffect.hasDurationForSkill(this.getSelectSkill());

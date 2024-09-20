@@ -8,6 +8,7 @@ import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.manager.*;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketConvertVampire;
+import com.TBK.sanguinaire.server.network.messager.PacketHandlerPowers;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -243,11 +244,17 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.player=player;
     }
 
-    public void clone(VampirePlayerCapability capability,Player player){
-        capability.init(player);
-        capability.setClan(this.getClan());
-        capability.setIsVampire(this.isVampire());
-        capability.setGeneration(this.getGeneration());
+    public void clone(VampirePlayerCapability capability,Player player,Player newPlayer){
+        if(!this.level.isClientSide){
+            System.out.print("\nEntro a mandar la cap a client\n");
+            PacketHandler.sendToPlayer(new PacketHandlerPowers(1, newPlayer,player), (ServerPlayer) player);
+        }
+        System.out.print("\n"+(this.level.isClientSide ? "Client" : "Server")+"\n");
+        this.init(newPlayer);
+        this.setClan(capability.getClan());
+        this.setIsVampire(capability.isVampire);
+        this.setGeneration(capability.getGeneration());
+        this.setBlood(0);
     }
 
     @Override

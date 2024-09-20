@@ -25,16 +25,15 @@ public class SkillOverlay implements IGuiOverlay {
         if (this.mc.player != null) {
             Player player = this.mc.player;
             SkillPlayerCapability cap=SkillPlayerCapability.get(player);
-            if(cap!=null){
+            if(cap!=null && cap.getPlayerVampire().isVampire()){
                 int i = width / 2 -110;
-                int j = 182;
-                int k = 91;
+
                 graphics.pose().pushPose();
                 graphics.blit(WIDGETS_LOCATION, i - 91, height - 22, 0, 0, 101, 22);
                 graphics.blit(WIDGETS_LOCATION, i - 91+ cap.getPosSelectSkillAbstract() *20, height - 22 , 0, 22, 24, 22);
                 graphics.pose().popPose();
 
-                for(int i1 = 0; i1 < 4; ++i1) {
+                for(int i1 = 0; i1 < 3; ++i1) {
                     SkillAbstract skillAbstract=cap.getHotBarSkill().get(i1);
                     int j1 = i - 90 + i1 * 20 + 2;
                     int k1 = height - 16 - 3;
@@ -47,8 +46,7 @@ public class SkillOverlay implements IGuiOverlay {
                         float f = cap.getCooldowns().getCooldownPercent(skillAbstract);
                         if (f > 0.0F) {
                             int i2 = k1 + Mth.floor(16.0F * f);
-                            int j2 = i1;
-                            graphics.fill(RenderType.guiOverlay(), j1, i2, j1 + 16, j2+220, Integer.MAX_VALUE);
+                            graphics.fill(RenderType.guiOverlay(), j1, i2, j1 + 16,  220, Integer.MAX_VALUE);
                         }
                         graphics.pose().popPose();
 

@@ -1,9 +1,7 @@
 package com.TBK.sanguinaire.server.network.messager;
 
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
-import com.TBK.sanguinaire.server.manager.SkillAbstractInstance;
-import com.TBK.sanguinaire.server.skill.SkillAbstract;
-import com.TBK.sanguinaire.server.skill.SkillAbstracts;
+import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
@@ -14,22 +12,32 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class PacketHandlerPowers implements Packet<PacketListener> {
+    private final int id;
+    private final Entity newEntity;
+    private final Entity oldEntity;
     public PacketHandlerPowers(FriendlyByteBuf buf) {
-
+        Minecraft mc=Minecraft.getInstance();
+        assert mc.level!=null;
+        this.id=buf.readInt();
+        this.newEntity =mc.level.getEntity(buf.readInt());
+        this.oldEntity = mc.level.getEntity(buf.readInt());
     }
 
 
-    public PacketHandlerPowers() {
+    public PacketHandlerPowers(int id, Entity entity, Player player) {
+        this.id=id;
+        this.newEntity =entity;
+        this.oldEntity =player;
     }
 
     @Override
     public void write(FriendlyByteBuf buf) {
-
+        buf.writeInt(this.id);
+        buf.writeInt(this.newEntity.getId());
+        buf.writeInt(this.oldEntity.getId());
     }
 
     public void handle(Supplier<NetworkEvent.Context> context) {
@@ -39,12 +47,27 @@ public class PacketHandlerPowers implements Packet<PacketListener> {
     @OnlyIn(Dist.CLIENT)
     private void handlerAnim() {
         Player player=Minecraft.getInstance().player;
-        SkillPlayerCapability cap=SkillPlayerCapability.get(player);
-        if(cap!=null){
-            cap.swingHand(player);
+        switch (this.id){
+            case 0->{
+                SkillPlayerCapability cap=SkillPlayerCapability.get(player);
+                if(cap!=null){
+                    this.swingHand(cap,player);
+                }
+            }
+            case 1->{
+                VampirePlayerCapability cap=VampirePlayerCapability.get((Player) this.oldEntity);
+                System.out.print("\n----------"+(cap==null ? "Cap es null" : " Cap existe")+"--------------\n");
+                if(cap!=null){
+                    cap.clone(cap, (Player) this.oldEntity, (Player) this.newEntity);
+                }
+            }
         }
-    }
 
+    }
+    @OnlyIn(Dist.CLIENT)
+    public void swingHand(SkillPlayerCapability cap,Player player){
+        cap.swingHand(player);
+    }
     @Override
     public void handle(PacketListener p_131342_) {
 

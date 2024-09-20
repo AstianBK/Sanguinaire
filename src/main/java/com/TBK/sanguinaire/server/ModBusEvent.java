@@ -135,17 +135,11 @@ public class ModBusEvent {
     public static void clonePlayer(PlayerEvent.Clone event){
         Player player=event.getOriginal();
         Player newPlayer=event.getEntity();
+        player.reviveCaps();
         VampirePlayerCapability cap=VampirePlayerCapability.get(player);
         VampirePlayerCapability newCap=VampirePlayerCapability.get(newPlayer);
-        if(newCap==null){
-            VampirePlayerCapability.VampirePlayerProvider prov = new VampirePlayerCapability.VampirePlayerProvider();
-            VampirePlayerCapability capClone=prov.getCapability(SGCapability.VAMPIRE_CAPABILITY).orElse(null);
-            capClone.clone(cap,player);
-        }else if(cap!=null){
-            newCap.clone(cap,player);
-        }else {
-            newCap.init(player);
-        }
+        newCap.clone(cap,player,newPlayer);
+        player.invalidateCaps();
     }
     @SubscribeEvent
     public static void deathEntity(LivingDeathEvent event){

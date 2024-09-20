@@ -6,6 +6,7 @@ import com.TBK.sanguinaire.client.gui.HeartsEffect;
 import com.TBK.sanguinaire.client.gui.SkillOverlay;
 import com.TBK.sanguinaire.client.layer.CastingLayer;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
+import com.TBK.sanguinaire.client.particle.custom.BloodExplosionParticles;
 import com.TBK.sanguinaire.client.particle.custom.BloodTrailParticles;
 import com.TBK.sanguinaire.client.particle.custom.SlashParticles;
 import com.TBK.sanguinaire.common.registry.SGParticles;
@@ -47,6 +48,9 @@ public class EventClient {
         }
         if(SGParticles.BLOOD_TRAIL_PARTICLES.isPresent()){
             event.registerSpriteSet(SGParticles.BLOOD_TRAIL_PARTICLES.get(), BloodTrailParticles.Factory::new);
+        }
+        if(SGParticles.BLOOD_EXPLOSION_PARTICLES.isPresent()){
+            event.registerSpriteSet(SGParticles.BLOOD_EXPLOSION_PARTICLES.get(), BloodExplosionParticles.Factory::new);
         }
     }
 

@@ -7,6 +7,7 @@ import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -53,7 +54,7 @@ public class Sanguinaire
     @OnlyIn(Dist.CLIENT)
     private void registerRenderers(FMLCommonSetupEvent event){
         EntityRenderers.register(SGEntityType.BLOOD_SLASH.get(), SlashBloodRenderer::new);
-        EntityRenderers.register(SGEntityType.BLOOD_ORB.get(), BloodOrbRenderer::new);
+        EntityRenderers.register(SGEntityType.BLOOD_ORB.get(), ThrownItemRenderer::new);
     }
 
 
