@@ -9,6 +9,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface IVampirePlayer extends INBTSerializable<CompoundTag> {
     boolean isVampire();
+    void loseBlood(int blood);
     void setIsVampire(boolean bol);
     void setPlayer(Player player);
     Player getPlayer();
