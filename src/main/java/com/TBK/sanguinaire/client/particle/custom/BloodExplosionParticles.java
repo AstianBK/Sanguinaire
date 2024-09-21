@@ -18,7 +18,7 @@ public class BloodExplosionParticles extends TextureSheetParticle {
         this.yd += ySpeed;
         this.zd += zSpeed;
         this.setColor(1.0f,0.0f,0.0f);
-        this.scale(2.0F);
+        this.scale(4.0F);
         this.lifetime=10;
         this.setSpriteFromAge(spriteSet);
     }

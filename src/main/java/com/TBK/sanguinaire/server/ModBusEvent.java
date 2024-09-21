@@ -1,7 +1,9 @@
 package com.TBK.sanguinaire.server;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.common.api.IVampirePlayer;
 import com.TBK.sanguinaire.common.registry.SGAttribute;
+import com.TBK.sanguinaire.common.registry.SGEffect;
 import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.capability.BiterEntityCap;
 import com.TBK.sanguinaire.server.capability.SGCapability;
@@ -190,6 +192,15 @@ public class ModBusEvent {
             VampirePlayerCapability cap=VampirePlayerCapability.get(player);
             if(cap!=null && cap.isVampire()){
                 event.setCanceled(true);
+            }
+        }
+    }
+    @SubscribeEvent
+    public static void hurtPlayer(LivingHurtEvent event){
+        LivingEntity living=event.getEntity();
+        if(living.hasEffect(SGEffect.BLEEDING.get())){
+            if(event.getSource().getEntity() instanceof IVampirePlayer vampirePlayer){
+                vampirePlayer.loseBlood(1);
             }
         }
     }

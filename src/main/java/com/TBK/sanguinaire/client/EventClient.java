@@ -1,9 +1,7 @@
 package com.TBK.sanguinaire.client;
 
 import com.TBK.sanguinaire.Sanguinaire;
-import com.TBK.sanguinaire.client.gui.BloodOverlay;
-import com.TBK.sanguinaire.client.gui.HeartsEffect;
-import com.TBK.sanguinaire.client.gui.SkillOverlay;
+import com.TBK.sanguinaire.client.gui.*;
 import com.TBK.sanguinaire.client.layer.CastingLayer;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
 import com.TBK.sanguinaire.client.particle.custom.BloodExplosionParticles;
@@ -33,7 +31,9 @@ public class EventClient {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerGui(RegisterGuiOverlaysEvent event){
+        event.registerAbove(VanillaGuiOverlay.CROSSHAIR.id(), "bite",new BiteIndicator());
         event.registerAbove(VanillaGuiOverlay.PLAYER_HEALTH.id(), "heart_vampire",new HeartsEffect());
+        event.registerAbove(VanillaGuiOverlay.HELMET.id(), "bleeding",new BleedingOverlay());
         event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "blood",new BloodOverlay());
         event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "skill_hotbar",new SkillOverlay());
     }

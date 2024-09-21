@@ -47,18 +47,18 @@ public class PacketKeySync implements Packet<PacketListener>{
     private void handlerAnim(Supplier<NetworkEvent.Context> contextSupplier) {
         Minecraft mc=Minecraft.getInstance();
         switch (this.key){
-            case 0x56->{
+            case 0x52->{
                 Player player=contextSupplier.get().getSender();
                 SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
                 assert skillPlayerCapability != null;
                 skillPlayerCapability.swingHand(player);
             }
-            case 0x5A->{
+            case 0x43->{
                 SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
                 assert skillPlayerCapability != null;
                 downPower(skillPlayerCapability);
             }
-            case 0x43->{
+            case 0x56->{
                 SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
                 assert skillPlayerCapability != null;
                 upPower(skillPlayerCapability);

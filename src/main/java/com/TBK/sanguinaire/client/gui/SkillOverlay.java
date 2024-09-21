@@ -47,7 +47,7 @@ public class SkillOverlay implements IGuiOverlay {
                         if (f > 0.0F) {
                             int i2 = k1 + Mth.floor(16.0F * (1.0F-f));
                             int j2= i2 + Mth.floor(16.0F * f);
-                            graphics.fill(RenderType.guiOverlay(), j1, i2+3, j1 + 16,  j2, Integer.MAX_VALUE);
+                            graphics.fill(RenderType.guiOverlay(), j1, i2, j1 + 16,  j2+5, Integer.MAX_VALUE);
                         }
                         graphics.pose().popPose();
 

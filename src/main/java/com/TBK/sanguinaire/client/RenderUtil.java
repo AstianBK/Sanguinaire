@@ -37,7 +37,7 @@ public class RenderUtil {
                 SkillAbstract skillAbstract=cap.getHotBarSkill().getForName("blood_tendrils");
                 for (LivingEntity living : skillAbstract.getTargets()){
                     pMatrixStack.pushPose();
-                    pMatrixStack.translate(0.0F,0.2F,0.0F);
+                    pMatrixStack.translate(0.0F,0.75F,0.0F);
                     Vec3 vec32 = living.getEyePosition(pPartialTicks).subtract(player.getEyePosition(pPartialTicks));
                     vec32 = vec32.normalize();
                     int j = 255;

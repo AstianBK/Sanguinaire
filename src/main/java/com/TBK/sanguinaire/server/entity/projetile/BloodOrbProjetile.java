@@ -117,10 +117,7 @@ public class BloodOrbProjetile extends LeveableProjectile implements ItemSupplie
         }
         if(this.level().isClientSide){
             Vec3 delta=this.getDeltaMovement();
-            //this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x, this.getY()-delta.y, this.getZ()-delta.z, 0.0F, 0.0F, 0.0F);
-            if(this.tickCount%20==0){
-                //this.spawnParticles();
-            }
+            this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x, this.getY()-delta.y, this.getZ()-delta.z, 0.0F, 0.0F, 0.0F);
         }
     }
     public void spawnParticles(){
