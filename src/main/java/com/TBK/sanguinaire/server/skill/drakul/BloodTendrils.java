@@ -6,7 +6,7 @@ import net.minecraft.world.entity.LivingEntity;
 
 public class BloodTendrils extends SkillAbstract {
     public BloodTendrils() {
-        super("blood_tendrils", 30,60, 300, 1, true, false, false, true, false,4);
+        super("blood_tendrils", 30,60, 100, 1, true, false, false, true, false,4);
     }
 
     @Override

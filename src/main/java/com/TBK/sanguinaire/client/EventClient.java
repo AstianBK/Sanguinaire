@@ -4,11 +4,8 @@ import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.client.gui.*;
 import com.TBK.sanguinaire.client.layer.CastingLayer;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
-import com.TBK.sanguinaire.client.particle.custom.BloodExplosionParticles;
-import com.TBK.sanguinaire.client.particle.custom.BloodTrailParticles;
-import com.TBK.sanguinaire.client.particle.custom.SlashParticles;
+import com.TBK.sanguinaire.client.particle.custom.*;
 import com.TBK.sanguinaire.common.registry.SGParticles;
-import com.TBK.sanguinaire.client.particle.custom.BloodBKParticles;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
@@ -45,6 +42,9 @@ public class EventClient {
         }
         if(SGParticles.SLASH_PARTICLES.isPresent()){
             event.registerSpriteSet(SGParticles.SLASH_PARTICLES.get(), SlashParticles.Factory::new);
+        }
+        if(SGParticles.SLICE_PARTICLES.isPresent()){
+            event.registerSpriteSet(SGParticles.SLICE_PARTICLES.get(), SliceParticles.Factory::new);
         }
         if(SGParticles.BLOOD_TRAIL_PARTICLES.isPresent()){
             event.registerSpriteSet(SGParticles.BLOOD_TRAIL_PARTICLES.get(), BloodTrailParticles.Factory::new);

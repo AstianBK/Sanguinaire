@@ -6,7 +6,7 @@ import com.TBK.sanguinaire.server.skill.SkillAbstract;
 
 public class BloodSlash extends SkillAbstract {
     public BloodSlash() {
-        super("blood_slash", 0 ,20, 20, 1, true, false, false, true, false,2);
+        super("blood_slash", 0 ,20, 60, 1, true, false, false, true, false,2);
     }
 
     @Override

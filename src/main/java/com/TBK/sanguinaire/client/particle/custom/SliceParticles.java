@@ -5,10 +5,10 @@ import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 
-public class SlashParticles extends TextureSheetParticle {
+public class SliceParticles extends TextureSheetParticle {
     private final SpriteSet sprites;
 
-    protected SlashParticles(ClientLevel p_108484_, double p_108485_, double p_108486_, double p_108487_, double xSpeed, double ySpeed, double zSpeed, SpriteSet sprites ) {
+    protected SliceParticles(ClientLevel p_108484_, double p_108485_, double p_108486_, double p_108487_, double xSpeed, double ySpeed, double zSpeed, SpriteSet sprites ) {
         super(p_108484_, p_108485_, p_108486_, p_108487_);
         this.xd *= 0.1;
         this.yd *= 0.1;
@@ -16,7 +16,7 @@ public class SlashParticles extends TextureSheetParticle {
         this.xd += xSpeed;
         this.yd += ySpeed;
         this.zd += zSpeed;
-        this.scale(1.5F);
+        this.scale(2.5F);
         this.lifetime=20;
         this.sprites = sprites;
         this.setSpriteFromAge(sprites);
@@ -26,7 +26,7 @@ public class SlashParticles extends TextureSheetParticle {
     }
     @Override
     public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
     @Override
     public void tick() {
