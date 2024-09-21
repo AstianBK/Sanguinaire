@@ -22,7 +22,7 @@ public class SGKeybinds {
         attackKey1 = create("attack_key1", KeyEvent.VK_F);
         attackKey2 = create("attack_key2", KeyEvent.VK_C);
         attackKey3 = create("attack_key3", KeyEvent.VK_V);
-        attackKey4 = create("attack_key4", KeyEvent.VK_Z);
+        attackKey4 = create("attack_key4", KeyEvent.VK_R);
 
         event.register(attackKey1);
         event.register(attackKey2);

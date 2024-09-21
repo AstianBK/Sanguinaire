@@ -34,8 +34,8 @@ public class BiteIndicator implements IGuiOverlay {
         if(mc.crosshairPickEntity!=null){
             if(mc.options.getCameraType().isFirstPerson()){
                 RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                int j = screenHeight / 2 + 5 ;
-                int k = screenWidth / 2 + 4;
+                int j = screenHeight / 2 + 4 ;
+                int k = screenWidth / 2 + 3;
                 guiGraphics.blit(ICONS, k, j, 0, 18, 18, 9);
                 RenderSystem.defaultBlendFunc();
             }
