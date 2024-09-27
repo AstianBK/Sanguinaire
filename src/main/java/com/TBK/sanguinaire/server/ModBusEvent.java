@@ -13,6 +13,8 @@ import com.TBK.sanguinaire.server.entity.projetile.BloodOrbProjetile;
 import com.TBK.sanguinaire.server.manager.RegenerationInstance;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
+import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodEntity;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,6 +31,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
@@ -55,6 +59,13 @@ public class ModBusEvent {
             VampirePlayerCapability cap1 = SGCapability.getEntityVam(event.getEntity(), VampirePlayerCapability.class);
             if(cap1!=null){
                 cap1.syncCap((Player) event.getEntity());
+            }
+        }else if (event.getEntity() instanceof LivingEntity){
+            BiterEntityCap cap1 = SGCapability.getEntityEntity(event.getEntity(), BiterEntityCap.class);
+            if(cap1!=null){
+                if(!event.getEntity().level().isClientSide){
+                    PacketHandler.sendToAllTracking(new PacketSyncBloodEntity(cap1.blood, event.getEntity()), (LivingEntity) event.getEntity());
+                }
             }
         }
     }
@@ -89,6 +100,11 @@ public class ModBusEvent {
             if(vampismo!=null && event.getEntity().isAlive() && vampismo.isVampire()){
                 vampismo.tick((Player) event.getEntity());
             }
+        }else {
+            BiterEntityCap cap=SGCapability.getEntityEntity(event.getEntity(), BiterEntityCap.class);
+            if(cap!=null && event.getEntity().isAlive()){
+                cap.tick(event.getEntity());
+            }
         }
     }
 
@@ -118,8 +134,7 @@ public class ModBusEvent {
             if (oldVamp == null) {
                 BiterEntityCap.BiterEntityPlayerProvider prov = new BiterEntityCap.BiterEntityPlayerProvider();
                 BiterEntityCap cap=prov.getCapability(SGCapability.ENTITY_CAPABILITY).orElse(null);
-                cap.setCurrentEntity(living);
-                cap.setBlood(cap.getMaxBlood());
+                cap.init(living);
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "bite_cap"), prov);
             }
         }

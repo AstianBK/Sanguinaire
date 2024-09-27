@@ -51,6 +51,14 @@ public class SlashBloodProjetile extends LeveableProjectile {
     @Override
     public void tick() {
         super.tick();
+        if(this.animTick++>3){
+            if(this.frame++>3){
+                this.frame=0;
+            }
+            this.animTick=0;
+        }
+        this.setYRot(this.getYRot());
+        this.setXRot(this.getXRot());
         if(this.level().isClientSide){
             Vec3 delta=this.getDeltaMovement();
             this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x, this.getY()-delta.y, this.getZ()-delta.z, 0.0F, 0.0F, 0.0F);

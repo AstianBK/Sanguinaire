@@ -18,7 +18,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
 public class SlashBloodRenderer<T extends SlashBloodProjetile> extends EntityRenderer<T> {
-    private static final ResourceLocation SLASH_LOCATION = new ResourceLocation(Sanguinaire.MODID,"textures/entity/blood_slash.png");
 
     public SlashBloodRenderer(EntityRendererProvider.Context p_174008_) {
         super(p_174008_);
@@ -27,11 +26,15 @@ public class SlashBloodRenderer<T extends SlashBloodProjetile> extends EntityRen
     @Override
     public void render(T pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
         pMatrixStack.pushPose();
-        pMatrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.yRotO, pEntity.getYRot())));
-        pMatrixStack.mulPose(Axis.XP.rotationDegrees(-Mth.lerp(pPartialTicks, pEntity.xRotO, pEntity.getXRot())));
-        pMatrixStack.mulPose(Axis.ZP.rotationDegrees((float) Math.sin(pEntity.tickCount * 0.15F)*10));
+        if(!pEntity.isCharging()){
+            pMatrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.yRotO, pEntity.getYRot())));
+            pMatrixStack.mulPose(Axis.XP.rotationDegrees(-Mth.lerp(pPartialTicks, pEntity.xRotO, pEntity.getXRot())));
+            pMatrixStack.mulPose(Axis.ZP.rotationDegrees((float) Math.sin(pEntity.tickCount * 0.15F)*10));
+        }else {
+            pMatrixStack.mulPose(Axis.YP.rotationDegrees(pEntity.getYRot()));
+        }
 
-        float width=pEntity.getBbWidth();
+        float width=0.5F+pEntity.getBbWidth()*pEntity.getChargedLevel()/10;
 
         PoseStack.Pose posestack$pose = pMatrixStack.last();
         drawSlash(posestack$pose,pEntity,pBuffer,pPackedLight,width,4);
@@ -42,7 +45,7 @@ public class SlashBloodRenderer<T extends SlashBloodProjetile> extends EntityRen
 
     @Override
     public ResourceLocation getTextureLocation(T p_114482_) {
-        return SLASH_LOCATION;
+        return new ResourceLocation(Sanguinaire.MODID,"textures/entity/slash/crescent_slash_"+p_114482_.getFrame()+".png");
     }
     private void drawSlash(PoseStack.Pose pose, T entity, MultiBufferSource bufferSource, int light, float width, int offset) {
         Matrix4f poseMatrix = pose.pose();

@@ -173,7 +173,6 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         }else {
             if (this.isCasting()){
                 this.castingTimer--;
-
             }
         }
     }
@@ -192,6 +191,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         skillAbstracts.addSkillAbstracts(4,SkillAbstract.NONE);
         this.setSetHotbar(skillAbstracts);
     }
+
     public void setSetHotbar(SkillAbstracts skillAbstracts){
         this.powers=skillAbstracts;
     }
@@ -264,7 +264,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     }
 
     @Override
-    public void swingHand(Player player) {
+    public void startCasting(Player player) {
         if(!this.level.isClientSide){
             PacketHandler.sendToPlayer(new PacketHandlerPowers(0,player, player), (ServerPlayer) player);
         }
@@ -287,7 +287,22 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
                 }
             }
         }
-
+    }
+    public void stopCasting(Player player) {
+        if(!this.level.isClientSide){
+            PacketHandler.sendToPlayer(new PacketHandlerPowers(2,player, player), (ServerPlayer) player);
+        }
+        boolean skillActive=this.durationEffect.hasDurationForSkill(this.getLastUsingSkill());
+        if (this.isCasting()){
+            if(skillActive){
+                SkillAbstract skill=this.getLastUsingSkill();
+                DurationInstance instance=this.durationEffect.getDurationInstance(skill.name);
+                this.removeActiveEffect(instance,DurationResult.CLICKUP);
+            }
+        }
+        this.castingClientTimer=0;
+        this.maxCastingClientTimer=0;
+        this.castingTimer=0;
     }
     public void startCasting(SkillAbstract power,Player player){
         DurationInstance instance=new DurationInstance(power.name,power.level,power.castingDuration,200);
@@ -304,6 +319,10 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     public void removeActiveEffect(DurationInstance instance){
         this.durationEffect.removeDuration(instance,DurationResult.TIMEOUT,true);
+    }
+
+    public void removeActiveEffect(DurationInstance instance,DurationResult result){
+        this.durationEffect.removeDuration(instance,result,true);
     }
 
     public void addActiveEffect(DurationInstance instance, Player player){

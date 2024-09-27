@@ -54,10 +54,19 @@ public class PacketHandler {
         channel.registerMessage(index++, PacketKeySync.class, PacketKeySync::write,
                 PacketKeySync::new, PacketKeySync::handle);
 
+        channel.registerMessage(index++, PacketSyncBloodEntity.class, PacketSyncBloodEntity::write,
+                PacketSyncBloodEntity::new, PacketSyncBloodEntity::handle);
+
+
         channel.messageBuilder(PacketSyncBlood.class,index++)
                 .encoder(PacketSyncBlood::write)
                 .decoder(PacketSyncBlood::new)
                 .consumerNetworkThread(PacketSyncBlood::handle).add();
+
+        channel.messageBuilder(PacketSyncBloodLiving.class,index++)
+                .encoder(PacketSyncBloodLiving::write)
+                .decoder(PacketSyncBloodLiving::new)
+                .consumerNetworkThread(PacketSyncBloodLiving::handle).add();
 
         channel.registerMessage(index++, PacketHandlerParticles.class, PacketHandlerParticles::write,
                 PacketHandlerParticles::new, PacketHandlerParticles::handle);

@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire.server.capability;
 
+import com.TBK.sanguinaire.common.api.IBiterEntity;
 import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.common.api.Clan;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
@@ -10,6 +11,7 @@ import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketConvertVampire;
 import com.TBK.sanguinaire.server.network.messager.PacketHandlerPowers;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
+import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodLiving;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -40,6 +42,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public int growTimer=0;
     public LimbsPartRegeneration limbsPartRegeneration=new LimbsPartRegeneration();
     public int loseBlood=0;
+    public int clientDrink=0;
 
     public static VampirePlayerCapability get(Player player){
         return SGCapability.getEntityVam(player, VampirePlayerCapability.class);
@@ -48,9 +51,11 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public boolean legsLess(){
         return this.getLimbsPartRegeneration().loseLimb("left_leg") && this.getLimbsPartRegeneration().loseLimb("right_leg");
     }
+
     public boolean armsLess(){
         return this.getLimbsPartRegeneration().loseLimb("left_arm") && this.getLimbsPartRegeneration().loseLimb("right_arm");
     }
+
     public boolean bodyLess(){
         return this.getLimbsPartRegeneration().loseLimb("body");
     }
@@ -59,9 +64,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
     }
     public boolean noMoreLimbs(){
         return this.legsLess() && this.bodyLess() && this.armsLess() && this.headLess();
-    }
-    public boolean cantMove(){
-        return this.legsLess() || this.bodyLess();
     }
 
     @Override
@@ -78,6 +80,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public Clan getClan() {
         return this.clan;
     }
+
     public void convert(boolean isVampire){
         this.setIsVampire(!isVampire);
         if(!isVampire){
@@ -102,13 +105,16 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     @Override
     public void bite(Player player, Entity target) {
-        if(target instanceof LivingEntity living){
+        BiterEntityCap cap=SGCapability.getEntityEntity(target, BiterEntityCap.class);
+        if(cap!=null && !cap.unBlooded()){
             this.drainBlood(1);
             this.loseBlood=6000;
-            player.level().playSound(null,living, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
-            if(this.level.isClientSide){
-                this.syncBlood(this.getBlood());
-            }
+            cap.onBite(this,target);
+            player.level().playSound(null,target, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
+        }
+        if(this.level.isClientSide){
+            this.clientDrink=20;
+            PacketHandler.sendToServer(new PacketSyncBloodLiving(target.getId(),target.getUUID()));
         }
     }
     public void loseBlood(int blood){
@@ -130,7 +136,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     public void losePart(String id, RegenerationInstance instance, Player player){
         this.limbsPartRegeneration.addLoseLimb(id,instance);
-        if(player instanceof ServerPlayer serverPlayer){
+        if(player instanceof ServerPlayer){
             this.limbsPartRegeneration.syncPlayer();
         }
     }
@@ -141,13 +147,9 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     @Override
     public void tick(Player player) {
-        if(this.loseBlood>0){
-            this.loseBlood--;
-            if(this.loseBlood==0){
-                this.loseBlood(1);
-                if(this.getBlood()>0){
-                    this.loseBlood=6000;
-                }
+        if(this.level.isClientSide){
+            if (this.clientDrink>0){
+                this.clientDrink--;
             }
         }
         if(this.noMoreLimbs()){
@@ -219,9 +221,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
             PacketHandler.sendToPlayer(new PacketConvertVampire(!this.isVampire),serverPlayer);
         }
     }
-    public void syncBlood(double blood){
-        PacketHandler.sendToServer(new PacketSyncBlood(blood));
-    }
 
     @Override
     public boolean isVampire() {
@@ -246,10 +245,8 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     public void clone(VampirePlayerCapability capability,Player player,Player newPlayer){
         if(!this.level.isClientSide){
-            System.out.print("\nEntro a mandar la cap a client\n");
             PacketHandler.sendToPlayer(new PacketHandlerPowers(1, newPlayer,player), (ServerPlayer) player);
         }
-        System.out.print("\n"+(this.level.isClientSide ? "Client" : "Server")+"\n");
         this.init(newPlayer);
         this.setClan(capability.getClan());
         this.setIsVampire(capability.isVampire);

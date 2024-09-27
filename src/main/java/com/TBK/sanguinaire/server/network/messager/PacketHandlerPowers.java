@@ -51,22 +51,32 @@ public class PacketHandlerPowers implements Packet<PacketListener> {
             case 0->{
                 SkillPlayerCapability cap=SkillPlayerCapability.get(player);
                 if(cap!=null){
-                    this.swingHand(cap,player);
+                    this.start(cap,player);
                 }
             }
             case 1->{
                 VampirePlayerCapability cap=VampirePlayerCapability.get((Player) this.oldEntity);
-                System.out.print("\n----------"+(cap==null ? "Cap es null" : " Cap existe")+"--------------\n");
                 if(cap!=null){
                     cap.clone(cap, (Player) this.oldEntity, (Player) this.newEntity);
+                }
+            }
+            case 2->{
+                SkillPlayerCapability cap=SkillPlayerCapability.get(player);
+                if(cap!=null){
+                    this.stop(cap,player);
                 }
             }
         }
 
     }
     @OnlyIn(Dist.CLIENT)
-    public void swingHand(SkillPlayerCapability cap,Player player){
-        cap.swingHand(player);
+    public void start(SkillPlayerCapability cap,Player player){
+        cap.startCasting(player);
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void stop(SkillPlayerCapability cap,Player player){
+        cap.stopCasting(player);
     }
     @Override
     public void handle(PacketListener p_131342_) {

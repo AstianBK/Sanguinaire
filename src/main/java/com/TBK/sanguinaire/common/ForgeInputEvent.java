@@ -33,7 +33,7 @@ public class ForgeInputEvent {
     private static void onInput(Minecraft mc, int key, int action) {
         if (mc.screen == null && (SGKeybinds.attackKey1.consumeClick() || SGKeybinds.attackKey2.consumeClick() ||
                 SGKeybinds.attackKey3.consumeClick() || SGKeybinds.attackKey4.consumeClick())) {
-            PacketHandler.sendToServer(new PacketKeySync(key));
+            PacketHandler.sendToServer(new PacketKeySync(key,action));
         }
     }
 }

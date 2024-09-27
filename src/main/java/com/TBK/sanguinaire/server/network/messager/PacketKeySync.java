@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -18,18 +17,21 @@ import java.util.function.Supplier;
 
 public class PacketKeySync implements Packet<PacketListener>{
     private final int key;
-
+    private final int action;
 
     public PacketKeySync(FriendlyByteBuf buf) {
         this.key=buf.readInt();
+        this.action=buf.readInt();
     }
 
-    public PacketKeySync(int key) {
+    public PacketKeySync(int key,int action) {
         this.key = key;
+        this.action=action;
     }
 
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(this.key);
+        buf.writeInt(this.action);
     }
 
     @Override
@@ -51,7 +53,11 @@ public class PacketKeySync implements Packet<PacketListener>{
                 Player player=contextSupplier.get().getSender();
                 SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
                 assert skillPlayerCapability != null;
-                skillPlayerCapability.swingHand(player);
+                if(this.action==0){
+                    skillPlayerCapability.stopCasting(player);
+                }else {
+                    skillPlayerCapability.startCasting(player);
+                }
             }
             case 0x43->{
                 SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
@@ -69,7 +75,9 @@ public class PacketKeySync implements Packet<PacketListener>{
                 assert player!=null && hit!=null;
                 if(hit.getType() == HitResult.Type.ENTITY){
                     VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-                    cap.bite(player,((EntityHitResult)hit).getEntity());
+                    if(cap.clientDrink<=0){
+                        cap.bite(player,((EntityHitResult)hit).getEntity());
+                    }
                 }
             }
         }

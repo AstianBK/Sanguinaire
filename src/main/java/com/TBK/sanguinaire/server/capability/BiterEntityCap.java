@@ -1,18 +1,18 @@
 package com.TBK.sanguinaire.server.capability;
 
 import com.TBK.sanguinaire.common.api.IBiterEntity;
-import com.TBK.sanguinaire.common.api.IVampirePlayer;
-import com.TBK.sanguinaire.common.registry.SGAttribute;
+import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodEntity;
+import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodLiving;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
 import net.minecraftforge.common.util.LazyOptional;
 import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,7 +36,7 @@ public class BiterEntityCap implements IBiterEntity {
 
     @Override
     public int getMaxBlood() {
-        return (int) (5+20*this.currentEntity.getBbWidth());
+        return (int) (5+5*this.currentEntity.getBbWidth());
     }
 
     @Override
@@ -50,29 +50,44 @@ public class BiterEntityCap implements IBiterEntity {
     }
 
     @Override
-    public void onBite(VampirePlayerCapability biter) {
+    public void onBite(VampirePlayerCapability biter, Entity target) {
         if(biter.isVampire){
-            int lastBlood=Math.max(this.getBlood()-2,0);
+            int lastBlood=Math.max(this.getBlood()-1,0);
             this.setBlood(lastBlood);
-            biter.drainBlood(lastBlood);
+
         }
     }
 
-    @Override
-    public void tick(Player player) {
 
+    public boolean unBlooded(){
+        return this.getBlood()<=0;
+    }
+
+    @Override
+    public void tick(LivingEntity living) {
+        if(this.unBlooded() && living.tickCount%20==0){
+            living.hurt(living.damageSources().generic(),5);
+        }
+        if(!living.level().isClientSide){
+            PacketHandler.sendToAllTracking(new PacketSyncBloodEntity(this.getBlood(), living), (LivingEntity) living);
+        }
+    }
+
+    public void init(LivingEntity entity){
+        this.setCurrentEntity(entity);
+        this.setBlood(this.getMaxBlood());
     }
 
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
-        tag.putInt("blood",this.blood);
+        tag.putInt("blood",this.getBlood());
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.blood=nbt.getInt("blood");
+        this.setBlood(nbt.getInt("blood"));
     }
 
     public static class BiterEntityPlayerProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {

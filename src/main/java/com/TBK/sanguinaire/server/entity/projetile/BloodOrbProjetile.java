@@ -10,8 +10,10 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.projectile.ItemSupplier;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
@@ -30,6 +32,11 @@ public class BloodOrbProjetile extends LeveableProjectile implements ItemSupplie
         super(p_37248_, p_37249_);
         this.setNoGravity(true);
         this.discardTimer=200;
+    }
+
+    @Override
+    public EntityDimensions getDimensions(Pose p_19975_) {
+        return EntityDimensions.scalable(0.5F+1.0F*this.getChargedLevel()/10,0.5F+1.0F*this.getChargedLevel()/10);
     }
 
     public BloodOrbProjetile(Level p_37249_, LivingEntity owner, int level) {
@@ -112,31 +119,18 @@ public class BloodOrbProjetile extends LeveableProjectile implements ItemSupplie
     @Override
     public void tick() {
         super.tick();
+        if(this.animTick++>3){
+            if(this.frame++>2){
+                this.frame=0;
+            }
+            this.animTick=0;
+        }
         if(this.discardTimer--<=0){
             this.discard();
         }
         if(this.level().isClientSide){
             Vec3 delta=this.getDeltaMovement();
             this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x, this.getY()-delta.y, this.getZ()-delta.z, 0.0F, 0.0F, 0.0F);
-        }
-    }
-    public void spawnParticles(){
-        float width = (float) getBoundingBox().getXsize();
-        float step = 0.25f;
-        float radians = Mth.DEG_TO_RAD * getYRot();
-        float speed = 0.1f;
-        for (int i = 0; i < width / step; i++) {
-            double x = getX();
-            double y = getY();
-            double z = getZ();
-            double offset = step * (i - width / step / 2);
-            double rotX = offset * Math.cos(radians);
-            double rotZ = -offset * Math.sin(radians);
-
-            double dx = Math.random() * speed * 2 - speed;
-            double dy = Math.random() * speed * 2 - speed;
-            double dz = Math.random() * speed * 2 - speed;
-            this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), x + rotX + dx, y + dy, z + rotZ + dz, dx, dy, dz);
         }
     }
 }

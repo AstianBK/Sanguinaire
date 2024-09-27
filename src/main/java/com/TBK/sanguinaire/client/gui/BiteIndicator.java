@@ -2,6 +2,8 @@ package com.TBK.sanguinaire.client.gui;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.registry.SGEffect;
+import com.TBK.sanguinaire.server.capability.BiterEntityCap;
+import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
@@ -33,26 +35,20 @@ public class BiteIndicator implements IGuiOverlay {
         assert player != null;
         if(mc.crosshairPickEntity!=null){
             if(mc.options.getCameraType().isFirstPerson()){
-                RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.ONE_MINUS_DST_COLOR, GlStateManager.DestFactor.ONE_MINUS_SRC_COLOR, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                int j = screenHeight / 2 + 4 ;
-                int k = screenWidth / 2 + 3;
-                guiGraphics.blit(ICONS, k, j, 0, 18, 18, 9);
-                RenderSystem.defaultBlendFunc();
+                BiterEntityCap cap= SGCapability.getEntityEntity(mc.crosshairPickEntity, BiterEntityCap.class);
+                if(cap!=null){
+                    float blood= (float) cap.getBlood() /cap.getMaxBlood();
+                    int j = screenHeight / 2 + 4 ;
+                    int k = screenWidth / 2 + 3;
+                    RenderSystem.enableBlend();
+                    RenderSystem.setShaderColor(1.0F,0,0,0.8F);
+                    guiGraphics.blit(ICONS, k, j, 0, 18, 18, 9);
+                    guiGraphics.setColor(1.0F,1.0F,1.0F,1.0F);
+                    guiGraphics.blit(ICONS, k, j, 0, 18, 18,9-(int) (Math.ceil(9.0F*blood)));
+                    RenderSystem.disableBlend();
+                }
             }
         }
     }
 
-    private boolean canRenderCrosshairForSpectator(HitResult p_93025_) {
-        if (p_93025_ == null) {
-            return false;
-        } else if (p_93025_.getType() == HitResult.Type.ENTITY) {
-            return ((EntityHitResult)p_93025_).getEntity() instanceof MenuProvider;
-        } else if (p_93025_.getType() == HitResult.Type.BLOCK) {
-            BlockPos blockpos = ((BlockHitResult)p_93025_).getBlockPos();
-            Level level = Minecraft.getInstance().level;
-            return level.getBlockState(blockpos).getMenuProvider(level, blockpos) != null;
-        } else {
-            return false;
-        }
-    }
 }

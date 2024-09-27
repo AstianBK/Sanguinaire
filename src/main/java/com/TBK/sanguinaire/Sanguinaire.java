@@ -4,13 +4,18 @@ import com.TBK.sanguinaire.client.renderer.BloodOrbRenderer;
 import com.TBK.sanguinaire.client.renderer.SlashBloodRenderer;
 import com.TBK.sanguinaire.common.registry.*;
 import com.TBK.sanguinaire.server.capability.SGCapability;
+import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -41,10 +46,23 @@ public class Sanguinaire
         SGSkillAbstract.init();
         SGSounds.register(modEventBus);
         PacketHandler.registerMessages();
+        MinecraftForge.EVENT_BUS.addListener(this::onRenderFoodBar);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->{
             modEventBus.addListener(this::registerRenderers);
         });
+    }
+
+    public void onRenderFoodBar(RenderGuiOverlayEvent.Pre event) {
+        Minecraft mc=Minecraft.getInstance();
+        VampirePlayerCapability cap=VampirePlayerCapability.get(mc.player);
+        if (mc.player == null || !mc.player.isAlive() || cap==null || !cap.isVampire()) return;
+        if (event.getOverlay().id() == VanillaGuiOverlay.FOOD_LEVEL.id()  && mc.gameMode.hasExperience()) {
+            event.setCanceled(true);
+        }
+        if (event.getOverlay().equals(VanillaGuiOverlay.AIR_LEVEL.type())) {
+            event.setCanceled(true);
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
