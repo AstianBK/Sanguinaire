@@ -35,7 +35,7 @@ public class BatForm extends TransformSkill{
     }
     public void spawnSmoke(Player player){
         Random random=new Random();
-        player.playSound(SoundEvents.FIRE_EXTINGUISH,5.0f,-1.0f/(random.nextFloat() * 0.4F + 0.8F));
+        player.playSound(SoundEvents.FIRE_EXTINGUISH,1.0f,-1.0f/(random.nextFloat() * 0.4F + 0.8F));
         for (int i = 0; i < 24; i++) {
             double x1 = player.getX();
             double x2 = player.getY();
