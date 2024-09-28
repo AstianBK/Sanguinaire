@@ -53,21 +53,27 @@ public class PacketKeySync implements Packet<PacketListener>{
                 Player player=contextSupplier.get().getSender();
                 SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
                 assert skillPlayerCapability != null;
-                if(this.action==0){
-                    skillPlayerCapability.stopCasting(player);
-                }else if(this.action==1){
-                    skillPlayerCapability.startCasting(player);
+                if(skillPlayerCapability.isVampire()){
+                    if(this.action==0){
+                        skillPlayerCapability.stopCasting(player);
+                    }else if(this.action==1){
+                        skillPlayerCapability.startCasting(player);
+                    }
                 }
             }
             case 0x43->{
                 SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
                 assert skillPlayerCapability != null;
-                downPower(skillPlayerCapability);
+                if(skillPlayerCapability.isVampire()){
+                    downPower(skillPlayerCapability);
+                }
             }
             case 0x56->{
                 SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
                 assert skillPlayerCapability != null;
-                upPower(skillPlayerCapability);
+                if(skillPlayerCapability.isVampire()){
+                    upPower(skillPlayerCapability);
+                }
             }
             default ->{
                 Player player=mc.player;
@@ -75,7 +81,7 @@ public class PacketKeySync implements Packet<PacketListener>{
                 assert player!=null && hit!=null;
                 if(hit.getType() == HitResult.Type.ENTITY){
                     VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-                    if(cap.clientDrink<=0){
+                    if(cap.isVampire() && cap.clientDrink<=0){
                         cap.bite(player,((EntityHitResult)hit).getEntity());
                     }
                 }
