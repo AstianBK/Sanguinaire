@@ -51,7 +51,7 @@ public class SlashBloodProjetile extends LeveableProjectile {
     @Override
     public void tick() {
         super.tick();
-        if(this.animTick++>3){
+        if(this.animTick++>2){
             if(this.frame++>3){
                 this.frame=0;
             }
