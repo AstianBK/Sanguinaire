@@ -29,8 +29,15 @@ public class ChargedSkill extends SkillAbstract {
     @Override
     public void tick(SkillPlayerCapability skill) {
         super.tick(skill);
+        Entity entity=skill.getPlayer().level().getEntity(this.castingProjectileId);
+        if(skill.getCastingTimer()%5==0){
+            if(entity instanceof LeveableProjectile projectile){
+                if(projectile.upgrade()){
+                    skill.getPlayerVampire().loseBlood(1);
+                }
+            }
+        }
         if(!skill.getPlayer().level().isClientSide){
-            Entity entity=skill.getPlayer().level().getEntity(this.castingProjectileId);
             if(entity instanceof  LeveableProjectile projectile){
                 projectile.setPos(this.getPos(skill.getPlayer().getEyePosition(),skill.getPlayer()));
                 reRot(projectile,skill.getPlayer().getXRot(),skill.getPlayer().getYRot(),1.0F,1.0F);

@@ -18,7 +18,7 @@ public class AncientBloodItem extends Item {
             VampirePlayerCapability cap=VampirePlayerCapability.get((Player) p_41411_);
             if(cap!=null){
                 cap.setBlood(cap.getMaxBlood());
-                cap.age+=10;
+                cap.setAge(cap.age+10);
                 cap.setGeneration(cap.getGeneration()-1);
             }
         }

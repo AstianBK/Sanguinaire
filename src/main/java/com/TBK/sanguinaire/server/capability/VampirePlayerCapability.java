@@ -98,7 +98,10 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     @Override
     public void setGeneration(int generation) {
-        this.generation=generation;
+        this.generation=Math.max(generation,1);
+    }
+    public void setAge(int age){
+        this.age=Math.min(age,100);
     }
 
     @Override

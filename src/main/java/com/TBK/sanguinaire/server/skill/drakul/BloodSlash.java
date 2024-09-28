@@ -28,17 +28,6 @@ public class BloodSlash extends ChargedSkill {
         this.castingProjectileId=slashBlood.getId();
     }
 
-    @Override
-    public void tick(SkillPlayerCapability skill) {
-        super.tick(skill);
-        if(!skill.getPlayer().level().isClientSide){
-            Entity entity=skill.getPlayer().level().getEntity(this.castingProjectileId);
-            if(entity instanceof  LeveableProjectile projectile){
-                projectile.setPos(this.getPos(skill.getPlayer().getEyePosition(),skill.getPlayer()));
-                reRot(projectile,skill.getPlayer().getXRot(),skill.getPlayer().getYRot(),1.0F,1.0F);
-            }
-        }
-    }
 
     @Override
     public void stopSkillAbstract(SkillPlayerCapability skill) {

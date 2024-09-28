@@ -31,7 +31,6 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
             SynchedEntityData.defineId(LeveableProjectile.class, EntityDataSerializers.BOOLEAN);
     public int animTick=0;
     public int frame=0;
-    public int chargedTick=0;
 
     protected LeveableProjectile(EntityType<? extends ThrowableProjectile> p_37466_, Level p_37467_) {
         super(p_37466_, p_37467_);
@@ -48,12 +47,6 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
 
     @Override
     public void tick() {
-        if(this.isCharging()){
-            this.chargedTick++;
-            if(this.chargedTick%5==0){
-                this.setChargedLevel(this.getChargedLevel()+1);
-            }
-        }
         if (!this.level().isClientSide()) {
             HitResult result = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
             if (result.getType() == HitResult.Type.MISS && this.isAlive()) {
@@ -86,6 +79,11 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
     @Override
     public EntityDimensions getDimensions(Pose p_19975_) {
         return EntityDimensions.scalable(0.5F+3.0F*this.getChargedLevel()/10,0.2F);
+    }
+    public boolean upgrade(){
+        int oldLevel=this.getChargedLevel();
+        this.setChargedLevel(oldLevel+1);
+        return this.getChargedLevel()!=oldLevel;
     }
 
     @Override

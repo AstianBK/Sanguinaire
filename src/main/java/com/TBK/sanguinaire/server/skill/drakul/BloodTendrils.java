@@ -31,12 +31,12 @@ public class BloodTendrils extends SkillAbstract {
     public void stopSkillAbstract(SkillPlayerCapability skill) {
         this.getTargets().clear();
         skill.getCooldowns().addCooldown(this,this.cooldown+this.extraCooldown);
-        this.extraCooldown=0;
     }
 
     @Override
     public void startSkillAbstract(SkillPlayerCapability skill) {
         super.startSkillAbstract(skill);
+        this.extraCooldown=0;
         skill.getPlayer().level().getEntitiesOfClass(LivingEntity.class,skill.getPlayer().getBoundingBox().inflate(10.0D),e->e!=skill.getPlayer()).forEach(this::addTarget);
     }
 }
