@@ -24,6 +24,9 @@ public class SGItems {
     public static final RegistryObject<Item> ANCIENT_BLOOD = ITEMS.register("ancient_blood",
             ()-> new AncientBloodItem(new Item.Properties().rarity(Rarity.UNCOMMON).food(new FoodProperties.Builder().alwaysEat().nutrition(0).fast().build()).stacksTo(1)));
 
+    public static final RegistryObject<Item> GOLD_GOBLET = ITEMS.register("gold_goblet",
+            ()-> new Item(new Item.Properties().stacksTo(1)));
+
     public static final RegistryObject<Item> CRIMSON_MIRROR = ITEMS.register("crimson_mirror",
             ()-> new Item(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> MUSIC_DISC_WASTED_BLOOD = ITEMS.register("music_disc_vamp",()->new RecordItem(14, SoundEvents.MUSIC_DISC_RELIC, (new Item.Properties()).stacksTo(1).rarity(Rarity.RARE), 218));
