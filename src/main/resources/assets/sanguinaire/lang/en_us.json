@@ -1,3 +1,10 @@
 {
+  "item.sanguinaire.ancient_blood": "Elder Vampire Blood",
+  "item.sanguinaire.vampire_heart": "Vampire Heart",
+  "item.sanguinaire.crimson_mirror": "Crimson Mirror",
+  "item.sanguinaire.music_disc_vamp": "Music Disc",
 
+  "itemGroup.sanguinarieTab": "Sanguinaire",
+
+  "item.sanguinaire.music_disc_vamp.desc": "Ivan Duch - Wasted Blood"
 }
