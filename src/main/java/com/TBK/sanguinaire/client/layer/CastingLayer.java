@@ -46,7 +46,6 @@ public class CastingLayer<T extends Player,M extends EntityModel<T>> extends Ren
                 PoseStack.Pose posestack$pose = pMatrixStack.last();
                 drawSlash(posestack$pose,pEntity,pBuffer,pPackedLight,width,4);
                 pMatrixStack.popPose();
-
             }
         }
     }

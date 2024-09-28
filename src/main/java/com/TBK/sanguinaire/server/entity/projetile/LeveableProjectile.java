@@ -42,6 +42,11 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
     }
 
     @Override
+    protected boolean canHitEntity(Entity p_37250_) {
+        return super.canHitEntity(p_37250_) && !this.isCharging();
+    }
+
+    @Override
     public void tick() {
         if(this.isCharging()){
             this.chargedTick++;
@@ -70,8 +75,7 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
         double d4 = vec3.horizontalDistance();
 
         this.setXRot((float)(Mth.atan2(d6, d4) * (double)(180F / (float)Math.PI)));
-        this.setXRot(lerpRotation(this.xRotO, this.getXRot()));
-        this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
+        this.setYRot(this.getYRot());
 
         this.setDeltaMovement(vec3);
 

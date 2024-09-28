@@ -8,10 +8,7 @@ import com.TBK.sanguinaire.common.registry.SGAttribute;
 import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.manager.*;
 import com.TBK.sanguinaire.server.network.PacketHandler;
-import com.TBK.sanguinaire.server.network.messager.PacketConvertVampire;
-import com.TBK.sanguinaire.server.network.messager.PacketHandlerPowers;
-import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
-import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodLiving;
+import com.TBK.sanguinaire.server.network.messager.*;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +19,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -85,12 +84,16 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.setIsVampire(!isVampire);
         if(!isVampire){
             this.age=0;
-            this.setGeneration(1);
+            this.setGeneration(10);
             this.setClan(Clan.DRAKUL);
         }
         if(!this.level.isClientSide){
             PacketHandler.sendToPlayer(new PacketConvertVampire(isVampire), (ServerPlayer) this.player);
         }
+    }
+
+    public int getMaxBlood(){
+        return ((this.age/10)*2)+((11-this.generation)*2);
     }
 
     @Override
@@ -106,14 +109,14 @@ public class VampirePlayerCapability implements IVampirePlayer {
     @Override
     public void bite(Player player, Entity target) {
         BiterEntityCap cap=SGCapability.getEntityEntity(target, BiterEntityCap.class);
-        if(cap!=null && !cap.unBlooded()){
+        if(cap!=null && !cap.unBlooded() && this.getBlood()<this.getMaxBlood()){
             this.drainBlood(1);
             this.loseBlood=6000;
             cap.onBite(this,target);
             player.level().playSound(null,target, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
         }
         if(this.level.isClientSide){
-            this.clientDrink=20;
+            this.clientDrink=10;
             PacketHandler.sendToServer(new PacketSyncBloodLiving(target.getId(),target.getUUID()));
         }
     }
@@ -124,7 +127,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     }
     public void drainBlood(int blood){
         double bloodActually=player.getAttributeValue(SGAttribute.BLOOD);
-        double finalBlood=Math.min(blood+bloodActually,20);
+        double finalBlood=Math.min(blood+bloodActually,this.getMaxBlood());
         this.setBlood(finalBlood);
     }
     public double getBlood(){
@@ -218,7 +221,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     public void syncCap(Player player){
         if(player instanceof ServerPlayer serverPlayer){
             this.getLimbsPartRegeneration().syncPlayer();
-            PacketHandler.sendToPlayer(new PacketConvertVampire(!this.isVampire),serverPlayer);
+            PacketHandler.sendToPlayer(new PacketSyncVampireData(this.age,this.generation,this.isVampire),serverPlayer);
         }
     }
 
@@ -260,7 +263,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
         tag.putBoolean("isVampire",this.isVampire);
         tag.putInt("generation",this.generation);
         tag.putString("clan",this.clan.toString());
-        tag.putInt("loseBlood",this.loseBlood);
         tag.putDouble("blood",this.getBlood());
         return tag;
     }
@@ -270,7 +272,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.isVampire=nbt.getBoolean("isVampire");
         this.generation=nbt.getInt("generation");
         this.clan=Clan.valueOf(nbt.getString("clan"));
-        this.loseBlood=nbt.getInt("loseBlood");
         this.setBlood(nbt.getDouble("blood"));
     }
 

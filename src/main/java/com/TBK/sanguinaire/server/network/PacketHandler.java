@@ -35,6 +35,12 @@ public class PacketHandler {
                 .decoder(PacketConvertVampire::new)
                 .consumerNetworkThread(PacketConvertVampire::handle).add();
 
+        channel.messageBuilder(PacketSyncVampireData.class,index++)
+                .encoder(PacketSyncVampireData::toBytes)
+                .decoder(PacketSyncVampireData::new)
+                .consumerNetworkThread(PacketSyncVampireData::handle).add();
+
+
         channel.messageBuilder(PacketSyncLimbRegeneration.class,index++)
                 .encoder(PacketSyncLimbRegeneration::toBytes)
                 .decoder(PacketSyncLimbRegeneration::new)

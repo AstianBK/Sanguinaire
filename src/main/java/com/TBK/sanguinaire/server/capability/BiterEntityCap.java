@@ -1,6 +1,7 @@
 package com.TBK.sanguinaire.server.capability;
 
 import com.TBK.sanguinaire.common.api.IBiterEntity;
+import com.TBK.sanguinaire.server.network.HandlerParticles;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodEntity;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodLiving;
@@ -54,7 +55,7 @@ public class BiterEntityCap implements IBiterEntity {
         if(biter.isVampire){
             int lastBlood=Math.max(this.getBlood()-1,0);
             this.setBlood(lastBlood);
-
+            HandlerParticles.spawnBlood((LivingEntity) target);
         }
     }
 

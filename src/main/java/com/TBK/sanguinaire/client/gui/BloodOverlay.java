@@ -25,11 +25,18 @@ public class BloodOverlay implements IGuiOverlay {
             assert cap!=null;
             if (this.mc.gameMode.hasExperience() && this.mc.player.isAlive() && cap.isVampire()) {
                 int blood = (int) this.mc.player.getAttribute(SGAttribute.BLOOD_VALUE.get()).getValue();
-                int left = this.mc.getWindow().getGuiScaledWidth() / 2 + 91;
-                int top = this.mc.getWindow().getGuiScaledHeight() - ((ForgeGui) this.mc.gui).rightHeight;
-                for (int i = 0; i < 10; ++i) {
+                int maxBlood=(cap.getMaxBlood()/2);
+                for (int i = 0; i < maxBlood; ++i) {
+                    int top = this.mc.getWindow().getGuiScaledHeight() - ((ForgeGui) this.mc.gui).rightHeight;
+                    int left = this.mc.getWindow().getGuiScaledWidth() / 2 + 91;
+                    int i1= i%10;
+                    int i2= i/10;
                     int idx = i * 2 + 1;
-                    int x = left - i * 8 - 9;
+                    int x = left - i1 * 8 - 9;
+                    if(i>9){
+                        top-=i2*10;
+                    }
+
                     graphics.blit(icons, x, top, 0,  27, 9, 9);
 
                     if (idx < blood) {

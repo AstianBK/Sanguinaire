@@ -138,6 +138,8 @@ public class SkillAbstract {
         }
     }
     public void stopSkillAbstract(SkillPlayerCapability skill){
+        this.getTargets().clear();
+        skill.getCooldowns().addCooldown(this,this.cooldown);
     }
 
     public void setCooldownTimer(int cooldownTimer) {

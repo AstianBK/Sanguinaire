@@ -1,6 +1,8 @@
 package com.TBK.sanguinaire.common.registry;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.common.item.AncientBloodItem;
+import com.TBK.sanguinaire.common.item.VampireHeartItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.Foods;
 import net.minecraft.world.item.Item;
@@ -14,14 +16,12 @@ public class SGItems {
     public static final DeferredRegister<Item> ITEMS =
             DeferredRegister.create(ForgeRegistries.ITEMS, Sanguinaire.MODID);
 
-    public static final RegistryObject<Item> BLOOD_ORB = ITEMS.register("blood_orb",
-            ()-> new Item(new Item.Properties().stacksTo(1)));
 
     public static final RegistryObject<Item> VAMPIRE_HEART = ITEMS.register("vampire_heart",
-            ()-> new Item(new Item.Properties().food(Foods.DRIED_KELP).stacksTo(64)));
+            ()-> new VampireHeartItem(new Item.Properties().food(Foods.DRIED_KELP).stacksTo(64)));
 
     public static final RegistryObject<Item> ANCIENT_BLOOD = ITEMS.register("ancient_blood",
-            ()-> new Item(new Item.Properties().rarity(Rarity.UNCOMMON).food(Foods.GOLDEN_CARROT).stacksTo(1)));
+            ()-> new AncientBloodItem(new Item.Properties().rarity(Rarity.UNCOMMON).food(Foods.GOLDEN_CARROT).stacksTo(1)));
 
     public static final RegistryObject<Item> CRIMSON_MIRROR = ITEMS.register("crimson_mirror",
             ()-> new Item(new Item.Properties().stacksTo(1)));

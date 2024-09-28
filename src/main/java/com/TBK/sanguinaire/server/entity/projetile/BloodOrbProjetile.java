@@ -25,7 +25,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 
 
-public class BloodOrbProjetile extends LeveableProjectile implements ItemSupplier {
+public class BloodOrbProjetile extends LeveableProjectile {
     private static final EntityDataAccessor<ItemStack> DATA_ITEM_STACK = SynchedEntityData.defineId(BloodOrbProjetile.class, EntityDataSerializers.ITEM_STACK);
     private int discardTimer=0;
     public BloodOrbProjetile(EntityType<? extends ThrowableProjectile> p_37248_, Level p_37249_) {
@@ -46,25 +46,6 @@ public class BloodOrbProjetile extends LeveableProjectile implements ItemSupplie
         this.setOwner(owner);
         this.discardTimer=200;
     }
-    public void setItem(ItemStack p_37447_) {
-        if (!p_37447_.is(this.getDefaultItem()) || p_37447_.hasTag()) {
-            this.getEntityData().set(DATA_ITEM_STACK, p_37447_.copyWithCount(1));
-        }
-
-    }
-
-    protected Item getDefaultItem(){
-        return SGItems.BLOOD_ORB.get();
-    }
-
-    protected ItemStack getItemRaw() {
-        return new ItemStack(SGItems.BLOOD_ORB.get());
-    }
-    @Override
-    public ItemStack getItem() {
-        ItemStack itemstack = this.getItemRaw();
-        return itemstack.isEmpty() ? new ItemStack(this.getDefaultItem()) : itemstack;
-    }
 
     protected void defineSynchedData() {
         super.defineSynchedData();
@@ -73,17 +54,12 @@ public class BloodOrbProjetile extends LeveableProjectile implements ItemSupplie
 
     public void addAdditionalSaveData(CompoundTag p_37449_) {
         super.addAdditionalSaveData(p_37449_);
-        ItemStack itemstack = this.getItemRaw();
-        if (!itemstack.isEmpty()) {
-            p_37449_.put("Item", itemstack.save(new CompoundTag()));
-        }
+
 
     }
 
     public void readAdditionalSaveData(CompoundTag p_37445_) {
         super.readAdditionalSaveData(p_37445_);
-        ItemStack itemstack = ItemStack.of(p_37445_.getCompound("Item"));
-        this.setItem(itemstack);
     }
 
     @Override

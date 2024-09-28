@@ -81,9 +81,11 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public void setIsTransform(boolean isTransform){
         this.isTransform=isTransform;
     }
+
     public void setForm(Forms form){
         this.form=form;
     }
+
     public Forms getForm(){
         return this.form;
     }
@@ -108,6 +110,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public int getCastingTimer() {
         return this.castingTimer;
     }
+    
     @OnlyIn(Dist.CLIENT)
     public int getCastingClientTimer() {
         return this.castingClientTimer;
@@ -205,8 +208,6 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public void stopSkill(SkillAbstract power) {
         this.setLastUsingSkill(SkillAbstract.NONE);
         power.stopSkillAbstract(this);
-        power.getTargets().clear();
-        this.getCooldowns().addCooldown(power,power.cooldown);
         this.syncSkill(this.getPlayer());
     }
 
