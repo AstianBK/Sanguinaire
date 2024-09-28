@@ -7,6 +7,7 @@ import com.TBK.sanguinaire.common.registry.*;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.world.loot.LootModifiers;
 import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -43,6 +44,7 @@ public class Sanguinaire
         SGCreativeModeTab.TABS.register(modEventBus);
         SGEntityType.ENTITY_TYPES.register(modEventBus);
         SGEffect.MOB_EFFECT.register(modEventBus);
+        LootModifiers.register(modEventBus);
         SGSkillAbstract.init();
         SGSounds.register(modEventBus);
         PacketHandler.registerMessages();

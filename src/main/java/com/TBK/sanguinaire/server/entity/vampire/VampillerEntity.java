@@ -61,7 +61,7 @@ public class VampillerEntity extends Monster implements GeoEntity {
     private static final EntityDataAccessor<Boolean> IS_CASTING =
             SynchedEntityData.defineId(VampillerEntity.class, EntityDataSerializers.BOOLEAN);
 
-    private Map<CooldownInstance, String> cooldownSkill=new HashMap<>();
+    private Map<String,CooldownInstance > cooldownSkill=new HashMap<>();
     private Map<Integer,SkillAbstract> skills=new HashMap<>();
 
     private int attackTimer=0;
@@ -149,7 +149,10 @@ public class VampillerEntity extends Monster implements GeoEntity {
     public void tick() {
         super.tick();
         if(!this.cooldownSkill.isEmpty()){
-            this.cooldownSkill.forEach((c,s)->c.decrementBy(1));
+            this.cooldownSkill.entrySet().stream().filter((s)->{
+                s.getValue().decrement();
+                return s.getValue().getCooldownRemaining()<=0;
+            }).forEach(e->this.cooldownSkill.remove(e));
         }
         if(this.isCasting() && this.getTarget()!=null){
             this.castingTimer--;
@@ -163,7 +166,7 @@ public class VampillerEntity extends Monster implements GeoEntity {
                     orb.setChargedLevel(4);
                     orb.shoot(target.getX()-this.getX(),target.getY()-this.getY(),target.getZ()-this.getZ(),1.0F,1.0F);
                     this.level().addFreshEntity(orb);
-                    this.cooldownSkill.put(new CooldownInstance(200),skillAbstract.name);
+                    this.cooldownSkill.put(skillAbstract.name,new CooldownInstance(200));
                 }
             }
 
@@ -183,7 +186,7 @@ public class VampillerEntity extends Monster implements GeoEntity {
     public void addAdditionalSaveData(CompoundTag p_21484_) {
         super.addAdditionalSaveData(p_21484_);
         var listTag = new ListTag();
-        this.cooldownSkill.forEach((cooldown, spellId) -> {
+        this.cooldownSkill.forEach((spellId,cooldown) -> {
             if (cooldown.getCooldownRemaining() > 0) {
                 CompoundTag ct = new CompoundTag();
                 ct.putString("name", spellId);
@@ -204,7 +207,7 @@ public class VampillerEntity extends Monster implements GeoEntity {
                 listTag.forEach(tag -> {
                     CompoundTag t = (CompoundTag) tag;
                     String powerId = t.getString("name");
-                    this.cooldownSkill.put(new CooldownInstance(t),powerId);
+                    this.cooldownSkill.put(powerId,new CooldownInstance(t));
                 });
             }
         }
@@ -263,11 +266,12 @@ public class VampillerEntity extends Monster implements GeoEntity {
             double d0 = this.getAttackReachSqr(entity) + 5.0D;
             if (distance <= d0 && this.goalOwner.attackTimer <= 0) {
                 this.resetAttackCooldown();
+                this.goalOwner.doHurtTarget(entity);
                 this.goalOwner.level().playSound(null,this.goalOwner, SGSounds.VAMPILLER_HURT.get(), SoundSource.HOSTILE,1.5F,1.0F);
                 this.goalOwner.navigation.stop();
                 this.goalOwner.getLookControl().setLookAt(entity,30,30);
                 this.goalOwner.setYBodyRot(this.goalOwner.getYHeadRot());
-            }else if(distance<16.0F && !this.goalOwner.cooldownSkill.containsValue(this.goalOwner.skills.get(0).name)){
+            }else if(distance>16.0F && !this.goalOwner.cooldownSkill.containsValue(this.goalOwner.skills.get(0).name)){
                 int id=0;
                 SkillAbstract skillAbstract=this.goalOwner.skills.get(id);
                 this.goalOwner.setIsCasting(true);

@@ -29,7 +29,7 @@ public class SkillOverlay implements IGuiOverlay {
                 int i = width / 2 -140;
 
                 graphics.pose().pushPose();
-                graphics.blit(WIDGETS_LOCATION, i - 91, height - 22, 0, 0, 101, 22);
+                graphics.blit(WIDGETS_LOCATION, i - 91, height - 22, 0, 0, 81, 22);
                 graphics.blit(WIDGETS_LOCATION, i - 91+ cap.getPosSelectSkillAbstract() *20, height - 22 , 0, 22, 24, 22);
                 graphics.pose().popPose();
 
