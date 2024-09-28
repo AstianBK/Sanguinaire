@@ -54,7 +54,6 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
                 this.setChargedLevel(this.getChargedLevel()+1);
             }
         }
-        super.tick();
         if (!this.level().isClientSide()) {
             HitResult result = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
             if (result.getType() == HitResult.Type.MISS && this.isAlive()) {
@@ -75,7 +74,8 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
         double d4 = vec3.horizontalDistance();
 
         this.setXRot((float)(Mth.atan2(d6, d4) * (double)(180F / (float)Math.PI)));
-        this.setYRot(this.getYRot());
+        this.setXRot(lerpRotation(this.xRotO, this.getXRot()));
+        this.setYRot(lerpRotation(this.yRotO, this.getYRot()));
 
         this.setDeltaMovement(vec3);
 
