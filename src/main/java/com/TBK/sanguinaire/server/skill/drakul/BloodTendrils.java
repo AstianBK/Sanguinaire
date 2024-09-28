@@ -13,17 +13,20 @@ public class BloodTendrils extends SkillAbstract {
     @Override
     public void tick(SkillPlayerCapability player) {
         super.tick(player);
+        boolean flag=player.getPlayer().tickCount%5==0;
         if(!player.getPlayer().level().isClientSide){
             this.getTargets().forEach(target->{
                 target.setDeltaMovement(0.0F,0.2f,0.0f);
-                if(player.getPlayer().tickCount%5==0){
+                if(flag){
                     if(target.hurt(player.getPlayer().damageSources().magic(),3)){
-                        player.getPlayer().heal(3);
+                        player.getPlayer().setHealth(player.getPlayer().getHealth()+3);
                         player.getPlayerVampire().drainBlood(1);
-                        this.extraCooldown+=20;
                     }
                 }
             });
+        }
+        if(flag){
+            this.extraCooldown+=50;
         }
     }
 
@@ -36,7 +39,12 @@ public class BloodTendrils extends SkillAbstract {
     @Override
     public void startSkillAbstract(SkillPlayerCapability skill) {
         super.startSkillAbstract(skill);
+        int level=skill.getPlayerVampire().age/10;
+        skill.getPlayer().level().getEntitiesOfClass(LivingEntity.class,skill.getPlayer().getBoundingBox().inflate(10.0D),e->e!=skill.getPlayer()).forEach(e->{
+            if(this.getTargets().size()<3+level){
+                this.addTarget(e);
+            }
+        });
         this.extraCooldown=0;
-        skill.getPlayer().level().getEntitiesOfClass(LivingEntity.class,skill.getPlayer().getBoundingBox().inflate(10.0D),e->e!=skill.getPlayer()).forEach(this::addTarget);
     }
 }

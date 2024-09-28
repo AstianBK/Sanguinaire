@@ -1,5 +1,8 @@
 package com.TBK.sanguinaire.server.manager;
 
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+
 public class CooldownInstance {
     private int cooldownRemaining;
     private final int powerCooldown;
@@ -36,5 +39,16 @@ public class CooldownInstance {
         }
 
         return cooldownRemaining / (float) powerCooldown;
+    }
+
+    public CompoundTag saveNBTData(CompoundTag tag) {
+        tag.putInt("cooldown", this.getPowerCooldown());
+        tag.putInt("cooldown_remaining", this.getCooldownRemaining());
+        return tag;
+    }
+
+    public CooldownInstance(CompoundTag tag) {
+        this.powerCooldown= tag.getInt("cooldown");
+        this.cooldownRemaining = tag.getInt("cooldown_remaining");
     }
 }

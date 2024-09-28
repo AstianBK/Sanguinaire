@@ -3,13 +3,12 @@ package com.TBK.sanguinaire.common.api;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public interface IVampirePlayer extends INBTSerializable<CompoundTag> {
     boolean isVampire();
-    void loseBlood(int blood);
+    boolean loseBlood(int blood);
     void setIsVampire(boolean bol);
     void setPlayer(Player player);
     Player getPlayer();

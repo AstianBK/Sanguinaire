@@ -2,6 +2,7 @@ package com.TBK.sanguinaire;
 
 import com.TBK.sanguinaire.client.renderer.BloodOrbRenderer;
 import com.TBK.sanguinaire.client.renderer.SlashBloodRenderer;
+import com.TBK.sanguinaire.client.renderer.VampillerRenderer;
 import com.TBK.sanguinaire.common.registry.*;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
@@ -15,7 +16,6 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -69,6 +69,8 @@ public class Sanguinaire
     private void registerRenderers(FMLCommonSetupEvent event){
         EntityRenderers.register(SGEntityType.BLOOD_SLASH.get(), SlashBloodRenderer::new);
         EntityRenderers.register(SGEntityType.BLOOD_ORB.get(), BloodOrbRenderer::new);
+        EntityRenderers.register(SGEntityType.VAMPILLER.get(), VampillerRenderer::new);
+
     }
 
 

@@ -55,7 +55,7 @@ public class PacketKeySync implements Packet<PacketListener>{
                 assert skillPlayerCapability != null;
                 if(this.action==0){
                     skillPlayerCapability.stopCasting(player);
-                }else {
+                }else if(this.action==1){
                     skillPlayerCapability.startCasting(player);
                 }
             }

@@ -66,7 +66,7 @@
 		"vampiller_drakul.legs2": {
 			"loop": true
 		},
-		"vampiller_drakul.bloodorb": {
+		"vampiller_drakul.blood_orb": {
 			"animation_length": 0.5,
 			"bones": {
 				"head": {

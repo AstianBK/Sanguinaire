@@ -10,7 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 
-public class ChargedSkill extends SkillAbstract {
+public abstract class ChargedSkill extends SkillAbstract {
     public int castingProjectileId=-1;
     public ChargedSkill(String name,int castingDuration,int cooldown,int costBloodBase) {
         super(name, 0 ,castingDuration, cooldown, 1, false, false, false, true, false,costBloodBase);
@@ -24,16 +24,18 @@ public class ChargedSkill extends SkillAbstract {
         }
     }
 
-    public void summon(SkillPlayerCapability skill){
-    }
+    public abstract void summon(SkillPlayerCapability skill);
+
     @Override
     public void tick(SkillPlayerCapability skill) {
         super.tick(skill);
         Entity entity=skill.getPlayer().level().getEntity(this.castingProjectileId);
         if(skill.getCastingTimer()%5==0){
             if(entity instanceof LeveableProjectile projectile){
-                if(projectile.upgrade()){
-                    skill.getPlayerVampire().loseBlood(1);
+                if(skill.getPlayerVampire().loseBlood(1)){
+                    projectile.upgrade();
+                }else {
+                    skill.stopCasting(skill.getPlayer());
                 }
             }
         }

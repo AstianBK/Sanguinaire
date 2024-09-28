@@ -26,7 +26,7 @@ public class BloodOrbRenderer<T extends BloodOrbProjetile> extends EntityRendere
     public void render(T pEntity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
         pMatrixStack.pushPose();
         pMatrixStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-        pMatrixStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+        pMatrixStack.mulPose(Axis.XP.rotationDegrees(90.0F));
 
         float width=0.5F+pEntity.getBbWidth()*pEntity.getChargedLevel()/10;
 

@@ -18,12 +18,15 @@ public class SGSkillAbstract {
         return POWERS.put(name,power);
     }
 
+    public static BloodTendrils BLOOD_TENDRILS=new BloodTendrils();
+    public static BloodSlash BLOOD_SLASH=new BloodSlash();
+    public static BloodOrb BLOOD_ORB=new BloodOrb();
+    public static BatForm TRANSFORM_BAT=new BatForm();
     public static void init(){
-        register(new ResourceLocation(Sanguinaire.MODID,"blood_tendrils"),new BloodTendrils());
-        register(new ResourceLocation(Sanguinaire.MODID,"blood_slash"),new BloodSlash());
-        register(new ResourceLocation(Sanguinaire.MODID,"blood_orb"),new BloodOrb());
-        register(new ResourceLocation(Sanguinaire.MODID,"transform_bat"),new BatForm());
-
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_tendrils"),BLOOD_TENDRILS);
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_slash"),BLOOD_SLASH);
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_orb"),BLOOD_ORB);
+        register(new ResourceLocation(Sanguinaire.MODID,"transform_bat"),TRANSFORM_BAT);
     }
 
     public static SkillAbstract getSkillAbstractForName(String name){

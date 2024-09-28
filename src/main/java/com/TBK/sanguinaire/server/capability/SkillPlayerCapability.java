@@ -53,6 +53,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public ActiveEffectDuration durationEffect=new ActiveEffectDuration();
     public boolean isTransform=false;
     public Forms form=Forms.NONE;
+
     public static SkillPlayerCapability get(Player player){
         return SGCapability.getEntityCap(player,SkillPlayerCapability.class);
     }
@@ -386,7 +387,6 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "controller", 0, state -> {
             Player player1=this.getPlayer();
-            SkillPlayerCapability replacedExecutioner = getPatch(player1,SkillPlayerCapability.class);
             if (player1 == null) return PlayState.STOP;
             boolean isMove= !(state.getLimbSwingAmount() > -0.15F && state.getLimbSwingAmount() < 0.15F);
             if(isMove && player1.isSprinting()) {

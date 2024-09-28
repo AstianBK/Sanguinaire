@@ -163,15 +163,6 @@ public class SkillAbstract {
         this.tag=tag;
     }
 
-
-    public boolean useResources() {
-        return false;
-    }
-
-    public Attributes getResources() {
-        return null;
-    }
-
     public void addAttributeModifiers(LivingEntity p_19478_, AttributeMap p_19479_, int p_19480_) {
         for(Map.Entry<Attribute, AttributeModifier> entry : this.attributeModifierMap.entrySet()) {
             AttributeInstance attributeinstance = p_19479_.getInstance(entry.getKey());

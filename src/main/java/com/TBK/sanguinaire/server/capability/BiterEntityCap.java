@@ -1,6 +1,7 @@
 package com.TBK.sanguinaire.server.capability;
 
 import com.TBK.sanguinaire.common.api.IBiterEntity;
+import com.TBK.sanguinaire.server.entity.vampire.VampillerEntity;
 import com.TBK.sanguinaire.server.network.HandlerParticles;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodEntity;
@@ -9,6 +10,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobType;
+import net.minecraft.world.entity.animal.AbstractGolem;
+import net.minecraft.world.entity.monster.Slime;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -20,9 +24,11 @@ import org.jetbrains.annotations.Nullable;
 public class BiterEntityCap implements IBiterEntity {
     public LivingEntity currentEntity;
     public int blood=0;
+    public int regBlood=0;
     @Override
     public boolean canBiter() {
-        return false;
+        return this.currentEntity!=null && this.currentEntity.getMobType()!= MobType.UNDEAD && !(this.currentEntity instanceof VampillerEntity) &&
+                !(this.currentEntity instanceof AbstractGolem) && !(this.currentEntity instanceof Slime) && !this.unBlooded();
     }
 
     @Override
@@ -55,8 +61,15 @@ public class BiterEntityCap implements IBiterEntity {
         if(biter.isVampire){
             int lastBlood=Math.max(this.getBlood()-1,0);
             this.setBlood(lastBlood);
-            HandlerParticles.spawnBlood((LivingEntity) target);
+            this.regBlood=0;
+            if(target.level().isClientSide){
+                HandlerParticles.spawnBlood((LivingEntity) target);
+            }
         }
+    }
+    public void regBlood(int blood){
+        int lastBlood=Math.min(this.getBlood()+blood,this.getMaxBlood());
+        this.setBlood(lastBlood);
     }
 
 
@@ -70,6 +83,14 @@ public class BiterEntityCap implements IBiterEntity {
             living.hurt(living.damageSources().generic(),5);
         }
         if(!living.level().isClientSide){
+            if(!this.unBlooded()){
+                if(this.getBlood()<this.getMaxBlood()){
+                    if(this.regBlood++>200){
+                        this.regBlood(2);
+                        this.regBlood=0;
+                    }
+                }
+            }
             PacketHandler.sendToAllTracking(new PacketSyncBloodEntity(this.getBlood(), living), (LivingEntity) living);
         }
     }
