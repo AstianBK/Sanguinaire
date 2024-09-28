@@ -2,6 +2,7 @@ package com.TBK.sanguinaire.server.entity.vampire;
 
 import com.TBK.sanguinaire.common.registry.SGSkillAbstract;
 import com.TBK.sanguinaire.common.registry.SGSounds;
+import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.entity.projetile.BloodOrbProjetile;
 import com.TBK.sanguinaire.server.manager.ActiveEffectDuration;
 import com.TBK.sanguinaire.server.manager.CooldownInstance;
@@ -23,10 +24,7 @@ import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.FloatGoal;
-import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
-import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
-import net.minecraft.world.entity.ai.goal.RandomStrollGoal;
+import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
@@ -47,9 +45,7 @@ import software.bernie.geckolib.core.animation.RawAnimation;
 import software.bernie.geckolib.core.object.PlayState;
 import software.bernie.geckolib.util.GeckoLibUtil;
 
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class VampillerEntity extends Monster implements GeoEntity {
     private final AnimatableInstanceCache cache= GeckoLibUtil.createInstanceCache(this);
@@ -61,12 +57,16 @@ public class VampillerEntity extends Monster implements GeoEntity {
     private static final EntityDataAccessor<Boolean> IS_CASTING =
             SynchedEntityData.defineId(VampillerEntity.class, EntityDataSerializers.BOOLEAN);
 
+    private static final EntityDataAccessor<Integer> STRATEGY =
+            SynchedEntityData.defineId(VampillerEntity.class, EntityDataSerializers.INT);
+
     private Map<String,CooldownInstance > cooldownSkill=new HashMap<>();
     private Map<Integer,SkillAbstract> skills=new HashMap<>();
 
     private int attackTimer=0;
     private int castingTimer=0;
     private int spellId=-1;
+    private int cooldownBite=0;
 
 
     public VampillerEntity(EntityType<? extends Monster> p_33002_, Level p_33003_) {
@@ -137,6 +137,21 @@ public class VampillerEntity extends Monster implements GeoEntity {
     }
 
     @Override
+    public boolean doHurtTarget(Entity p_21372_) {
+        if(!super.doHurtTarget(p_21372_)){
+            return false;
+        }
+        this.heal(3);
+        if(p_21372_ instanceof Player player){
+            VampirePlayerCapability cap=VampirePlayerCapability.get(player);
+            if(!cap.isVampire() && this.random.nextFloat()<0.05F){
+                cap.convert(false);
+            }
+        }
+        return true;
+    }
+
+    @Override
     public void handleEntityEvent(byte p_21375_) {
         if(p_21375_==4){
             this.setAttacking(true);
@@ -152,7 +167,7 @@ public class VampillerEntity extends Monster implements GeoEntity {
             this.cooldownSkill.entrySet().stream().filter((s)->{
                 s.getValue().decrement();
                 return s.getValue().getCooldownRemaining()<=0;
-            }).forEach(e->this.cooldownSkill.remove(e));
+            }).forEach(e->this.cooldownSkill.remove(e.getKey()));
         }
         if(this.isCasting() && this.getTarget()!=null){
             this.castingTimer--;
@@ -175,9 +190,14 @@ public class VampillerEntity extends Monster implements GeoEntity {
             this.castingTimer=0;
         }
 
+        if(this.cooldownBite>0){
+            this.cooldownBite--;
+        }
         if(this.isAttacking()){
             if(this.attackTimer--<=0){
                 this.setAttacking(false);
+                this.cooldownBite=400;
+                this.setFormBat(true);
             }
         }
     }
@@ -233,6 +253,18 @@ public class VampillerEntity extends Monster implements GeoEntity {
         this.goalSelector.addGoal(5, new RandomStrollGoal(this, 0.7));
         this.goalSelector.addGoal(4,new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6, new FloatGoal(this));
+        this.goalSelector.addGoal(3,new PanicGoal(this,10.0F){
+            @Override
+            public boolean canUse() {
+                return super.canUse() && VampillerEntity.this.cooldownBite>0 && VampillerEntity.this.isBat();
+            }
+
+            @Override
+            public void stop() {
+                super.stop();
+                VampillerEntity.this.setFormBat(false);
+            }
+        });
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
         this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
         this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
@@ -257,21 +289,27 @@ public class VampillerEntity extends Monster implements GeoEntity {
 
         @Override
         public boolean canUse() {
-            return super.canUse() && !this.goalOwner.isVehicle();
+            return super.canUse() && !this.goalOwner.isBat();
         }
 
+        @Override
+        public void tick() {
+            if(this.goalOwner.cooldownBite<=0){
+                super.tick();
+            }
+        }
 
         @Override
         protected void checkAndPerformAttack(@NotNull LivingEntity entity, double distance) {
             double d0 = this.getAttackReachSqr(entity) + 5.0D;
-            if (distance <= d0 && this.goalOwner.attackTimer <= 0) {
+            if (distance <= d0 && this.goalOwner.attackTimer <= 0 && this.goalOwner.cooldownBite<=0) {
                 this.resetAttackCooldown();
                 this.goalOwner.doHurtTarget(entity);
                 this.goalOwner.level().playSound(null,this.goalOwner, SGSounds.VAMPILLER_HURT.get(), SoundSource.HOSTILE,1.5F,1.0F);
                 this.goalOwner.navigation.stop();
                 this.goalOwner.getLookControl().setLookAt(entity,30,30);
                 this.goalOwner.setYBodyRot(this.goalOwner.getYHeadRot());
-            }else if(distance>16.0F && !this.goalOwner.cooldownSkill.containsValue(this.goalOwner.skills.get(0).name)){
+            }else if(distance>8.0F && this.goalOwner.skills.get(this.goalOwner.spellId) !=null && !this.goalOwner.cooldownSkill.containsKey(this.goalOwner.skills.get(this.goalOwner.spellId).name)){
                 int id=0;
                 SkillAbstract skillAbstract=this.goalOwner.skills.get(id);
                 this.goalOwner.setIsCasting(true);
@@ -286,6 +324,25 @@ public class VampillerEntity extends Monster implements GeoEntity {
             if(!this.goalOwner.level().isClientSide){
                 this.goalOwner.level().broadcastEntityEvent(this.goalOwner,(byte) 4);
             }
+        }
+    }
+    enum Strategy{
+        MELEE(0),
+        BACK(1),
+        RE_POS(2),
+        RANGER(3);
+        private static final Strategy[] BY_ID = Arrays.stream(values()).sorted(Comparator.comparingInt(Strategy::getId)).toArray(Strategy[]::new);
+
+        private final int id;
+        Strategy(int id){
+            this.id=id;
+        }
+
+        public int getId() {
+            return id;
+        }
+        public static Strategy byId(int p_30987_) {
+            return BY_ID[p_30987_ % BY_ID.length];
         }
     }
 }

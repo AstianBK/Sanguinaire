@@ -8,7 +8,11 @@ import software.bernie.geckolib.model.GeoModel;
 public class VampillerModel<T extends VampillerEntity> extends GeoModel<T> {
     @Override
     public ResourceLocation getModelResource(T animatable) {
-        return new ResourceLocation(Sanguinaire.MODID,"geo/vampiller.geo.json");
+        if(animatable.isBat()){
+            return new ResourceLocation(Sanguinaire.MODID,"geo/vampillerbat.geo.json");
+        }else {
+            return new ResourceLocation(Sanguinaire.MODID,"geo/vampiller.geo.json");
+        }
     }
 
     @Override

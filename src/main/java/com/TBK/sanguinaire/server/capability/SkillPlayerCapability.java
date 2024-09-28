@@ -83,6 +83,9 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         this.isTransform=isTransform;
     }
 
+    public boolean isVampire(){
+        return this.getPlayerVampire().isVampire();
+    }
     public void setForm(Forms form){
         this.form=form;
     }
