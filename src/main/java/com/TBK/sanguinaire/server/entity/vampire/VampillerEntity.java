@@ -418,7 +418,7 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
     }
 
     public SoundEvent getAmbientSound() {
-        return SoundEvents.ILLUSIONER_AMBIENT;
+        return SoundEvents.EVOKER_AMBIENT;
     }
     public SoundEvent getDeathSound() {
         return SoundEvents.EVOKER_DEATH;
