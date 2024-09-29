@@ -11,7 +11,7 @@ import java.util.Random;
 
 public class BatForm extends TransformSkill{
     public BatForm() {
-        super("transform_bat", 50, 1, true, 0);
+        super("transform_bat", 40, 1, true, 0);
         this.addAttributeModifier(Attributes.MOVEMENT_SPEED,"91AEAA56-376B-4498-935B-2F7F68070635", (double)0.5F, AttributeModifier.Operation.MULTIPLY_TOTAL);
     }
 
