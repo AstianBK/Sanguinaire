@@ -16,7 +16,6 @@ public abstract class PassiveAbstract extends SkillAbstract {
 
     @Override
     public void stopSkillAbstract(SkillPlayerCapability skill) {
-        System.out.print("\nSe removio los Effectos -"+(skill.getPlayer().level().isClientSide ? "client" : "server")+"\n");
         this.removeAttributeModifiers(skill.getPlayer(),skill.getPlayer().getAttributes(),skill.getPlayerVampire().age/5);
     }
 

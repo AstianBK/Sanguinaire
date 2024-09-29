@@ -2,5 +2,43 @@
   "parent": "item/generated",
   "textures": {
     "layer0": "sanguinaire:item/gold_goblet_0"
-  }
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "Blood": 0
+      },
+      "model": "sanguinaire:item/gold_goblet_0"
+    },
+    {
+      "predicate": {
+        "Blood": 1
+      },
+      "model": "sanguinaire:item/gold_goblet_1"
+    },
+    {
+      "predicate": {
+        "Blood": 2
+      },
+      "model": "sanguinaire:item/gold_goblet_1"
+    },
+    {
+      "predicate": {
+        "Blood": 3
+      },
+      "model": "sanguinaire:item/gold_goblet_2"
+    },
+    {
+      "predicate": {
+        "Blood": 4
+      },
+      "model": "sanguinaire:item/gold_goblet_3"
+    },
+    {
+      "predicate": {
+        "Blood": 5
+      },
+      "model": "sanguinaire:item/gold_goblet_4"
+    }
+  ]
 }

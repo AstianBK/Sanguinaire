@@ -2,6 +2,7 @@ package com.TBK.sanguinaire.common.registry;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.item.AncientBloodItem;
+import com.TBK.sanguinaire.common.item.GobletItem;
 import com.TBK.sanguinaire.common.item.VampireHeartItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
@@ -25,7 +26,7 @@ public class SGItems {
             ()-> new AncientBloodItem(new Item.Properties().rarity(Rarity.UNCOMMON).food(new FoodProperties.Builder().alwaysEat().nutrition(0).fast().build()).stacksTo(1)));
 
     public static final RegistryObject<Item> GOLD_GOBLET = ITEMS.register("gold_goblet",
-            ()-> new Item(new Item.Properties().stacksTo(1)));
+            ()-> new GobletItem(new Item.Properties().stacksTo(1).durability(10)));
 
     public static final RegistryObject<Item> CRIMSON_MIRROR = ITEMS.register("crimson_mirror",
             ()-> new Item(new Item.Properties().stacksTo(1)));

@@ -2,6 +2,7 @@ package com.TBK.sanguinaire.client.gui;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.registry.SGEffect;
+import com.TBK.sanguinaire.server.Util;
 import com.TBK.sanguinaire.server.capability.BiterEntityCap;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -33,7 +34,7 @@ public class BiteIndicator implements IGuiOverlay {
         Minecraft mc = Minecraft.getInstance();
         LocalPlayer player = mc.player;
         assert player != null;
-        if(mc.crosshairPickEntity!=null){
+        if(Util.isVampire(player) && mc.crosshairPickEntity!=null){
             if(mc.options.getCameraType().isFirstPerson()){
                 BiterEntityCap cap= SGCapability.getEntityEntity(mc.crosshairPickEntity, BiterEntityCap.class);
                 if(cap!=null && cap.canBiter()){
