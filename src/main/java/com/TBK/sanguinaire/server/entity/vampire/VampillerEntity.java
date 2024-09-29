@@ -12,6 +12,7 @@ import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import com.TBK.sanguinaire.server.skill.drakul.BloodOrb;
 import com.TBK.sanguinaire.server.skill.drakul.BloodSlash;
 import com.TBK.sanguinaire.server.skill.drakul.BloodTendrils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -21,6 +22,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -35,6 +37,7 @@ import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,10 +82,10 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
 
     public static AttributeSupplier setAttributes() {
         return Monster.createMonsterAttributes()
-                .add(Attributes.MAX_HEALTH, 25.0D)
+                .add(Attributes.MAX_HEALTH, 30.0D)
                 .add(Attributes.ATTACK_DAMAGE, 5.0D)
                 .add(Attributes.FOLLOW_RANGE, 40.D)
-                .add(Attributes.MOVEMENT_SPEED, 0.3D).build();
+                .add(Attributes.MOVEMENT_SPEED, 0.28D).build();
 
     }
 
@@ -408,6 +411,20 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
                 this.goalOwner.level().broadcastEntityEvent(this.goalOwner,(byte) 4);
             }
         }
+    }
+
+    public void playStepSound(BlockPos p_28864_, BlockState p_28865_) {
+        this.playSound(SoundEvents.WOLF_STEP, 1.0F, 1.0F);
+    }
+
+    public SoundEvent getAmbientSound() {
+        return SoundEvents.ILLUSIONER_AMBIENT;
+    }
+    public SoundEvent getDeathSound() {
+        return SoundEvents.EVOKER_DEATH;
+    }
+    public SoundEvent getHurtSound(DamageSource p_28872_) {
+        return SGSounds.VAMPILLER_HURT.get();
     }
     enum Strategy{
         MELEE(0),
