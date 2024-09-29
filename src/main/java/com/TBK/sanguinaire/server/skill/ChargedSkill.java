@@ -1,9 +1,12 @@
 package com.TBK.sanguinaire.server.skill;
 
+import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.entity.projetile.LeveableProjectile;
 import com.TBK.sanguinaire.server.entity.projetile.SlashBloodProjetile;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -33,11 +36,16 @@ public abstract class ChargedSkill extends SkillAbstract {
         if(skill.getCastingTimer()%10==0){
             if(entity instanceof LeveableProjectile projectile){
                 if(skill.getPlayerVampire().loseBlood(1)){
+                    skill.getPlayer().level().playSound(null,skill.getPlayer(), SoundEvents.CHICKEN_DEATH, SoundSource.PLAYERS,1.0F,1.0F);
                     int level=skill.getPlayerVampire().age/5;
                     projectile.upgrade(level);
+                    if(!skill.getPlayer().level().isClientSide){
+                        projectile.level().broadcastEntityEvent(projectile,(byte) 4);
+                    }
                 }else {
                     skill.stopCasting(skill.getPlayer());
                 }
+
             }
         }
         if(!skill.getPlayer().level().isClientSide){
@@ -47,6 +55,7 @@ public abstract class ChargedSkill extends SkillAbstract {
             }
         }
     }
+
 
     public Vec3 getPos(Vec3 initialVec, Player player){
         float f1 = player.getYHeadRot() * Mth.DEG_TO_RAD;

@@ -99,8 +99,13 @@ public class SlashBloodProjetile extends LeveableProjectile {
         this.setYRot(this.getYRot());
         this.setXRot(this.getXRot());
         if(this.level().isClientSide && !this.isCharging()){
+            float f1 = this.getYRot() * Mth.DEG_TO_RAD;
+            float f2 = Mth.sin(f1);
+            float f3 = Mth.cos(f1);
+            float f4 =Mth.lerp(((float) Math.sin(this.tickCount * 0.15F)*10 % 360)/360,-0.5F,0.5F);
             Vec3 delta=this.getDeltaMovement();
-            this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x, this.getY()-delta.y, this.getZ()-delta.z, 0.0F, 0.0F, 0.0F);
+            this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x+f2, this.getY()-delta.y +f4, this.getZ()-delta.z+f3, 0.0F, 0.0F, 0.0F);
+            this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x-f2, this.getY()-delta.y -f4, this.getZ()-delta.z-f3, 0.0F, 0.0F, 0.0F);
             if(this.tickCount%20==0){
                 this.spawnParticles();
             }

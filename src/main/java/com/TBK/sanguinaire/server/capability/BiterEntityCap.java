@@ -5,7 +5,6 @@ import com.TBK.sanguinaire.server.entity.vampire.VampillerEntity;
 import com.TBK.sanguinaire.server.network.HandlerParticles;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodEntity;
-import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodLiving;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;

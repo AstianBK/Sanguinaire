@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire.server.entity.projetile;
 
+import com.TBK.sanguinaire.server.network.HandlerParticles;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -74,6 +75,14 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
 
         this.setPos(d7, d2, d3);
         this.checkInsideBlocks();
+    }
+
+    @Override
+    public void handleEntityEvent(byte p_19882_) {
+        if(p_19882_==4){
+            HandlerParticles.spawnChargedBlood(this);
+        }
+        super.handleEntityEvent(p_19882_);
     }
 
     @Override

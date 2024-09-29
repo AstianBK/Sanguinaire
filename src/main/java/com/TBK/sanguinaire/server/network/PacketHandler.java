@@ -69,10 +69,10 @@ public class PacketHandler {
                 .decoder(PacketSyncBlood::new)
                 .consumerNetworkThread(PacketSyncBlood::handle).add();
 
-        channel.messageBuilder(PacketSyncBloodLiving.class,index++)
-                .encoder(PacketSyncBloodLiving::write)
-                .decoder(PacketSyncBloodLiving::new)
-                .consumerNetworkThread(PacketSyncBloodLiving::handle).add();
+        channel.messageBuilder(PacketSyncBiteTarget.class,index++)
+                .encoder(PacketSyncBiteTarget::write)
+                .decoder(PacketSyncBiteTarget::new)
+                .consumerNetworkThread(PacketSyncBiteTarget::handle).add();
 
         channel.registerMessage(index++, PacketHandlerParticles.class, PacketHandlerParticles::write,
                 PacketHandlerParticles::new, PacketHandlerParticles::handle);

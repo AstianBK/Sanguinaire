@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire.server.capability;
 
+import com.TBK.sanguinaire.common.item.GobletItem;
 import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.common.api.Clan;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
@@ -12,10 +13,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -112,16 +115,32 @@ public class VampirePlayerCapability implements IVampirePlayer {
     @Override
     public void bite(Player player, Entity target) {
         BiterEntityCap cap=SGCapability.getEntityEntity(target, BiterEntityCap.class);
-        if(cap!=null && cap.canBiter() && this.getBlood()<this.getMaxBlood()){
-            this.drainBlood(1);
-            this.hugeTick=0;
-            cap.onBite(this,target);
-            player.level().playSound(null,target, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
+        if(cap!=null && cap.canBiter()){
+            if(this.getBlood()<this.getMaxBlood()){
+                this.drainBlood(1);
+                this.hugeTick=0;
+                player.level().playSound(null,target, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
+            }else if(this.canFillGobletItem(player)){
+                ItemStack goblet=getGobletInHand(player);
+                int finalBlood =GobletItem.getBlood(goblet)+1;
+                cap.onBite(this,target);
+                GobletItem.setBlood(goblet, finalBlood);
+                if(finalBlood==10){
+                    player.level().playSound(null,target, SoundEvents.CHICKEN_DEATH, SoundSource.PLAYERS,1.0F,1.0F);
+                }
+            }
         }
         if(this.level.isClientSide){
             this.clientDrink=10;
-            PacketHandler.sendToServer(new PacketSyncBloodLiving(target.getId(),target.getUUID()));
+            PacketHandler.sendToServer(new PacketSyncBiteTarget(target.getId(),target.getUUID()));
         }
+    }
+    public ItemStack getGobletInHand(Player player){
+        return GobletItem.canFillGoblet(player.getMainHandItem()) ? player.getMainHandItem()  : player.getOffhandItem();
+    }
+
+    public boolean canFillGobletItem(Player player){
+        return GobletItem.canFillGoblet(player.getMainHandItem()) || GobletItem.canFillGoblet(player.getOffhandItem());
     }
     public boolean loseBlood(int blood){
         double bloodActually=player.getAttributeValue(SGAttribute.BLOOD);
