@@ -78,7 +78,7 @@ public class SlashBloodProjetile extends LeveableProjectile {
 
             this.piercingIgnoreEntityIds.add(p_37259_.getEntity().getId());
 
-            if (living.hurt(damageSources().generic(), 3)){
+            if (living.hurt(damageSources().indirectMagic(this,this.getOwner()), 1+1.0F*this.getChargedLevel()+0.5F*this.getPowerLevel())){
                 if (!living.isAlive() && this.piercedAndKilledEntities != null) {
                     this.piercedAndKilledEntities.add(living);
                 }
@@ -98,7 +98,7 @@ public class SlashBloodProjetile extends LeveableProjectile {
         }
         this.setYRot(this.getYRot());
         this.setXRot(this.getXRot());
-        if(this.level().isClientSide){
+        if(this.level().isClientSide && !this.isCharging()){
             Vec3 delta=this.getDeltaMovement();
             this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x, this.getY()-delta.y, this.getZ()-delta.z, 0.0F, 0.0F, 0.0F);
             if(this.tickCount%20==0){

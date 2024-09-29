@@ -30,10 +30,11 @@ public abstract class ChargedSkill extends SkillAbstract {
     public void tick(SkillPlayerCapability skill) {
         super.tick(skill);
         Entity entity=skill.getPlayer().level().getEntity(this.castingProjectileId);
-        if(skill.getCastingTimer()%5==0){
+        if(skill.getCastingTimer()%10==0){
             if(entity instanceof LeveableProjectile projectile){
                 if(skill.getPlayerVampire().loseBlood(1)){
-                    projectile.upgrade();
+                    int level=skill.getPlayerVampire().age/5;
+                    projectile.upgrade(level);
                 }else {
                     skill.stopCasting(skill.getPlayer());
                 }

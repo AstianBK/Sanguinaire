@@ -88,7 +88,7 @@ public class BloodOrbProjetile extends LeveableProjectile {
     protected void onHitEntity(EntityHitResult p_37259_) {
         super.onHitEntity(p_37259_);
         if(p_37259_.getEntity() instanceof LivingEntity living){
-            living.hurt(damageSources().indirectMagic(this,this.getOwner()), 5+1.5F*this.getPowerLevel());
+            living.hurt(damageSources().indirectMagic(this,this.getOwner()), 1+1.0F*this.getChargedLevel()+0.5F*this.getPowerLevel());
         }
     }
 
@@ -104,7 +104,7 @@ public class BloodOrbProjetile extends LeveableProjectile {
         if(this.discardTimer--<=0){
             this.discard();
         }
-        if(this.level().isClientSide){
+        if(this.level().isClientSide && !this.isCharging()){
             Vec3 delta=this.getDeltaMovement();
             this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x, this.getY()-delta.y, this.getZ()-delta.z, 0.0F, 0.0F, 0.0F);
         }

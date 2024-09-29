@@ -4,10 +4,9 @@ import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.client.gui.*;
 import com.TBK.sanguinaire.client.layer.CastingLayer;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
+import com.TBK.sanguinaire.client.layer.VampireLayer;
 import com.TBK.sanguinaire.client.particle.custom.*;
 import com.TBK.sanguinaire.common.registry.SGParticles;
-import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -15,7 +14,6 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import org.jetbrains.annotations.NotNull;
 
 @Mod.EventBusSubscriber(modid = Sanguinaire.MODID, bus = Mod.EventBusSubscriber.Bus.MOD,value = Dist.CLIENT)
 public class EventClient {
@@ -24,6 +22,7 @@ public class EventClient {
         event.getSkins().forEach(s -> {
             event.getSkin(s).addLayer(new RegenerationLayer(event.getSkin(s)));
             event.getSkin(s).addLayer(new CastingLayer(event.getSkin(s)));
+            event.getSkin(s).addLayer(new VampireLayer(event.getSkin(s)));
         });
     }
 

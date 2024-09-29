@@ -97,10 +97,10 @@ public class SkillAbstract {
         return this.targets;
     }
     public void tick(SkillPlayerCapability player){
-        this.effectSkillAbstractForTick(player.getPlayer());
+        this.effectSkillAbstractForTick(player);
     }
 
-    public void effectSkillAbstractForTick(Player player) {
+    public void effectSkillAbstractForTick(SkillPlayerCapability player) {
         this.updateAttributes(player);
     }
 
@@ -112,7 +112,7 @@ public class SkillAbstract {
 
     }
 
-    public void updateAttributes(Player player){
+    public void updateAttributes(SkillPlayerCapability player){
 
     }
     public boolean isCasting() {

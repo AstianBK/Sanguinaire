@@ -85,7 +85,7 @@ public class BiterEntityCap implements IBiterEntity {
         if(!living.level().isClientSide){
             if(!this.unBlooded()){
                 if(this.getBlood()<this.getMaxBlood()){
-                    if(this.regBlood++>200){
+                    if(this.regBlood++>6000){
                         this.regBlood(2);
                         this.regBlood=0;
                     }
@@ -104,12 +104,14 @@ public class BiterEntityCap implements IBiterEntity {
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putInt("blood",this.getBlood());
+        tag.putInt("regBlood",this.regBlood);
         return tag;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
         this.setBlood(nbt.getInt("blood"));
+        this.regBlood=nbt.getInt("regBlood");
     }
 
     public static class BiterEntityPlayerProvider implements ICapabilityProvider, ICapabilitySerializable<CompoundTag> {

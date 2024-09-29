@@ -80,9 +80,10 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
     public EntityDimensions getDimensions(Pose p_19975_) {
         return EntityDimensions.scalable(0.5F+3.0F*this.getChargedLevel()/10,0.2F);
     }
-    public boolean upgrade(){
+    public boolean upgrade(int level){
         int oldLevel=this.getChargedLevel();
         this.setChargedLevel(oldLevel+1);
+        this.setPowerLevel(level);
         return this.getChargedLevel()!=oldLevel;
     }
 

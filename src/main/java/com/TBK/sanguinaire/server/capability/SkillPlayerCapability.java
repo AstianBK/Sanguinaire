@@ -1,6 +1,7 @@
 package com.TBK.sanguinaire.server.capability;
 
 import com.TBK.sanguinaire.common.api.ISkillPlayer;
+import com.TBK.sanguinaire.server.Util;
 import com.TBK.sanguinaire.server.manager.*;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketHandlerPowers;
@@ -44,7 +45,8 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public SkillAbstract lastUsingSkillAbstract=SkillAbstract.NONE;
     Player player;
     Level level;
-    public SkillAbstracts powers=new SkillAbstracts(Maps.newHashMap());
+    public SkillAbstracts skills =new SkillAbstracts(Maps.newHashMap());
+    public SkillAbstracts passives=new SkillAbstracts(Maps.newHashMap());
     int posSelectSkillAbstract=0;
     int castingTimer=0;
     int castingClientTimer=0;
@@ -102,7 +104,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     @OnlyIn(Dist.CLIENT)
     @Override
     public SkillAbstract getSkillForHotBar(int pos) {
-        return this.powers.get(pos);
+        return this.skills.get(pos);
     }
 
     @Override
@@ -147,39 +149,44 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void tick(Player player) {
-        if(player instanceof ServerPlayer){
-            if (this.cooldowns.hasCooldownsActive()){
-                this.cooldowns.tick(1);
-            }
-            if(this.durationEffect.hasDurationsActive()){
-                this.durationEffect.tick(1);
-            }
-            PacketHandler.sendToPlayer(new PacketSyncPosHotBar(this.posSelectSkillAbstract), (ServerPlayer) player);
-        }else if(this.level.isClientSide){
-            if (this.cooldowns.hasCooldownsActive()){
-                this.cooldowns.tick(1);
-            }
-            if(this.durationEffect.hasDurationsActive()){
-                this.durationEffect.tickDurations(this);
-            }
-        }
-        if(!this.powers.getSkills().isEmpty()){
-            this.powers.getSkills().forEach(e->{
-                if(this.durationEffect.hasDurationForSkill(e.getSkillAbstract())){
-                    e.getSkillAbstract().tick(this);
-                    this.durationEffect.decrementDurationCount(e.getSkillAbstract());
-                }else if(e.getSkillAbstract().isPassive){
-                    e.getSkillAbstract().effectPassiveForTick(player);
+        if(Util.isVampire(player)){
+            if(player instanceof ServerPlayer){
+                if (this.cooldowns.hasCooldownsActive()){
+                    this.cooldowns.tick(1);
                 }
-            });
-        }
-        if(this.level.isClientSide){
-            if(this.castingClientTimer>0){
-                this.castingClientTimer--;
+                if(this.durationEffect.hasDurationsActive()){
+                    this.durationEffect.tick(1);
+                }
+                PacketHandler.sendToPlayer(new PacketSyncPosHotBar(this.posSelectSkillAbstract), (ServerPlayer) player);
+            }else if(this.level.isClientSide){
+                if (this.cooldowns.hasCooldownsActive()){
+                    this.cooldowns.tick(1);
+                }
+                if(this.durationEffect.hasDurationsActive()){
+                    this.durationEffect.tickDurations(this);
+                }
             }
-        }else {
-            if (this.isCasting()){
-                this.castingTimer--;
+            if(!this.skills.getSkills().isEmpty()){
+                this.skills.getSkills().forEach(e->{
+                    if(this.durationEffect.hasDurationForSkill(e.getSkillAbstract())){
+                        e.getSkillAbstract().tick(this);
+                        this.durationEffect.decrementDurationCount(e.getSkillAbstract());
+                    }
+                });
+            }
+            if(!this.passives.getSkills().isEmpty()){
+                this.passives.getSkills().forEach(e->{
+                    e.getSkillAbstract().tick(this);
+                });
+            }
+            if(this.level.isClientSide){
+                if(this.castingClientTimer>0){
+                    this.castingClientTimer--;
+                }
+            }else {
+                if (this.isCasting()){
+                    this.castingTimer--;
+                }
             }
         }
     }
@@ -197,10 +204,11 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         skillAbstracts.addSkillAbstracts(3,new BloodTendrils());
         skillAbstracts.addSkillAbstracts(4,SkillAbstract.NONE);
         this.setSetHotbar(skillAbstracts);
+        this.passives.addSkillAbstracts(0,new SpeedPassive());
     }
 
     public void setSetHotbar(SkillAbstracts skillAbstracts){
-        this.powers=skillAbstracts;
+        this.skills =skillAbstracts;
     }
 
     @Override
@@ -232,7 +240,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public SkillAbstracts getHotBarSkill() {
-        return this.powers;
+        return this.skills;
     }
 
     @Override
@@ -248,7 +256,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void upSkill() {
-        this.posSelectSkillAbstract=this.posSelectSkillAbstract+1>=this.powers.powers.size() ? 0 : this.posSelectSkillAbstract+1;
+        this.posSelectSkillAbstract=this.posSelectSkillAbstract+1>=this.skills.powers.size() ? 0 : this.posSelectSkillAbstract+1;
         if (this.getPlayer()!=null){
             this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al"+this.getSelectSkill().name));
         }
@@ -259,7 +267,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void downSkill() {
-        this.posSelectSkillAbstract=this.posSelectSkillAbstract-1<0 ? this.powers.powers.size()-1 : this.posSelectSkillAbstract-1;
+        this.posSelectSkillAbstract=this.posSelectSkillAbstract-1<0 ? this.skills.powers.size()-1 : this.posSelectSkillAbstract-1;
         if (this.getPlayer()!=null){
             this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al "+this.getSelectSkill().name));
         }
@@ -341,7 +349,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public CompoundTag serializeNBT() {
         CompoundTag tag=new CompoundTag();
         tag.putBoolean("isTransform",this.isTransform);
-        this.powers.save(tag);
+        this.skills.save(tag);
         tag.putInt("select_power",this.posSelectSkillAbstract);
         if(this.cooldowns.hasCooldownsActive()){
             tag.put("cooldowns",this.cooldowns.saveNBTData());
@@ -355,7 +363,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.powers=new SkillAbstracts(nbt);
+        this.skills =new SkillAbstracts(nbt);
         this.posSelectSkillAbstract=nbt.getInt("select_power");
         this.isTransform=nbt.getBoolean("isTransform");
         if(nbt.contains("cooldowns")){

@@ -36,7 +36,7 @@ public class BiteIndicator implements IGuiOverlay {
         if(mc.crosshairPickEntity!=null){
             if(mc.options.getCameraType().isFirstPerson()){
                 BiterEntityCap cap= SGCapability.getEntityEntity(mc.crosshairPickEntity, BiterEntityCap.class);
-                if(cap!=null){
+                if(cap!=null && cap.canBiter()){
                     float blood= (float) cap.getBlood() /cap.getMaxBlood();
                     int j = screenHeight / 2 + 4 ;
                     int k = screenWidth / 2 + 3;

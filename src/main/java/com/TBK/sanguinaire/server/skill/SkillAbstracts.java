@@ -19,8 +19,8 @@ public class SkillAbstracts {
     }
 
     public SkillAbstracts(CompoundTag tag){
-        if(tag.contains("powers",9)){
-            ListTag listTag = tag.getList("powers",10);
+        if(tag.contains("skills",9)){
+            ListTag listTag = tag.getList("skills",10);
             for(int i = 0 ; i<listTag.size() ; i++){
                 CompoundTag tag1=listTag.getCompound(i);
                 if(tag1.contains("name")){
@@ -45,7 +45,7 @@ public class SkillAbstracts {
             }
         }
         if(!listtag.isEmpty()){
-            tag.put("powers",listtag);
+            tag.put("skills",listtag);
         }
     }
 

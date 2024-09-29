@@ -83,6 +83,9 @@ public class VampirePlayerCapability implements IVampirePlayer {
             this.age=0;
             this.setGeneration(10);
             this.setClan(Clan.DRAKUL);
+        }else {
+            SkillPlayerCapability capability=this.getSkillCap(player);
+            capability.passives.getSkills().forEach(e->e.getSkillAbstract().stopSkillAbstract(capability));
         }
         if(!this.level.isClientSide){
             PacketHandler.sendToPlayer(new PacketConvertVampire(isVampire), (ServerPlayer) this.player);
@@ -170,7 +173,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 this.growTimer=0;
                 this.age++;
             }
-            if(this.isDurationEffectTick(player.tickCount,2+this.age/10)){
+            if(this.isDurationEffectTick(player.tickCount,2+this.age/10)  && !player.isOnFire()){
                 if (player.getHealth() < player.getMaxHealth()) {
                     float f = player.getHealth();
                     if (f > 0.0F) {

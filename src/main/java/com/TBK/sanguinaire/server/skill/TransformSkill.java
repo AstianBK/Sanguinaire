@@ -31,8 +31,8 @@ public abstract class TransformSkill extends SkillAbstract{
     }
 
     @Override
-    public void updateAttributes(Player player) {
-        this.addAttributeModifiers(player,player.getAttributes(),4);
+    public void updateAttributes(SkillPlayerCapability player) {
+        this.addAttributeModifiers(player.getPlayer(),player.getPlayer().getAttributes(),4);
     }
 
     public abstract Forms getForm();

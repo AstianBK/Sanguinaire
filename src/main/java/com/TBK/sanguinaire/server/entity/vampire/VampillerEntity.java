@@ -29,6 +29,7 @@ import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.monster.SpellcasterIllager;
 import net.minecraft.world.entity.npc.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +48,7 @@ import software.bernie.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
 
-public class VampillerEntity extends Monster implements GeoEntity {
+public class VampillerEntity extends Monster implements GeoEntity, RangedAttackMob {
     private final AnimatableInstanceCache cache= GeckoLibUtil.createInstanceCache(this);
     private static final EntityDataAccessor<Boolean> ATTACKING =
             SynchedEntityData.defineId(VampillerEntity.class, EntityDataSerializers.BOOLEAN);
@@ -67,6 +68,9 @@ public class VampillerEntity extends Monster implements GeoEntity {
     private int castingTimer=0;
     private int spellId=-1;
     private int cooldownBite=0;
+    private int convertBat=0;
+    private int avoidTimer=0;
+    private int transformBatClient=0;
 
 
     public VampillerEntity(EntityType<? extends Monster> p_33002_, Level p_33003_) {
@@ -86,10 +90,14 @@ public class VampillerEntity extends Monster implements GeoEntity {
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "controller", 0, state -> {
+            if(this.isBat())return PlayState.STOP;
             if(this.isAttacking()) {
-                state.getController().setAnimation(RawAnimation.begin().thenLoop("vampiller_drakul.bite"));
+                state.getController().setAnimationSpeed(2.5D);
+                state.getController().setAnimation(RawAnimation.begin().thenPlay("vampiller_drakul.bite"));
             }else if(this.isCasting()){
-                state.getController().setAnimation(RawAnimation.begin().thenLoop("vampiller_drakul.blood_orb"));
+                state.getController().setAnimation(RawAnimation.begin().thenPlay("vampiller_drakul.blood_orb"));
+            }else if(this.convertBat>0){
+                state.getController().setAnimation(RawAnimation.begin().thenPlay("vampiller_drakul.batform"));
             }else {
                 state.getController().setAnimationSpeed(this.isAggressive() ? 2.0D : 1.0D);
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("vampiller_drakul.idle"));
@@ -97,15 +105,24 @@ public class VampillerEntity extends Monster implements GeoEntity {
             return PlayState.CONTINUE;
         }));
         controllers.add(new AnimationController<>(this, "controller_legs", 0, state -> {
+            if(this.isBat())return PlayState.STOP;
             boolean isMove= !(state.getLimbSwingAmount() > -0.15F && state.getLimbSwingAmount() < 0.15F);
             if(isMove) {
-                state.getController().setAnimationSpeed(this.isAggressive() ? 2.0D : 1.0D);
+                state.getController().setAnimationSpeed(this.isAggressive() ? 3.0D : 1.0D);
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("vampiller_drakul.legs1"));
             }else {
                 state.getController().setAnimation(RawAnimation.begin().thenLoop("vampiller_drakul.legs2"));
             }
             return PlayState.CONTINUE;
         }));
+    }
+
+    @Override
+    public void onSyncedDataUpdated(EntityDataAccessor<?> p_21104_) {
+        super.onSyncedDataUpdated(p_21104_);
+        if(p_21104_.equals(FORM_BAT)){
+
+        }
     }
 
     public void setAttacking(boolean pAttacking){
@@ -119,14 +136,15 @@ public class VampillerEntity extends Monster implements GeoEntity {
     public void setFormBat(boolean pIsBat){
         this.entityData.set(FORM_BAT,pIsBat);
     }
+
     public boolean isBat(){
         return this.entityData.get(FORM_BAT);
     }
     public void setIsCasting(boolean pIsCasting){
-        this.entityData.set(FORM_BAT,pIsCasting);
+        this.entityData.set(IS_CASTING,pIsCasting);
     }
     public boolean isCasting(){
-        return this.entityData.get(FORM_BAT);
+        return this.entityData.get(IS_CASTING);
     }
     @Override
     protected void defineSynchedData() {
@@ -141,7 +159,6 @@ public class VampillerEntity extends Monster implements GeoEntity {
         if(!super.doHurtTarget(p_21372_)){
             return false;
         }
-        this.heal(3);
         if(p_21372_ instanceof Player player){
             VampirePlayerCapability cap=VampirePlayerCapability.get(player);
             if(!cap.isVampire() && this.random.nextFloat()<0.05F){
@@ -155,19 +172,32 @@ public class VampillerEntity extends Monster implements GeoEntity {
     public void handleEntityEvent(byte p_21375_) {
         if(p_21375_==4){
             this.setAttacking(true);
+        }else if (p_21375_==2){
+            this.convertBat=12;
+            this.cooldownBite=600;
+        }else if (p_21375_==8){
+            this.avoidTimer=150;
+            this.setFormBat(true);
+        } else if (p_21375_==0){
+            this.setIsCasting(true);
+            this.castingTimer=10;
+            this.spellId=0;
         }
         super.handleEntityEvent(p_21375_);
 
+    }
+
+    public boolean decrementCooldown(CooldownInstance c, int amount) {
+        c.decrementBy(amount);
+        return c.getCooldownRemaining() <= 0;
     }
 
     @Override
     public void tick() {
         super.tick();
         if(!this.cooldownSkill.isEmpty()){
-            this.cooldownSkill.entrySet().stream().filter((s)->{
-                s.getValue().decrement();
-                return s.getValue().getCooldownRemaining()<=0;
-            }).forEach(e->this.cooldownSkill.remove(e.getKey()));
+            var powers = this.cooldownSkill.entrySet().stream().filter(x -> decrementCooldown(x.getValue(), 1)).toList();
+            powers.forEach(power -> cooldownSkill.remove(power.getKey()));
         }
         if(this.isCasting() && this.getTarget()!=null){
             this.castingTimer--;
@@ -175,6 +205,7 @@ public class VampillerEntity extends Monster implements GeoEntity {
                 LivingEntity target=this.getTarget();
                 SkillAbstract skillAbstract=this.skills.get(this.spellId);
                 this.setIsCasting(false);
+                this.spellId=-1;
                 if(skillAbstract.equals(SGSkillAbstract.BLOOD_ORB)){
                     BloodOrbProjetile orb =new BloodOrbProjetile(this.level(),this,0);
                     orb.setPos(this.getEyePosition());
@@ -184,22 +215,52 @@ public class VampillerEntity extends Monster implements GeoEntity {
                     this.cooldownSkill.put(skillAbstract.name,new CooldownInstance(200));
                 }
             }
+        }
+        if(this.isAttacking()){
+            this.attackTimer--;
+            if(this.attackTimer==0){
+                this.setAttacking(false);
+                this.convertBat=12;
+                this.cooldownBite=600;
+                if(!this.level().isClientSide){
+                    this.level().broadcastEntityEvent(this,(byte) 2);
+                }
+            }
+        }
+        if(this.isDurationEffectTick(this.tickCount,5) && !this.isOnFire()){
+            if (this.getHealth() < this.getMaxHealth()) {
+                float f = this.getHealth();
+                if (f > 0.0F) {
+                    this.setHealth(f + 1);
+                }
+            }
+        }
+        if(this.convertBat>0){
+            this.convertBat--;
+            if(this.convertBat==2){
+                this.setFormBat(true);
+                this.avoidTimer=150;
+            }
+        }
 
-        }else if (this.getTarget()==null){
-            this.setIsCasting(false);
-            this.castingTimer=0;
+        if(this.isBat()){
+            this.avoidTimer--;
+            if (this.avoidTimer<=0){
+                this.setFormBat(false);
+            }
         }
 
         if(this.cooldownBite>0){
             this.cooldownBite--;
         }
-        if(this.isAttacking()){
-            if(this.attackTimer--<=0){
-                this.setAttacking(false);
-                this.cooldownBite=400;
-                this.setFormBat(true);
-            }
+
+        if(!this.canMove()){
+            this.getNavigation().stop();
         }
+        this.refreshDimensions();
+    }
+    public boolean canMove(){
+        return this.convertBat<=0 && !this.isCasting();
     }
 
     @Override
@@ -217,6 +278,10 @@ public class VampillerEntity extends Monster implements GeoEntity {
         p_21484_.put("cooldown",listTag);
     }
 
+    @Override
+    public EntityDimensions getDimensions(Pose p_21047_) {
+        return this.isBat() ? EntityDimensions.scalable(0.5F,0.5F) : super.getDimensions(p_21047_);
+    }
 
     @Override
     public void readAdditionalSaveData(CompoundTag p_21450_) {
@@ -249,20 +314,26 @@ public class VampillerEntity extends Monster implements GeoEntity {
     @Override
     protected void registerGoals() {
         this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
-        this.goalSelector.addGoal(2,new AttackGoal(this,1.0D,true));
+        this.goalSelector.addGoal(2,new AttackGoal(this,2.0D,true));
         this.goalSelector.addGoal(5, new RandomStrollGoal(this, 0.7));
         this.goalSelector.addGoal(4,new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6, new FloatGoal(this));
-        this.goalSelector.addGoal(3,new PanicGoal(this,10.0F){
+        this.goalSelector.addGoal(2, new RangedAttackGoal(this, 1.0D, 15, 10.0F){
             @Override
             public boolean canUse() {
-                return super.canUse() && VampillerEntity.this.cooldownBite>0 && VampillerEntity.this.isBat();
+                return super.canUse() && VampillerEntity.this.cooldownBite>0 && !VampillerEntity.this.isCasting();
             }
-
+        });
+        this.goalSelector.addGoal(1,new AvoidEntityGoal<>(this,LivingEntity.class, 15.0f, 3d, 3d){
             @Override
-            public void stop() {
-                super.stop();
-                VampillerEntity.this.setFormBat(false);
+            public boolean canUse() {
+                if(this.mob.getTarget()==null){
+                    return false;
+                }else if(!super.canUse()){
+                    return false;
+                }
+                this.toAvoid=this.mob.getTarget();
+                return  VampillerEntity.this.avoidTimer>0;
             }
         });
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
@@ -278,6 +349,26 @@ public class VampillerEntity extends Monster implements GeoEntity {
         return this.cache;
     }
 
+    @Override
+    public void performRangedAttack(LivingEntity p_33317_, float p_33318_) {
+        int id=0;
+        this.setIsCasting(true);
+        this.spellId=id;
+        this.castingTimer=10;
+        if(!this.level().isClientSide){
+            this.level().broadcastEntityEvent(this,(byte) 0);
+        }
+    }
+
+    public boolean isDurationEffectTick(int p_19455_, int p_19456_) {
+        int k = 100 >> p_19456_;
+        if (k > 0) {
+            return p_19455_ % k == 0;
+        } else {
+            return true;
+        }
+    }
+
     static class AttackGoal extends MeleeAttackGoal {
         private final VampillerEntity goalOwner;
 
@@ -289,14 +380,12 @@ public class VampillerEntity extends Monster implements GeoEntity {
 
         @Override
         public boolean canUse() {
-            return super.canUse() && !this.goalOwner.isBat();
+            return super.canUse() && !this.goalOwner.isBat() && this.goalOwner.cooldownBite<=0;
         }
 
         @Override
         public void tick() {
-            if(this.goalOwner.cooldownBite<=0){
-                super.tick();
-            }
+            super.tick();
         }
 
         @Override
@@ -309,12 +398,6 @@ public class VampillerEntity extends Monster implements GeoEntity {
                 this.goalOwner.navigation.stop();
                 this.goalOwner.getLookControl().setLookAt(entity,30,30);
                 this.goalOwner.setYBodyRot(this.goalOwner.getYHeadRot());
-            }else if(distance>8.0F && this.goalOwner.skills.get(this.goalOwner.spellId) !=null && !this.goalOwner.cooldownSkill.containsKey(this.goalOwner.skills.get(this.goalOwner.spellId).name)){
-                int id=0;
-                SkillAbstract skillAbstract=this.goalOwner.skills.get(id);
-                this.goalOwner.setIsCasting(true);
-                this.goalOwner.spellId=id;
-                this.goalOwner.castingTimer=skillAbstract.castingDuration;
             }
         }
 
