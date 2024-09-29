@@ -6,6 +6,7 @@ import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -44,7 +45,7 @@ public class GobletItem extends Item {
                 if(cap!=null && cap.isVampire()){
                     if(cap.getBlood()<cap.getMaxBlood()){
                         cap.drainBlood(1);
-                        p_41432_.playSound(null,p_41433_, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
+                        p_41432_.playSound(null,p_41433_, SoundEvents.HONEY_DRINK, SoundSource.PLAYERS,1.0F,1.0F);
                         setBlood(stack,blood-1);
                     }
                 }

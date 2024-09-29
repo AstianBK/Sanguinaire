@@ -36,7 +36,7 @@ public abstract class ChargedSkill extends SkillAbstract {
         if(skill.getCastingTimer()%10==0){
             if(entity instanceof LeveableProjectile projectile){
                 if(skill.getPlayerVampire().loseBlood(1)){
-                    skill.getPlayer().level().playSound(null,skill.getPlayer(), SoundEvents.CHICKEN_DEATH, SoundSource.PLAYERS,1.0F,1.0F);
+                    skill.getPlayer().level().playSound(null,skill.getPlayer(), SoundEvents.HONEYCOMB_WAX_ON, SoundSource.PLAYERS,1.0F,1.0F);
                     int level=skill.getPlayerVampire().age/5;
                     projectile.upgrade(level);
                     if(!skill.getPlayer().level().isClientSide){

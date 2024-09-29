@@ -126,7 +126,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 cap.onBite(this,target);
                 GobletItem.setBlood(goblet, finalBlood);
                 if(finalBlood==10){
-                    player.level().playSound(null,target, SoundEvents.CHICKEN_DEATH, SoundSource.PLAYERS,1.0F,1.0F);
+                    player.level().playSound(null,target, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS,1.0F,1.0F);
                 }
             }
         }
