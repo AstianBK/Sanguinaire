@@ -54,7 +54,7 @@ public class GobletItem extends Item {
     }
     public static int getBlood(ItemStack stack){
         CompoundTag compoundtag = stack.getTag();
-        return compoundtag != null ? compoundtag.getInt("Blood") : 0;
+        return compoundtag != null ? compoundtag.getInt("blood") : 0;
     }
     public static boolean canFillGoblet(ItemStack stack){
         return stack.getItem() instanceof GobletItem && getBlood(stack)>0 && getBlood(stack)<10;
@@ -63,7 +63,7 @@ public class GobletItem extends Item {
     public static void setBlood(ItemStack p_40885_, int blood) {
         int finalBlood= Mth.clamp(blood,10,0);
         CompoundTag compoundtag = p_40885_.getOrCreateTag();
-        compoundtag.putInt("Blood", finalBlood);
+        compoundtag.putInt("blood", finalBlood);
     }
 
     @Override
