@@ -19,7 +19,7 @@ public class SGEntityType {
         public static final RegistryObject<EntityType<VampillerEntity>> VAMPILLER =
             ENTITY_TYPES.register("vampiller",
                     () -> EntityType.Builder.of(VampillerEntity::new, MobCategory.MONSTER)
-                            .sized(0.60f, 1.0f)
+                            .sized(0.6f, 2.0f)
                             .build(new ResourceLocation(Sanguinaire.MODID, "vampiller").toString()));
 
     public static final RegistryObject<EntityType<SlashBloodProjetile>> BLOOD_SLASH = ENTITY_TYPES
