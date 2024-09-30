@@ -123,6 +123,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 cap.onBite(this,target);
                 this.hugeTick=0;
                 player.level().playSound(null,target, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
+                player.level().playSound(null,target, SoundEvents.GLOW_INK_SAC_USE, SoundSource.PLAYERS,1.0F,1.0F);
             }else if(this.canFillGobletItem(player)){
                 ItemStack goblet=getGobletInHand(player);
                 int finalBlood =GobletItem.getBlood(goblet)+1;
