@@ -4,6 +4,7 @@ import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
 import com.TBK.sanguinaire.common.registry.SGAttribute;
 import com.TBK.sanguinaire.common.registry.SGEffect;
+import com.TBK.sanguinaire.common.registry.SGItems;
 import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.capability.BiterEntityCap;
 import com.TBK.sanguinaire.server.capability.SGCapability;
@@ -72,7 +73,7 @@ public class ModBusEvent {
     @SubscribeEvent
     public static void onRightClick(PlayerInteractEvent.RightClickItem event){
         ItemStack stack=event.getEntity().getItemInHand(event.getHand());
-        if(stack.is(Items.STICK) && !event.getEntity().isShiftKeyDown() && !event.getLevel().isClientSide){
+        if(stack.is(SGItems.CRIMSON_MIRROR.get()) && !event.getEntity().isShiftKeyDown() && !event.getLevel().isClientSide){
             VampirePlayerCapability cap = SGCapability.getEntityVam(event.getEntity(), VampirePlayerCapability.class);
             if(cap!=null){
                 boolean isVampire=cap.isVampire();
