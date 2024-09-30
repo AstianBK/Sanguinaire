@@ -83,7 +83,8 @@ public class PacketKeySync implements Packet<PacketListener>{
             if(cap.isVampire() && cap.clientDrink<=0){
                 cap.bite(player,((EntityHitResult)hit).getEntity());
             }
-        }    }
+        }
+    }
 
     @OnlyIn(Dist.CLIENT)
     public static void upPower(){

@@ -33,6 +33,9 @@ public class PacketHandler {
                 .decoder(PacketConvertVampire::new)
                 .consumerNetworkThread(PacketConvertVampire::handle).add();
 
+        channel.registerMessage(index++, PacketSyncDurationEffect.class, PacketSyncDurationEffect::write,
+                PacketSyncDurationEffect::new, PacketSyncDurationEffect::handle);
+
         channel.messageBuilder(PacketSyncVampireData.class,index++)
                 .encoder(PacketSyncVampireData::toBytes)
                 .decoder(PacketSyncVampireData::new)

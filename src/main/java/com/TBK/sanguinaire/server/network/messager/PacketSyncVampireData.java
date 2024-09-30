@@ -37,7 +37,6 @@ public class PacketSyncVampireData {
         return true;
     }
     @OnlyIn(Dist.CLIENT)
-
     public void sync(){
         Minecraft mc = Minecraft.getInstance();
         VampirePlayerCapability cap = VampirePlayerCapability.get(mc.player);

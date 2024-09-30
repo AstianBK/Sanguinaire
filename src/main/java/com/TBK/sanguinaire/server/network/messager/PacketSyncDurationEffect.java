@@ -43,16 +43,19 @@ public class PacketSyncDurationEffect implements Packet<PacketListener> {
         recastInstance.writeToBuffer(buf);
     }
 
-    @OnlyIn(Dist.CLIENT)
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            Minecraft mc = Minecraft.getInstance();
-            SkillPlayerCapability cap = SkillPlayerCapability.get(mc.player);
-            assert cap!=null;
-            cap.setActiveEffectDuration(new ActiveEffectDuration(recastLookup));
+            sync();
         });
         return true;
+    }
+    @OnlyIn(Dist.CLIENT)
+    public void sync(){
+        Minecraft mc = Minecraft.getInstance();
+        SkillPlayerCapability cap = SkillPlayerCapability.get(mc.player);
+        assert cap!=null;
+        cap.setActiveEffectDuration(new ActiveEffectDuration(recastLookup));
     }
 
     @Override

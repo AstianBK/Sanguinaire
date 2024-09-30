@@ -47,9 +47,7 @@ public class PacketSyncCooldown implements Packet<PacketListener> {
 
     public void handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            sync();
-        });
+        ctx.enqueueWork(this::sync);
         supplier.get().setPacketHandled(true);
 
     }
