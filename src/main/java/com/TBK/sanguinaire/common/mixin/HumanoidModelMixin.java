@@ -21,7 +21,7 @@ import java.util.List;
 public abstract class HumanoidModelMixin<T extends LivingEntity> {
     @Inject(method = "setupAnim(Lnet/minecraft/world/entity/LivingEntity;FFFFF)V",at = @At("TAIL"))
     public void regeneration$Layer(T p_102866_, float p_102867_, float p_102868_, float p_102869_, float p_102870_, float p_102871_, CallbackInfo ci){
-        if (((Object)this) instanceof PlayerModel<?> model){
+        if (((Object)this) instanceof PlayerModel<?> model && p_102866_ instanceof Player){
             VampirePlayerCapability cap=VampirePlayerCapability.get((Player) p_102866_);
             if(cap!=null){
                 LimbsPartRegeneration regeneration=cap.getLimbsPartRegeneration();

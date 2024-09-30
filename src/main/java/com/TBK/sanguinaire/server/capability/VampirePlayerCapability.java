@@ -9,6 +9,7 @@ import com.TBK.sanguinaire.common.registry.SGSounds;
 import com.TBK.sanguinaire.server.manager.*;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -17,6 +18,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -128,6 +130,8 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 GobletItem.setBlood(goblet, finalBlood);
                 if(finalBlood==10){
                     player.level().playSound(null,target, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS,1.0F,1.0F);
+                }else {
+                    player.level().playSound(null,target, SoundEvents.CHICKEN_DEATH, SoundSource.PLAYERS,1.0F,1.0F);
                 }
             }
         }
@@ -179,6 +183,27 @@ public class VampirePlayerCapability implements IVampirePlayer {
             if(this.hugeTick++>2000){
                 this.loseBlood(2);
                 this.hugeTick=0;
+            }
+        }
+        if (player.isAlive()) {
+            boolean flag = this.isSunBurnTick(player);
+            if (flag) {
+                ItemStack itemstack = player.getItemBySlot(EquipmentSlot.HEAD);
+                if (!itemstack.isEmpty()) {
+                    if (itemstack.isDamageableItem()) {
+                        itemstack.setDamageValue(itemstack.getDamageValue() + player.level().random.nextInt(2));
+                        if (itemstack.getDamageValue() >= itemstack.getMaxDamage()) {
+                            player.broadcastBreakEvent(EquipmentSlot.HEAD);
+                            player.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                        }
+                    }
+
+                    flag = false;
+                }
+
+                if (flag) {
+                    player.setSecondsOnFire(8);
+                }
             }
         }
         if(this.noMoreLimbs()){
@@ -233,6 +258,19 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 }
             }
         }
+    }
+
+    protected boolean isSunBurnTick(Player player) {
+        if (this.level.isDay() && !this.level.isClientSide) {
+            float f = player.getLightLevelDependentMagicValue();
+            BlockPos blockpos = BlockPos.containing(player.getX(), player.getEyeY(), player.getZ());
+            boolean flag = player.isInWaterRainOrBubble() || player.isInPowderSnow || player.wasInPowderSnow;
+            if (f > 0.5F && player.level().random.nextFloat() * 30.0F < (f - 0.4F) * 2.0F && !flag && player.level().canSeeSky(blockpos)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public boolean isDurationEffectTick(int p_19455_, int p_19456_) {

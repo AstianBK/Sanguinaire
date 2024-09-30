@@ -34,9 +34,9 @@ public class SlashBloodRenderer<T extends SlashBloodProjetile> extends EntityRen
             pMatrixStack.mulPose(Axis.YP.rotationDegrees(pEntity.getYRot()));
         }
 
-        pMatrixStack.translate(0.0,0.1F,0.0F);
         float width=0.5F+pEntity.getBbWidth()*pEntity.getChargedLevel()/10;
 
+        pMatrixStack.translate(0.0,0.01F,0.0F);
         PoseStack.Pose posestack$pose = pMatrixStack.last();
         drawSlash(posestack$pose,pEntity,pBuffer,pPackedLight,width,4);
         pMatrixStack.popPose();

@@ -3,19 +3,37 @@ package com.TBK.sanguinaire;
 import com.TBK.sanguinaire.client.renderer.BloodOrbRenderer;
 import com.TBK.sanguinaire.client.renderer.SlashBloodRenderer;
 import com.TBK.sanguinaire.client.renderer.VampillerRenderer;
+import com.TBK.sanguinaire.common.mixin.StructureTemplatePoolAccessor;
 import com.TBK.sanguinaire.common.registry.*;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.world.biomes.BKBiomeConfig;
+import com.TBK.sanguinaire.server.world.biomes.BKBiomeSpawn;
 import com.TBK.sanguinaire.server.world.loot.LootModifiers;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.EntityRenderers;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.world.BiomeModifier;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -23,13 +41,20 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.slf4j.Logger;
 
+import java.util.*;
 @Mod(Sanguinaire.MODID)
+@Mod.EventBusSubscriber(modid = Sanguinaire.MODID)
 public class Sanguinaire
 {
     public static final String MODID = "sanguinaire";
     private static final Logger LOGGER = LogUtils.getLogger();
+    private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(
+            Registries.PROCESSOR_LIST, new ResourceLocation("minecraft", "empty"));
+
 
 
     public Sanguinaire()
@@ -50,6 +75,10 @@ public class Sanguinaire
         PacketHandler.registerMessages();
         MinecraftForge.EVENT_BUS.addListener(this::onRenderFoodBar);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        final DeferredRegister<Codec<? extends BiomeModifier>> biomeModifiers = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, Sanguinaire.MODID);
+        biomeModifiers.register(modEventBus);
+        biomeModifiers.register("sanguinaire_spawns", BKBiomeSpawn::makeCodec);
+
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->{
             modEventBus.addListener(this::registerRenderers);
         });

@@ -93,6 +93,7 @@ public abstract class LeveableProjectile extends ThrowableProjectile {
         int oldLevel=this.getChargedLevel();
         this.setChargedLevel(oldLevel+1);
         this.setPowerLevel(level);
+        this.refreshDimensions();
         return this.getChargedLevel()!=oldLevel;
     }
 

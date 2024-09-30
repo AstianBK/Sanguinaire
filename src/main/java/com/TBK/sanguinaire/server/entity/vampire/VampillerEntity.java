@@ -21,6 +21,8 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
@@ -29,13 +31,18 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.village.poi.PoiManager;
+import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.RangedAttackMob;
 import net.minecraft.world.entity.monster.SpellcasterIllager;
 import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -89,8 +96,20 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
 
     }
 
-
     @Override
+    public boolean removeWhenFarAway(double p_35535_) {
+        return false;
+    }
+    public static boolean checkMonsterSpawnRules(EntityType<? extends Monster> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
+        System.out.print("\n"+(p_219015_.getLevel().getPoiManager().find((p_219843_) -> {
+            return p_219843_.is(PoiTypes.HOME);
+        }, pos -> pos.equals(p_219017_), p_219017_, 48,PoiManager.Occupancy.ANY).isPresent())+"\n");
+
+        return p_219015_.getDifficulty() != Difficulty.PEACEFUL && p_219015_.getLevel().getPoiManager().find((p_219843_) -> {
+            return p_219843_.is(PoiTypes.HOME);
+        }, pos -> pos.equals(p_219017_), p_219017_, 48,PoiManager.Occupancy.ANY).isPresent() && isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+    }
+        @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
         controllers.add(new AnimationController<>(this, "controller", 0, state -> {
             if(this.isBat())return PlayState.STOP;
@@ -262,6 +281,31 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
         }
         this.refreshDimensions();
     }
+    public void aiStep() {
+        if (this.isAlive()) {
+            boolean flag = this.isSunBurnTick();
+            if (flag) {
+                ItemStack itemstack = this.getItemBySlot(EquipmentSlot.HEAD);
+                if (!itemstack.isEmpty()) {
+                    if (itemstack.isDamageableItem()) {
+                        itemstack.setDamageValue(itemstack.getDamageValue() + this.random.nextInt(2));
+                        if (itemstack.getDamageValue() >= itemstack.getMaxDamage()) {
+                            this.broadcastBreakEvent(EquipmentSlot.HEAD);
+                            this.setItemSlot(EquipmentSlot.HEAD, ItemStack.EMPTY);
+                        }
+                    }
+
+                    flag = false;
+                }
+
+                if (flag) {
+                    this.setSecondsOnFire(8);
+                }
+            }
+        }
+
+        super.aiStep();
+    }
     public boolean canMove(){
         return this.convertBat<=0 && !this.isCasting();
     }
@@ -316,6 +360,7 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
 
     @Override
     protected void registerGoals() {
+        this.goalSelector.addGoal(1, new FleeSunGoal(this, 1.0D));
         this.targetSelector.addGoal(3, new HurtByTargetGoal(this));
         this.goalSelector.addGoal(2,new AttackGoal(this,2.0D,true));
         this.goalSelector.addGoal(5, new RandomStrollGoal(this, 0.7));
@@ -340,8 +385,8 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
             }
         });
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
-        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+        //this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
+        //this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
         super.registerGoals();
     }
 

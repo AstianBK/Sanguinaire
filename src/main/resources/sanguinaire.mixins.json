@@ -5,7 +5,8 @@
   "minVersion": "0.8",
   "refmap": "sanguinaire.refmap.json",
   "mixins": [
-    "LivingEntityMixin"
+    "LivingEntityMixin",
+    "StructureTemplatePoolAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

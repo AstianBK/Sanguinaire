@@ -202,7 +202,6 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         skillAbstracts.addSkillAbstracts(1,new BloodOrb());
         skillAbstracts.addSkillAbstracts(2,new BloodSlash());
         skillAbstracts.addSkillAbstracts(3,new BloodTendrils());
-        skillAbstracts.addSkillAbstracts(4,SkillAbstract.NONE);
         this.setSetHotbar(skillAbstracts);
         this.passives.addSkillAbstracts(0,new SpeedPassive());
     }
@@ -258,7 +257,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public void upSkill() {
         this.posSelectSkillAbstract=this.posSelectSkillAbstract+1>=this.skills.powers.size() ? 0 : this.posSelectSkillAbstract+1;
         if (this.getPlayer()!=null){
-            this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al"+this.getSelectSkill().name));
+            //this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al"+this.getSelectSkill().name));
         }
         if(this.level.isClientSide){
             this.syncPos(this.posSelectSkillAbstract);
@@ -269,7 +268,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public void downSkill() {
         this.posSelectSkillAbstract=this.posSelectSkillAbstract-1<0 ? this.skills.powers.size()-1 : this.posSelectSkillAbstract-1;
         if (this.getPlayer()!=null){
-            this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al "+this.getSelectSkill().name));
+            //this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al "+this.getSelectSkill().name));
         }
         if(this.level.isClientSide){
             this.syncPos(this.posSelectSkillAbstract);

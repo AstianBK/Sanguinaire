@@ -98,6 +98,7 @@ public class SlashBloodProjetile extends LeveableProjectile {
             }
             this.animTick=0;
         }
+        this.refreshDimensions();
         this.setYRot(this.getYRot());
         this.setXRot(this.getXRot());
         if(this.level().isClientSide && !this.isCharging()){
@@ -105,9 +106,10 @@ public class SlashBloodProjetile extends LeveableProjectile {
             float f1 = this.getYRot() * Mth.DEG_TO_RAD;
             float f2 = Mth.sin(f1) * width;
             float f3 = Mth.cos(f1) * width;
-            float f4 = (float) (Math.sin(this.life * 0.15F)*width/2.0F);
             Vec3 delta=this.getDeltaMovement();
-            this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(), this.getX()-delta.x+f3, this.getY()-delta.y +f4, this.getZ()-delta.z+f2, 0.0F, 0.0F, 0.0F);
+            Vec3 norma=this.position().subtract(new Vec3(this.getX()-delta.x+f3,this.getY()-delta.y, this.getZ()-delta.z+f2));
+            float f4 = (float) (Math.sin(this.life * 0.15F)*norma.length()/2.0F);
+            this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(),this.getX()-delta.x+f3 , this.getY()-delta.y +f4, this.getZ()-delta.z+f2, 0.0F, 0.0F, 0.0F);
             this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(), this.getX()-delta.x-f3, this.getY()-delta.y -f4, this.getZ()-delta.z-f2, 0.0F, 0.0F, 0.0F);
             if(this.tickCount%20==0){
                 this.spawnParticles();
@@ -116,7 +118,6 @@ public class SlashBloodProjetile extends LeveableProjectile {
         if(this.life--<=0){
             this.discard();
         }
-        this.refreshDimensions();
     }
     public void spawnParticles(){
         float width = (float) getBoundingBox().getXsize();
