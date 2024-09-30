@@ -185,7 +185,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 this.hugeTick=0;
             }
         }
-        if (player.isAlive()) {
+        if (player.isAlive() && this.getSkillCap(player).isTransform) {
             boolean flag = this.isSunBurnTick(player);
             if (flag) {
                 ItemStack itemstack = player.getItemBySlot(EquipmentSlot.HEAD);
@@ -226,6 +226,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                     }
                 }
             }
+            player.getFoodData().eat(20,0.0F);
         }else if(this.level.isClientSide){
             if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
                 this.getLimbsPartRegeneration().tick(player);

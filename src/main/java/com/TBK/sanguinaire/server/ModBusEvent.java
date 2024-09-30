@@ -23,6 +23,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -37,10 +39,7 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.event.entity.living.LivingHealEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -190,6 +189,25 @@ public class ModBusEvent {
         }
     }
 
+    @SubscribeEvent
+    public static void canAffectedEffect(MobEffectEvent.Applicable event){
+        LivingEntity target=event.getEntity();
+        if(target instanceof Player player){
+            MobEffect effect=event.getEffectInstance().getEffect();
+            if(Util.isVampire(player) && (effect== MobEffects.WITHER || effect==MobEffects.POISON)){
+                event.setCanceled(true);
+            }
+        }
+
+    }
+
+    @SubscribeEvent
+    public static void drownEvent(LivingDrownEvent event){
+        LivingEntity living = event.getEntity();
+        if(living instanceof Player player && Util.isVampire(player)){
+            event.setCanceled(true);
+        }
+    }
 
 
     public static void loseBody(VampirePlayerCapability cap,Player player){

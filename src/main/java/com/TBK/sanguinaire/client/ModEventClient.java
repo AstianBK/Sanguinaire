@@ -14,8 +14,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.event.RenderLivingEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -43,6 +45,17 @@ public class ModEventClient {
         }
         if(event.getEntity() instanceof Player player){
             RenderUtil.render(event.getPoseStack(),event.getMultiBufferSource(),player,event.getPartialTick());
+        }
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void renderHandEvent(RenderHandEvent event){
+        if(Minecraft.getInstance().player!=null){
+            VampirePlayerCapability cap=VampirePlayerCapability.get(Minecraft.getInstance().player);
+            if(cap!=null && cap.isVampire()){
+                event.setCanceled(cap.getSkillCap(Minecraft.getInstance().player).isTransform);
+            }
         }
     }
 

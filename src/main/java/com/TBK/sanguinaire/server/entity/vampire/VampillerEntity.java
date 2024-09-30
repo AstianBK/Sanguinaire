@@ -25,6 +25,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -97,17 +99,23 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
     }
 
     @Override
+    public boolean canBeAffected(MobEffectInstance p_21197_) {
+        return super.canBeAffected(p_21197_) && p_21197_.getEffect()!= MobEffects.WITHER;
+    }
+
+    @Override
+    public MobType getMobType() {
+        return MobType.UNDEAD;
+    }
+
+    @Override
     public boolean removeWhenFarAway(double p_35535_) {
         return false;
     }
     public static boolean checkMonsterSpawnRules(EntityType<? extends Monster> p_219014_, ServerLevelAccessor p_219015_, MobSpawnType p_219016_, BlockPos p_219017_, RandomSource p_219018_) {
-        System.out.print("\n"+(p_219015_.getLevel().getPoiManager().find((p_219843_) -> {
-            return p_219843_.is(PoiTypes.HOME);
-        }, pos -> pos.equals(p_219017_), p_219017_, 48,PoiManager.Occupancy.ANY).isPresent())+"\n");
-
         return p_219015_.getDifficulty() != Difficulty.PEACEFUL && p_219015_.getLevel().getPoiManager().find((p_219843_) -> {
             return p_219843_.is(PoiTypes.HOME);
-        }, pos -> pos.equals(p_219017_), p_219017_, 48,PoiManager.Occupancy.ANY).isPresent() && isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
+        }, pos -> true, p_219017_, 48,PoiManager.Occupancy.ANY).isPresent() && isDarkEnoughToSpawn(p_219015_, p_219017_, p_219018_) && checkMobSpawnRules(p_219014_, p_219015_, p_219016_, p_219017_, p_219018_);
     }
         @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
@@ -385,8 +393,8 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
             }
         });
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true, true));
-        //this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
-        //this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
+        this.targetSelector.addGoal(6, new NearestAttackableTargetGoal<>(this, AbstractVillager.class, true, true));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, IronGolem.class, true));
         super.registerGoals();
     }
 
