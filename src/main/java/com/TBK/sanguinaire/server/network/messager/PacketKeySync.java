@@ -48,7 +48,6 @@ public class PacketKeySync implements Packet<PacketListener>{
     }
 
     private void handlerAnim(Supplier<NetworkEvent.Context> contextSupplier) {
-        Minecraft mc=Minecraft.getInstance();
         switch (this.key){
             case 0x52->{
                 Player player=contextSupplier.get().getSender();
@@ -63,45 +62,47 @@ public class PacketKeySync implements Packet<PacketListener>{
                 }
             }
             case 0x43->{
-                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
-                assert skillPlayerCapability != null;
-                if(skillPlayerCapability.isVampire()){
-                    downPower(skillPlayerCapability);
-                }
+                downPower();
             }
             case 0x56->{
-                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
-                assert skillPlayerCapability != null;
-                if(skillPlayerCapability.isVampire()){
-                    upPower(skillPlayerCapability);
-                }
+                upPower();
             }
             default ->{
-                Player player=mc.player;
-                HitResult hit = mc.hitResult;
-                assert player!=null && hit!=null;
-                if(hit.getType() == HitResult.Type.ENTITY){
-                    VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-                    if(cap.isVampire() && cap.clientDrink<=0){
-                        bite(cap,player,((EntityHitResult)hit).getEntity());
-                    }
-                }
+                bite();
             }
         }
     }
     @OnlyIn(Dist.CLIENT)
-    public static void bite(VampirePlayerCapability cap, Player player, Entity target){
-        cap.bite(player,target);
+    public static void bite(){
+        Minecraft mc=Minecraft.getInstance();
+        Player player=mc.player;
+        HitResult hit = mc.hitResult;
+        assert player!=null && hit!=null;
+        if(hit.getType() == HitResult.Type.ENTITY){
+            VampirePlayerCapability cap=VampirePlayerCapability.get(player);
+            if(cap.isVampire() && cap.clientDrink<=0){
+                cap.bite(player,((EntityHitResult)hit).getEntity());
+            }
+        }    }
+
+    @OnlyIn(Dist.CLIENT)
+    public static void upPower(){
+        Minecraft mc=Minecraft.getInstance();
+        SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
+        assert skillPlayerCapability != null;
+        if(skillPlayerCapability.isVampire()){
+            skillPlayerCapability.upSkill();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static void upPower(SkillPlayerCapability player){
-        player.upSkill();
-    }
-
-    @OnlyIn(Dist.CLIENT)
-    public static void downPower(SkillPlayerCapability player){
-        player.downSkill();
+    public static void downPower(){
+        Minecraft mc=Minecraft.getInstance();
+        SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
+        assert skillPlayerCapability != null;
+        if(skillPlayerCapability.isVampire()){
+            skillPlayerCapability.downSkill();
+        }
     }
 
 }
