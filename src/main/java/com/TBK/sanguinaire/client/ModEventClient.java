@@ -25,7 +25,6 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(Dist.CLIENT)
 public class ModEventClient {
-
     @SubscribeEvent
     public static void renderPreEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event){
         if(event.getEntity() instanceof Player player && SkillPlayerCapability.get(player).isTransform){
@@ -47,16 +46,4 @@ public class ModEventClient {
             RenderUtil.render(event.getPoseStack(),event.getMultiBufferSource(),player,event.getPartialTick());
         }
     }
-
-    @SubscribeEvent
-    @OnlyIn(Dist.CLIENT)
-    public static void renderHandEvent(RenderHandEvent event){
-        if(Minecraft.getInstance().player!=null){
-            VampirePlayerCapability cap=VampirePlayerCapability.get(Minecraft.getInstance().player);
-            if(cap!=null && cap.isVampire()){
-                event.setCanceled(cap.getSkillCap(Minecraft.getInstance().player).isTransform);
-            }
-        }
-    }
-
 }

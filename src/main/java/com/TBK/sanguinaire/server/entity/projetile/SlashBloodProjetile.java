@@ -109,8 +109,8 @@ public class SlashBloodProjetile extends LeveableProjectile {
             Vec3 delta=this.getDeltaMovement();
             Vec3 norma=this.position().subtract(new Vec3(this.getX()-delta.x+f3,this.getY()-delta.y, this.getZ()-delta.z+f2));
             float f4 = (float) (Math.sin(this.life * 0.15F)*norma.length()/2.0F);
-            this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(),this.getX()-delta.x+f3 , this.getY()-delta.y +f4, this.getZ()-delta.z+f2, 0.0F, 0.0F, 0.0F);
-            this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(), this.getX()-delta.x-f3, this.getY()-delta.y -f4, this.getZ()-delta.z-f2, 0.0F, 0.0F, 0.0F);
+            //this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(),this.getX()-delta.x+f3 , this.getY()-delta.y +f4, this.getZ()-delta.z+f2, 0.0F, 0.0F, 0.0F);
+            //this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(), this.getX()-delta.x-f3, this.getY()-delta.y -f4, this.getZ()-delta.z-f2, 0.0F, 0.0F, 0.0F);
             if(this.tickCount%20==0){
                 this.spawnParticles();
             }

@@ -29,11 +29,6 @@ public class PacketActiveEffect {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            Minecraft mc = Minecraft.getInstance();
-            SkillPlayerCapability cap = SkillPlayerCapability.get(mc.player);
-            assert cap!=null;
-
-            cap.getActiveEffectDuration().forceAddDuration(recastInstance);
         });
         return true;
     }

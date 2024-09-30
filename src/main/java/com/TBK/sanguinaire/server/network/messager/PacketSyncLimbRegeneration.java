@@ -48,11 +48,6 @@ public class PacketSyncLimbRegeneration {
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
-            Minecraft minecraft =Minecraft.getInstance();
-            Player player= minecraft.player;
-            VampirePlayerCapability cap = VampirePlayerCapability.get(player);
-            assert cap!=null;
-            cap.setLimbsPartRegeneration(new LimbsPartRegeneration(this.regenerationLimbs));
         });
         return true;
     }

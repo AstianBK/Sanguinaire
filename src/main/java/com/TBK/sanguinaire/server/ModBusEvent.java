@@ -34,7 +34,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.RenderHandEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -159,6 +162,18 @@ public class ModBusEvent {
         newCap.clone(cap,player,newPlayer);
         player.invalidateCaps();
     }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public static void renderHandEvent(RenderHandEvent event){
+        if(Minecraft.getInstance().player!=null){
+            VampirePlayerCapability cap=VampirePlayerCapability.get(Minecraft.getInstance().player);
+            if(cap!=null && cap.isVampire()){
+                event.setCanceled(cap.getSkillCap(Minecraft.getInstance().player).isTransform);
+            }
+        }
+    }
+
     @SubscribeEvent
     public static void deathEntity(LivingDeathEvent event){
         LivingEntity target=event.getEntity();

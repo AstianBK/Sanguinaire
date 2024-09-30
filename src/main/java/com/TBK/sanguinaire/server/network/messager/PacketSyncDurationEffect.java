@@ -5,12 +5,16 @@ import com.TBK.sanguinaire.server.manager.ActiveEffectDuration;
 import com.TBK.sanguinaire.server.manager.DurationInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.PacketListener;
+import net.minecraft.network.protocol.Packet;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class PacketSyncDurationEffect {
+public class PacketSyncDurationEffect implements Packet<PacketListener> {
     private final Map<String, DurationInstance> recastLookup;
 
     public PacketSyncDurationEffect(Map<String, DurationInstance> recastLookup) {
@@ -39,10 +43,7 @@ public class PacketSyncDurationEffect {
         recastInstance.writeToBuffer(buf);
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
-        buf.writeMap(recastLookup, PacketSyncDurationEffect::writePowerId, PacketSyncDurationEffect::writeDurationInstance);
-    }
-
+    @OnlyIn(Dist.CLIENT)
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
         ctx.enqueueWork(() -> {
@@ -52,5 +53,15 @@ public class PacketSyncDurationEffect {
             cap.setActiveEffectDuration(new ActiveEffectDuration(recastLookup));
         });
         return true;
+    }
+
+    @Override
+    public void write(FriendlyByteBuf buf) {
+        buf.writeMap(recastLookup, PacketSyncDurationEffect::writePowerId, PacketSyncDurationEffect::writeDurationInstance);
+    }
+
+    @Override
+    public void handle(PacketListener p_131342_) {
+
     }
 }

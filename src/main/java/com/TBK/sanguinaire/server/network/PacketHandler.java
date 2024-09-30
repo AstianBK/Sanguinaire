@@ -25,10 +25,8 @@ public class PacketHandler {
         MOD_CHANNEL=channel;
 
 
-        channel.messageBuilder(PacketSyncCooldown.class,index++)
-                .encoder(PacketSyncCooldown::toBytes)
-                .decoder(PacketSyncCooldown::new)
-                .consumerNetworkThread(PacketSyncCooldown::handle).add();
+        channel.registerMessage(index++, PacketSyncCooldown.class, PacketSyncCooldown::write,
+                PacketSyncCooldown::new, PacketSyncCooldown::handle);
 
         channel.messageBuilder(PacketConvertVampire.class,index++)
                 .encoder(PacketConvertVampire::toBytes)
@@ -46,10 +44,6 @@ public class PacketHandler {
                 .decoder(PacketSyncLimbRegeneration::new)
                 .consumerNetworkThread(PacketSyncLimbRegeneration::handle).add();
 
-        channel.messageBuilder(PacketSyncDurationEffect.class,index++)
-                .encoder(PacketSyncDurationEffect::toBytes)
-                .decoder(PacketSyncDurationEffect::new)
-                .consumerNetworkThread(PacketSyncDurationEffect::handle).add();
 
 
         channel.messageBuilder(PacketRemoveActiveEffect.class,index++)

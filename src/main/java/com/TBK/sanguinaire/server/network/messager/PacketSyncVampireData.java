@@ -3,6 +3,8 @@ package com.TBK.sanguinaire.server.network.messager;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -31,14 +33,18 @@ public class PacketSyncVampireData {
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-            Minecraft mc = Minecraft.getInstance();
-            VampirePlayerCapability cap = VampirePlayerCapability.get(mc.player);
-            assert cap!=null;
-            cap.setIsVampire(this.isVampire);
-            cap.age=this.age;
-            cap.setGeneration(this.generation);
-        });
+        ctx.enqueueWork(this::sync);
         return true;
+    }
+    @OnlyIn(Dist.CLIENT)
+
+    public void sync(){
+        Minecraft mc = Minecraft.getInstance();
+        VampirePlayerCapability cap = VampirePlayerCapability.get(mc.player);
+        assert cap!=null;
+        cap.setIsVampire(this.isVampire);
+        cap.age=this.age;
+        cap.setGeneration(this.generation);
+
     }
 }

@@ -39,7 +39,6 @@ public class HandlerParticles {
             living.level().addParticle(SGParticles.BLOOD_PARTICLES.get(),xp,yp,zp,0.0F,0.0F,0.0F);
         }
     }
-    @OnlyIn(Dist.CLIENT)
     public static void spawnChargedBlood(Entity entity){
         Random random = new Random();
         Minecraft mc=Minecraft.getInstance();

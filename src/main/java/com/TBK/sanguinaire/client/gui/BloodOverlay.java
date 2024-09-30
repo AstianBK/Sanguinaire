@@ -6,12 +6,14 @@ import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
 import org.jetbrains.annotations.NotNull;
 
 import javax.management.Attribute;
-
+@OnlyIn(Dist.CLIENT)
 public class BloodOverlay implements IGuiOverlay {
     private final ResourceLocation icons = new ResourceLocation(Sanguinaire.MODID ,"textures/gui/icons_vampire.png");
     private final Minecraft mc = Minecraft.getInstance();

@@ -27,11 +27,10 @@ public class AttributeEvent {
     }
     @SubscribeEvent
     public static void entityAttributeEvent(EntityAttributeCreationEvent event) {
-
         event.put(SGEntityType.VAMPILLER.get(), VampillerEntity.setAttributes());
     }
     @SubscribeEvent
-    public static void entityAttributeEvent(SpawnPlacementRegisterEvent event) {
+    public static void registerSpawn(SpawnPlacementRegisterEvent event) {
         event.register(SGEntityType.VAMPILLER.get(),
                 SpawnPlacements.Type.ON_GROUND,
                 Heightmap.Types.MOTION_BLOCKING_NO_LEAVES, new SpawnPlacements.SpawnPredicate<VampillerEntity>() {

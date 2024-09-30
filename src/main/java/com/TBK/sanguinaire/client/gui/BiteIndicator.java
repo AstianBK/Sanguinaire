@@ -23,9 +23,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.IGuiOverlay;
-
+@OnlyIn(Dist.CLIENT)
 public class BiteIndicator implements IGuiOverlay {
     private final ResourceLocation ICONS = new ResourceLocation(Sanguinaire.MODID ,"textures/gui/icons_vampire.png");
 

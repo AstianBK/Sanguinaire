@@ -47,7 +47,6 @@ public class PacketKeySync implements Packet<PacketListener>{
     }
 
     private void handlerAnim(Supplier<NetworkEvent.Context> contextSupplier) {
-        Minecraft mc=Minecraft.getInstance();
         switch (this.key){
             case 0x52->{
                 Player player=contextSupplier.get().getSender();
@@ -62,29 +61,23 @@ public class PacketKeySync implements Packet<PacketListener>{
                 }
             }
             case 0x43->{
-                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
+                Player player=contextSupplier.get().getSender();
+                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
                 assert skillPlayerCapability != null;
                 if(skillPlayerCapability.isVampire()){
                     downPower(skillPlayerCapability);
                 }
             }
             case 0x56->{
-                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
+                Player player=contextSupplier.get().getSender();
+                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
                 assert skillPlayerCapability != null;
                 if(skillPlayerCapability.isVampire()){
                     upPower(skillPlayerCapability);
                 }
             }
             default ->{
-                Player player=mc.player;
-                HitResult hit = mc.hitResult;
-                assert player!=null && hit!=null;
-                if(hit.getType() == HitResult.Type.ENTITY){
-                    VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-                    if(cap.isVampire() && cap.clientDrink<=0){
-                        cap.bite(player,((EntityHitResult)hit).getEntity());
-                    }
-                }
+
             }
         }
 
