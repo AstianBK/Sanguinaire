@@ -2,8 +2,20 @@
   "item.sanguinaire.ancient_blood": "Elder Vampire Blood",
   "item.sanguinaire.vampire_heart": "Vampire Heart",
   "item.sanguinaire.crimson_mirror": "Crimson Mirror",
-  "item.sanguinaire.gold_goblet": "Golden Goblet",
   "item.sanguinaire.music_disc_vamp": "Music Disc",
+  "item.sanguinaire.gold_goblet": "Golden Goblet",
+
+  "item.sanguinaire.gold_goblet.blood0": "§cBlood: 0/10",
+  "item.sanguinaire.gold_goblet.blood1": "§cBlood: 1/10",
+  "item.sanguinaire.gold_goblet.blood2": "§cBlood: 2/10",
+  "item.sanguinaire.gold_goblet.blood3": "§cBlood: 3/10",
+  "item.sanguinaire.gold_goblet.blood4": "§cBlood: 4/10",
+  "item.sanguinaire.gold_goblet.blood5": "§cBlood: 5/10",
+  "item.sanguinaire.gold_goblet.blood6": "§cBlood: 6/10",
+  "item.sanguinaire.gold_goblet.blood7": "§cBlood: 7/10",
+  "item.sanguinaire.gold_goblet.blood8": "§cBlood: 8/10",
+  "item.sanguinaire.gold_goblet.blood9": "§cBlood: 9/10",
+  "item.sanguinaire.gold_goblet.blood10": "§cBlood: 10/10",
 
   "itemGroup.sanguinarieTab": "Sanguinaire",
 
