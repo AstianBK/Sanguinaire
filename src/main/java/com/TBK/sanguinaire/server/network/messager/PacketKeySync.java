@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -47,6 +48,7 @@ public class PacketKeySync implements Packet<PacketListener>{
     }
 
     private void handlerAnim(Supplier<NetworkEvent.Context> contextSupplier) {
+        Minecraft mc=Minecraft.getInstance();
         switch (this.key){
             case 0x52->{
                 Player player=contextSupplier.get().getSender();
@@ -61,26 +63,35 @@ public class PacketKeySync implements Packet<PacketListener>{
                 }
             }
             case 0x43->{
-                Player player=contextSupplier.get().getSender();
-                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
+                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
                 assert skillPlayerCapability != null;
                 if(skillPlayerCapability.isVampire()){
                     downPower(skillPlayerCapability);
                 }
             }
             case 0x56->{
-                Player player=contextSupplier.get().getSender();
-                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
+                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
                 assert skillPlayerCapability != null;
                 if(skillPlayerCapability.isVampire()){
                     upPower(skillPlayerCapability);
                 }
             }
             default ->{
-
+                Player player=mc.player;
+                HitResult hit = mc.hitResult;
+                assert player!=null && hit!=null;
+                if(hit.getType() == HitResult.Type.ENTITY){
+                    VampirePlayerCapability cap=VampirePlayerCapability.get(player);
+                    if(cap.isVampire() && cap.clientDrink<=0){
+                        bite(cap,player,((EntityHitResult)hit).getEntity());
+                    }
+                }
             }
         }
-
+    }
+    @OnlyIn(Dist.CLIENT)
+    public static void bite(VampirePlayerCapability cap, Player player, Entity target){
+        cap.bite(player,target);
     }
 
     @OnlyIn(Dist.CLIENT)
