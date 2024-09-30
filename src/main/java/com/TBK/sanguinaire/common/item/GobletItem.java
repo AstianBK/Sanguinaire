@@ -1,13 +1,10 @@
 package com.TBK.sanguinaire.common.item;
 
 import com.TBK.sanguinaire.common.registry.SGSounds;
-import com.TBK.sanguinaire.server.Util;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -26,12 +23,17 @@ public class GobletItem extends Item {
 
     @Override
     public int getDamage(ItemStack stack) {
-        return getBlood(stack)>0 ? getBlood(stack) : 1;
+        return getBlood(stack)>0 ? 10-getBlood(stack) : 10;
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
         return 10;
+    }
+
+    @Override
+    public void onCraftedBy(ItemStack p_41447_, Level p_41448_, Player p_41449_) {
+        super.onCraftedBy(p_41447_, p_41448_, p_41449_);
     }
 
     @Override
@@ -57,13 +59,12 @@ public class GobletItem extends Item {
         return compoundtag != null ? compoundtag.getInt("blood") : 0;
     }
     public static boolean canFillGoblet(ItemStack stack){
-        return stack.getItem() instanceof GobletItem && getBlood(stack)>0 && getBlood(stack)<10;
+        return stack.getItem() instanceof GobletItem && getBlood(stack)>=0 && getBlood(stack)<10;
     }
 
     public static void setBlood(ItemStack p_40885_, int blood) {
-        int finalBlood= Mth.clamp(blood,10,0);
         CompoundTag compoundtag = p_40885_.getOrCreateTag();
-        compoundtag.putInt("blood", finalBlood);
+        compoundtag.putInt("blood", blood);
     }
 
     @Override

@@ -29,18 +29,18 @@ public class SlashBloodRenderer<T extends SlashBloodProjetile> extends EntityRen
         if(!pEntity.isCharging()){
             pMatrixStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(pPartialTicks, pEntity.yRotO, pEntity.getYRot())));
             pMatrixStack.mulPose(Axis.XP.rotationDegrees(-Mth.lerp(pPartialTicks, pEntity.xRotO, pEntity.getXRot())));
-            pMatrixStack.mulPose(Axis.ZP.rotationDegrees((float) Math.sin(pEntity.tickCount * 0.15F)*10));
+            pMatrixStack.mulPose(Axis.ZP.rotationDegrees((float) Math.sin(pEntity.life * 0.15F)*10));
         }else {
             pMatrixStack.mulPose(Axis.YP.rotationDegrees(pEntity.getYRot()));
         }
 
+        pMatrixStack.translate(0.0,0.1F,0.0F);
         float width=0.5F+pEntity.getBbWidth()*pEntity.getChargedLevel()/10;
 
         PoseStack.Pose posestack$pose = pMatrixStack.last();
         drawSlash(posestack$pose,pEntity,pBuffer,pPackedLight,width,4);
         pMatrixStack.popPose();
-        super.render(pEntity, pEntityYaw, pPackedLight, pMatrixStack, pBuffer, pPackedLight);
-
+        super.render(pEntity, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
     }
 
     @Override

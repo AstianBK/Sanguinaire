@@ -118,6 +118,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
         if(cap!=null && cap.canBiter()){
             if(this.getBlood()<this.getMaxBlood()){
                 this.drainBlood(1);
+                cap.onBite(this,target);
                 this.hugeTick=0;
                 player.level().playSound(null,target, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
             }else if(this.canFillGobletItem(player)){

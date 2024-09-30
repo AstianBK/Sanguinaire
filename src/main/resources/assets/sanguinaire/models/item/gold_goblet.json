@@ -6,37 +6,37 @@
   "overrides": [
     {
       "predicate": {
-        "blood": 0
+        "sanguinaire:blood": 0
       },
       "model": "sanguinaire:item/gold_goblet_0"
     },
     {
       "predicate": {
-        "blood": 1
+        "sanguinaire:blood": 1
       },
       "model": "sanguinaire:item/gold_goblet_1"
     },
     {
       "predicate": {
-        "blood": 2
+        "sanguinaire:blood": 2
       },
       "model": "sanguinaire:item/gold_goblet_1"
     },
     {
       "predicate": {
-        "blood": 3
+        "sanguinaire:blood": 3
       },
       "model": "sanguinaire:item/gold_goblet_2"
     },
     {
       "predicate": {
-        "blood": 4
+        "sanguinaire:blood": 4
       },
       "model": "sanguinaire:item/gold_goblet_3"
     },
     {
       "predicate": {
-        "blood": 5
+        "sanguinaire:blood": 5
       },
       "model": "sanguinaire:item/gold_goblet_4"
     }

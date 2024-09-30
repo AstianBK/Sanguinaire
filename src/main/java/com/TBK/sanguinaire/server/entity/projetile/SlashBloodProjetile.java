@@ -7,9 +7,7 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.projectile.ThrowableProjectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
@@ -25,12 +23,16 @@ public class SlashBloodProjetile extends LeveableProjectile {
     private IntOpenHashSet piercingIgnoreEntityIds;
     @Nullable
     private List<Entity> piercedAndKilledEntities;
-    private int life=0;
+    public int life;
 
     public SlashBloodProjetile(EntityType<? extends ThrowableProjectile> p_37248_, Level p_37249_) {
         super(p_37248_, p_37249_);
         this.setNoGravity(true);
         this.life=300;
+    }
+
+    public EntityDimensions getDimensions(Pose p_19975_) {
+        return EntityDimensions.scalable(0.2F+3.0F*this.getChargedLevel()/10,0.2F);
     }
 
     public SlashBloodProjetile(Level p_37249_,LivingEntity owner,int level) {
@@ -99,13 +101,14 @@ public class SlashBloodProjetile extends LeveableProjectile {
         this.setYRot(this.getYRot());
         this.setXRot(this.getXRot());
         if(this.level().isClientSide && !this.isCharging()){
+            float width = (float) getBoundingBox().getXsize();
             float f1 = this.getYRot() * Mth.DEG_TO_RAD;
-            float f2 = Mth.sin(f1);
-            float f3 = Mth.cos(f1);
-            float f4 =Mth.lerp(((float) Math.sin(this.tickCount * 0.15F)*10 % 360)/360,-0.5F,0.5F);
+            float f2 = Mth.sin(f1) * width;
+            float f3 = Mth.cos(f1) * width;
+            float f4 = (float) (Math.sin(this.life * 0.15F)*width/2.0F);
             Vec3 delta=this.getDeltaMovement();
-            this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x+f2, this.getY()-delta.y +f4, this.getZ()-delta.z+f3, 0.0F, 0.0F, 0.0F);
-            this.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(), this.getX()-delta.x-f2, this.getY()-delta.y -f4, this.getZ()-delta.z-f3, 0.0F, 0.0F, 0.0F);
+            this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(), this.getX()-delta.x+f3, this.getY()-delta.y +f4, this.getZ()-delta.z+f2, 0.0F, 0.0F, 0.0F);
+            this.level().addParticle(SGParticles.BLOOD_PARTICLES.get(), this.getX()-delta.x-f3, this.getY()-delta.y -f4, this.getZ()-delta.z-f2, 0.0F, 0.0F, 0.0F);
             if(this.tickCount%20==0){
                 this.spawnParticles();
             }
@@ -113,6 +116,7 @@ public class SlashBloodProjetile extends LeveableProjectile {
         if(this.life--<=0){
             this.discard();
         }
+        this.refreshDimensions();
     }
     public void spawnParticles(){
         float width = (float) getBoundingBox().getXsize();
