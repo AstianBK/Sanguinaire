@@ -177,7 +177,7 @@ public class ModBusEvent {
         }
         if (event.getSource().getDirectEntity() instanceof BloodOrbProjetile orb){
             if(!orb.level().isClientSide){
-                LivingEntity collateral=target.level().getNearestEntity(LivingEntity.class, TargetingConditions.DEFAULT,null,target.getX(),target.getY(),target.getZ(),target.getBoundingBox().inflate(10.0D));
+                LivingEntity collateral=target.level().getNearestEntity(LivingEntity.class, TargetingConditions.DEFAULT.selector(e->e!=orb.getOwner()), null,target.getX(),target.getY(),target.getZ(),target.getBoundingBox().inflate(10.0D));
                 if(collateral!=null){
                     BloodOrbProjetile projetile=new BloodOrbProjetile(collateral.level(),((LivingEntity)orb.getOwner()),Math.max(orb.getPowerLevel()-1,0));
                     projetile.setPos(target.getEyePosition());

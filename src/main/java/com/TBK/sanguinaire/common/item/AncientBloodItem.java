@@ -20,6 +20,9 @@ public class AncientBloodItem extends Item {
                 cap.setBlood(cap.getMaxBlood());
                 cap.setAge(cap.age+10);
                 cap.setGeneration(cap.getGeneration()-1);
+                if(!cap.isVampire() && p_41410_.random.nextFloat()<0.5F){
+                    cap.convert(false);
+                }
             }
         }
         return super.finishUsingItem(p_41409_, p_41410_, p_41411_);

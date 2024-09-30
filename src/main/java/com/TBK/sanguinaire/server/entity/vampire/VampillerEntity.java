@@ -191,7 +191,7 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
         }
         if(p_21372_ instanceof Player player){
             VampirePlayerCapability cap=VampirePlayerCapability.get(player);
-            if(!cap.isVampire() && this.random.nextFloat()<0.05F){
+            if(!cap.isVampire() && this.random.nextFloat()<0.15F){
                 cap.convert(false);
             }
         }

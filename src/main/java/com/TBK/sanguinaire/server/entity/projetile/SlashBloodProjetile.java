@@ -80,7 +80,7 @@ public class SlashBloodProjetile extends LeveableProjectile {
 
             this.piercingIgnoreEntityIds.add(p_37259_.getEntity().getId());
 
-            if (living.hurt(damageSources().indirectMagic(this,this.getOwner()), 1+1.0F*this.getChargedLevel()+0.5F*this.getPowerLevel())){
+            if (living.hurt(damageSources().indirectMagic(this,this.getOwner()), 5+1.0F*this.getChargedLevel()+0.5F*this.getPowerLevel())){
                 if (!living.isAlive() && this.piercedAndKilledEntities != null) {
                     this.piercedAndKilledEntities.add(living);
                 }

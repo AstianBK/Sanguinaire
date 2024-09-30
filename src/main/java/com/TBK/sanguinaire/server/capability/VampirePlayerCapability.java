@@ -186,7 +186,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 this.hugeTick=0;
             }
         }
-        if (player.isAlive() && this.getSkillCap(player).isTransform) {
+        if (player.isAlive() && !this.getSkillCap(player).isTransform) {
             boolean flag = this.isSunBurnTick(player);
             if (flag) {
                 ItemStack itemstack = player.getItemBySlot(EquipmentSlot.HEAD);
@@ -219,7 +219,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 this.growTimer=0;
                 this.age++;
             }
-            if(this.isDurationEffectTick(player.tickCount,2+this.age/10)  && !player.isOnFire()){
+            if(this.isDurationEffectTick(player.tickCount,this.age/10)  && !player.isOnFire()){
                 if (player.getHealth() < player.getMaxHealth()) {
                     float f = player.getHealth();
                     if (f > 0.0F) {

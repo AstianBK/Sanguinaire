@@ -18,6 +18,9 @@ public class VampireHeartItem extends Item {
             VampirePlayerCapability cap=VampirePlayerCapability.get((Player) p_41411_);
             if(cap!=null){
                 cap.drainBlood(1);
+                if(!cap.isVampire() && p_41410_.random.nextFloat()<0.01F){
+                    cap.convert(false);
+                }
             }
         }
         return super.finishUsingItem(p_41409_, p_41410_, p_41411_);

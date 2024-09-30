@@ -88,7 +88,7 @@ public class BloodOrbProjetile extends LeveableProjectile {
     protected void onHitEntity(EntityHitResult p_37259_) {
         super.onHitEntity(p_37259_);
         if(p_37259_.getEntity() instanceof LivingEntity living){
-            living.hurt(damageSources().indirectMagic(this,this.getOwner()), 1+1.0F*this.getChargedLevel()+0.5F*this.getPowerLevel());
+            living.hurt(damageSources().indirectMagic(this,this.getOwner()), 5.0F+1.0F*this.getChargedLevel()+0.5F*this.getPowerLevel());
         }
     }
 
