@@ -131,7 +131,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 if(finalBlood==10){
                     player.level().playSound(null,target, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS,1.0F,1.0F);
                 }else {
-                    player.level().playSound(null,target, SoundEvents.CHICKEN_DEATH, SoundSource.PLAYERS,1.0F,1.0F);
+                    player.level().playSound(null,target, SoundEvents.BOTTLE_EMPTY, SoundSource.PLAYERS,1.0F,1.0F);
                 }
             }
         }
