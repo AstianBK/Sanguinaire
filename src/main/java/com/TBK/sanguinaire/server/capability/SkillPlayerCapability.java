@@ -316,6 +316,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         this.maxCastingClientTimer=0;
         this.castingTimer=0;
     }
+
     public void startCasting(SkillAbstract power,Player player){
         DurationInstance instance=new DurationInstance(power.name,power.level,power.castingDuration,200);
         this.addActiveEffect(instance,player);
@@ -338,10 +339,8 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     }
 
     public void addActiveEffect(DurationInstance instance, Player player){
-        this.durationEffect.forceAddDuration(instance);
-        if(player instanceof  ServerPlayer serverPlayer){
-            this.durationEffect.syncToPlayer(instance);
-        }
+        this.durationEffect.addDuration(instance,this);
+
     }
 
     @Override

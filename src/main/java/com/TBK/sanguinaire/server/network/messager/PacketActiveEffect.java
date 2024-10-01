@@ -32,4 +32,10 @@ public class PacketActiveEffect {
         });
         return true;
     }
+    public void sync(){
+        Minecraft mc = Minecraft.getInstance();
+        SkillPlayerCapability cap = SkillPlayerCapability.get(mc.player);
+        assert cap!=null;
+        cap.getActiveEffectDuration().forceAddDuration(recastInstance);
+    }
 }
