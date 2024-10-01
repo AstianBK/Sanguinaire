@@ -19,7 +19,6 @@ import java.util.Map;
 public class LimbsPartRegeneration {
     public ServerPlayer serverPlayer;
     public Map<String, RegenerationInstance> loseLimbs;
-    @OnlyIn(Dist.CLIENT)
     public LimbsPartRegeneration(){
         this.loseLimbs= Maps.newHashMap();
         this.serverPlayer=null;
