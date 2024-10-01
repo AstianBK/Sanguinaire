@@ -28,6 +28,7 @@ public class LimbsPartRegeneration {
         this.loseLimbs= Maps.newHashMap();
         this.serverPlayer=player;
     }
+
     @OnlyIn(Dist.CLIENT)
     public LimbsPartRegeneration(Map<String,RegenerationInstance> loseLimbs){
         this.loseLimbs= loseLimbs;
@@ -66,7 +67,9 @@ public class LimbsPartRegeneration {
         this.loseLimbs.clear();
     }
     public void syncPlayer(){
-        PacketHandler.sendToPlayer(new PacketSyncLimbRegeneration(this.loseLimbs),this.serverPlayer);
+        if(this.serverPlayer!=null){
+            PacketHandler.sendToPlayer(new PacketSyncLimbRegeneration(this.loseLimbs),this.serverPlayer);
+        }
     }
 
     public List<Limbs> getLimbs(){

@@ -2,7 +2,6 @@ package com.TBK.sanguinaire.server;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
-import com.TBK.sanguinaire.common.registry.SGAttribute;
 import com.TBK.sanguinaire.common.registry.SGEffect;
 import com.TBK.sanguinaire.common.registry.SGItems;
 import com.TBK.sanguinaire.common.registry.SGSounds;
@@ -13,42 +12,30 @@ import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.entity.projetile.BloodOrbProjetile;
 import com.TBK.sanguinaire.server.manager.RegenerationInstance;
 import com.TBK.sanguinaire.server.network.PacketHandler;
-import com.TBK.sanguinaire.server.network.messager.PacketSyncBlood;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderHandEvent;
-import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-
-import java.util.List;
 
 @Mod.EventBusSubscriber()
 public class ModBusEvent {
@@ -121,7 +108,7 @@ public class ModBusEvent {
             if (oldVamp == null) {
                 VampirePlayerCapability.VampirePlayerProvider prov = new VampirePlayerCapability.VampirePlayerProvider();
                 VampirePlayerCapability cap=prov.getCapability(SGCapability.VAMPIRE_CAPABILITY).orElse(null);
-                cap.init(player);
+                cap.initialize(player);
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "vampire_cap"), prov);
             }
 
@@ -147,7 +134,7 @@ public class ModBusEvent {
             AnimationPlayerCapability.AnimationPlayerProvider prov = new AnimationPlayerCapability.AnimationPlayerProvider();
             AnimationPlayerCapability getSkillCap=prov.getCapability(SGCapability.ANIMATION_CAPABILITY).orElse(null);
             if(event.getObject() instanceof Player player){
-                getSkillCap.init(player);
+                getSkillCap.initialize(player);
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "animation_patch"), prov);
             }
         }*/

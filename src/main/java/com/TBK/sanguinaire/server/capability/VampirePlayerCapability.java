@@ -180,6 +180,10 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     @Override
     public void tick(Player player) {
+        if(this.growTimer++>=this.growTimerMax){
+            this.growTimer=0;
+            this.age++;
+        }
         if(this.getBlood()>0){
             if(this.hugeTick++>2000){
                 this.loseBlood(2);
@@ -214,10 +218,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
         if(this.player instanceof ServerPlayer){
             if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
                 this.getLimbsPartRegeneration().tick(player);
-            }
-            if(this.growTimer++>=this.growTimerMax){
-                this.growTimer=0;
-                this.age++;
             }
             if(this.isDurationEffectTick(player.tickCount,this.age/10)  && !player.isOnFire()){
                 if (player.getHealth() < player.getMaxHealth()) {
@@ -319,7 +319,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
         if(!this.level.isClientSide){
             PacketHandler.sendToPlayer(new PacketHandlerPowers(1, newPlayer,player), (ServerPlayer) player);
         }
-        this.init(newPlayer);
+        this.initialize(newPlayer);
         this.setClan(capability.getClan());
         this.setIsVampire(capability.isVampire);
         this.setGeneration(capability.getGeneration());
@@ -334,6 +334,9 @@ public class VampirePlayerCapability implements IVampirePlayer {
         tag.putInt("generation",this.generation);
         tag.putString("clan",this.clan.toString());
         tag.putDouble("blood",this.getBlood());
+        if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
+            tag.put("limbs",this.getLimbsPartRegeneration().saveNBTData());
+        }
         return tag;
     }
 
@@ -344,9 +347,12 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.generation=nbt.getInt("generation");
         this.clan=Clan.valueOf(nbt.getString("clan"));
         this.setBlood(nbt.getDouble("blood"));
+        if(nbt.contains("limbs",9)){
+            this.getLimbsPartRegeneration().loadNBTData(nbt.getList("limbs",10));
+        }
     }
 
-    public void init(Player player) {
+    public void initialize(Player player) {
         this.setPlayer(player);
         this.level=player.level();
         if(player instanceof ServerPlayer){
