@@ -21,6 +21,10 @@ public class EntityRenderDispatcherMixin<T extends Entity> {
 
     @Inject(method = "renderLevel",at = @At("TAIL"))
     public void renderTentacle(PoseStack p_109600_, float p_109601_, long p_109602_, boolean p_109603_, Camera p_109604_, GameRenderer p_109605_, LightTexture p_109606_, Matrix4f p_254120_, CallbackInfo ci){
-
+        if(p_109604_.getEntity()==Minecraft.getInstance().player && Minecraft.getInstance().options.getCameraType().isFirstPerson()){
+            MultiBufferSource.BufferSource multibuffersource$buffersource = this.renderBuffers.bufferSource();
+            p_109600_.translate(0.0F,-0.2F,0.0F);
+            RenderUtil.render(p_109600_,multibuffersource$buffersource, Minecraft.getInstance().player,p_109601_);
+        }
     }
 }

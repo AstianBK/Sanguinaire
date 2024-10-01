@@ -249,8 +249,8 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
             this.durationEffect.syncAllToPlayer();
         }
     }
-    public void syncPos(int pos){
-        PacketHandler.sendToServer(new PacketSyncPosHotBar(pos));
+    public void syncPos(int pos,Player player){
+        PacketHandler.sendToAllTracking(new PacketSyncPosHotBar(pos),player);
     }
 
     @Override
@@ -259,8 +259,8 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         if (this.getPlayer()!=null){
             //this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al"+this.getSelectSkill().name));
         }
-        if(this.level.isClientSide){
-            this.syncPos(this.posSelectSkillAbstract);
+        if(!this.level.isClientSide && this.getPlayer()!=null){
+            this.syncPos(this.posSelectSkillAbstract,this.getPlayer());
         }
     }
 
@@ -270,8 +270,8 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         if (this.getPlayer()!=null){
             //this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al "+this.getSelectSkill().name));
         }
-        if(this.level.isClientSide){
-            this.syncPos(this.posSelectSkillAbstract);
+        if(!this.level.isClientSide && this.getPlayer()!=null){
+            this.syncPos(this.posSelectSkillAbstract,this.getPlayer());
         }
     }
 

@@ -121,6 +121,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
             if(this.getBlood()<this.getMaxBlood()){
                 this.drainBlood(1);
                 cap.onBite(this,target);
+                this.clientDrink=10;
                 this.hugeTick=0;
                 player.level().playSound(null,target, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
                 player.level().playSound(null,target, SoundEvents.GLOW_INK_SAC_USE, SoundSource.PLAYERS,1.0F,1.0F);
@@ -128,6 +129,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 ItemStack goblet=getGobletInHand(player);
                 int finalBlood =GobletItem.getBlood(goblet)+1;
                 cap.onBite(this,target);
+                this.clientDrink=10;
                 GobletItem.setBlood(goblet, finalBlood);
                 if(finalBlood==10){
                     player.level().playSound(null,target, SoundEvents.BOTTLE_FILL, SoundSource.PLAYERS,1.0F,1.0F);
@@ -136,9 +138,8 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 }
             }
         }
-        if(this.level.isClientSide){
-            this.clientDrink=10;
-            PacketHandler.sendToServer(new PacketSyncBiteTarget(target.getId(),target.getUUID()));
+        if(!this.level.isClientSide){
+            PacketHandler.sendToAllTracking(new PacketSyncBiteTarget(target.getId(),target.getUUID()),player);
         }
     }
     public ItemStack getGobletInHand(Player player){
@@ -180,6 +181,9 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     @Override
     public void tick(Player player) {
+        if (this.clientDrink>0){
+            this.clientDrink--;
+        }
         if(this.growTimer++>=this.growTimerMax){
             this.growTimer=0;
             this.age++;
@@ -231,9 +235,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
         }else if(this.level.isClientSide){
             if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
                 this.getLimbsPartRegeneration().tick(player);
-            }
-            if (this.clientDrink>0){
-                this.clientDrink--;
             }
         }
         if(player.level().isClientSide){

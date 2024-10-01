@@ -31,9 +31,11 @@ public class ForgeInputEvent {
     }
 
     private static void onInput(Minecraft mc, int key, int action) {
-        if (mc.screen == null && (SGKeybinds.attackKey1.consumeClick() || SGKeybinds.attackKey2.consumeClick() ||
+        if (mc.screen == null && (SGKeybinds.attackKey2.consumeClick() ||
                 SGKeybinds.attackKey3.consumeClick() || SGKeybinds.attackKey4.consumeClick()) || (key == 0x52 && action==0)) {
-            PacketHandler.sendToServer(new PacketKeySync(key,action));
+            PacketHandler.sendToServer(new PacketKeySync(key,action,-1));
+        }else if(mc.screen==null && SGKeybinds.attackKey1.consumeClick() && mc.hitResult!=null && mc.hitResult.getType()== HitResult.Type.ENTITY){
+            PacketHandler.sendToServer(new PacketKeySync(key,action,((EntityHitResult)mc.hitResult).getEntity().getId()));
         }
     }
 }

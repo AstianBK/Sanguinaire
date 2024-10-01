@@ -9,7 +9,6 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
@@ -19,20 +18,24 @@ import java.util.function.Supplier;
 public class PacketKeySync implements Packet<PacketListener>{
     private final int key;
     private final int action;
+    private final int idTarget;
 
     public PacketKeySync(FriendlyByteBuf buf) {
         this.key=buf.readInt();
         this.action=buf.readInt();
+        this.idTarget=buf.readInt();
     }
 
-    public PacketKeySync(int key,int action) {
+    public PacketKeySync(int key,int action,int idTarget) {
         this.key = key;
         this.action=action;
+        this.idTarget=idTarget;
     }
 
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(this.key);
         buf.writeInt(this.action);
+        buf.writeInt(this.idTarget);
     }
 
     @Override
@@ -48,11 +51,11 @@ public class PacketKeySync implements Packet<PacketListener>{
     }
 
     private void handlerAnim(Supplier<NetworkEvent.Context> contextSupplier) {
+        Player player=contextSupplier.get().getSender();
+        SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
+        assert skillPlayerCapability != null;
         switch (this.key){
             case 0x52->{
-                Player player=contextSupplier.get().getSender();
-                SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(player);
-                assert skillPlayerCapability != null;
                 if(skillPlayerCapability.isVampire()){
                     if(this.action==0){
                         skillPlayerCapability.stopCasting(player);
@@ -62,45 +65,33 @@ public class PacketKeySync implements Packet<PacketListener>{
                 }
             }
             case 0x43->{
-                downPower();
+                downPower(skillPlayerCapability);
             }
             case 0x56->{
-                upPower();
+                upPower(skillPlayerCapability);
             }
             default ->{
-                bite();
+                bite(player);
             }
         }
     }
-    @OnlyIn(Dist.CLIENT)
-    public static void bite(){
-        Minecraft mc=Minecraft.getInstance();
-        Player player=mc.player;
-        HitResult hit = mc.hitResult;
-        assert player!=null && hit!=null;
-        if(hit.getType() == HitResult.Type.ENTITY){
+    public void bite(Player player){
+        Entity target= player.level().getEntity(this.idTarget);
+        if(target!=null){
             VampirePlayerCapability cap=VampirePlayerCapability.get(player);
             if(cap.isVampire() && cap.clientDrink<=0){
-                cap.bite(player,((EntityHitResult)hit).getEntity());
+                cap.bite(player,target);
             }
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void upPower(){
-        Minecraft mc=Minecraft.getInstance();
-        SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
-        assert skillPlayerCapability != null;
+    public static void upPower(SkillPlayerCapability skillPlayerCapability){
         if(skillPlayerCapability.isVampire()){
             skillPlayerCapability.upSkill();
         }
     }
 
-    @OnlyIn(Dist.CLIENT)
-    public static void downPower(){
-        Minecraft mc=Minecraft.getInstance();
-        SkillPlayerCapability skillPlayerCapability=SkillPlayerCapability.get(mc.player);
-        assert skillPlayerCapability != null;
+    public static void downPower(SkillPlayerCapability skillPlayerCapability){
         if(skillPlayerCapability.isVampire()){
             skillPlayerCapability.downSkill();
         }
