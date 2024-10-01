@@ -48,7 +48,6 @@ public class LimbsPartRegeneration {
     public void addLoseLimb(String id,int timer,int remaining){
         this.loseLimbs.put(id,new RegenerationInstance(timer,remaining));
     }
-    @OnlyIn(Dist.CLIENT)
     public void addLoseLimb(String id,RegenerationInstance instance){
         this.loseLimbs.put(id,instance);
     }
