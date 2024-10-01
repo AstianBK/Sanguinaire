@@ -4,6 +4,8 @@ import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.manager.DurationInstance;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -28,10 +30,10 @@ public class PacketActiveEffect {
 
     public boolean handle(Supplier<NetworkEvent.Context> supplier) {
         NetworkEvent.Context ctx = supplier.get();
-        ctx.enqueueWork(() -> {
-        });
+        ctx.enqueueWork(this::sync);
         return true;
     }
+    @OnlyIn(Dist.CLIENT)
     public void sync(){
         Minecraft mc = Minecraft.getInstance();
         SkillPlayerCapability cap = SkillPlayerCapability.get(mc.player);
