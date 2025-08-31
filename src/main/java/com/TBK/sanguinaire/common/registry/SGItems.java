@@ -26,8 +26,8 @@ public class SGItems {
     public static final RegistryObject<Item> ANCIENT_BLOOD = ITEMS.register("ancient_blood",
             ()-> new AncientBloodItem(new Item.Properties().rarity(Rarity.UNCOMMON).food(new FoodProperties.Builder().alwaysEat().nutrition(0).fast().build()).stacksTo(1)));
 
-    public static final RegistryObject<Item> GOLD_GOBLET = ITEMS.register("gold_goblet",
-            ()-> new GobletItem(new Item.Properties().stacksTo(1).durability(10).defaultDurability(1)));
+    public static final RegistryObject<Item> GOLD_GOBLET = ITEMS.register("glass_goblet",
+            ()-> new GobletItem(new Item.Properties().stacksTo(1).durability(7).defaultDurability(0)));
 
     public static final RegistryObject<Item> CRIMSON_MIRROR = ITEMS.register("crimson_mirror",
             ()-> new Item(new Item.Properties().stacksTo(1)));

@@ -24,12 +24,12 @@ public class GobletItem extends Item {
 
     @Override
     public int getDamage(ItemStack stack) {
-        return getBlood(stack)>0 ? 10-getBlood(stack) : 10;
+        return getBlood(stack)>0 ? 7-getBlood(stack) : 7;
     }
 
     @Override
     public int getMaxDamage(ItemStack stack) {
-        return 10;
+        return 7;
     }
 
     @Override
@@ -60,7 +60,7 @@ public class GobletItem extends Item {
         return compoundtag != null ? compoundtag.getInt("blood") : 0;
     }
     public static boolean canFillGoblet(ItemStack stack){
-        return stack.getItem() instanceof GobletItem && getBlood(stack)>=0 && getBlood(stack)<10;
+        return stack.getItem() instanceof GobletItem && getBlood(stack)>=0 && getBlood(stack)<7;
     }
 
     public static void setBlood(ItemStack p_40885_, int blood) {
@@ -71,6 +71,6 @@ public class GobletItem extends Item {
     @Override
     public void appendHoverText(ItemStack p_41421_, @Nullable Level p_41422_, List<Component> p_41423_, TooltipFlag p_41424_) {
         super.appendHoverText(p_41421_, p_41422_, p_41423_, p_41424_);
-        p_41423_.add(Component.translatable("item.sanguinaire.gold_goblet.blood"+getBlood(p_41421_)));
+        p_41423_.add(Component.translatable("item.sanguinaire.glass_goblet.blood"+getBlood(p_41421_)));
     }
 }

@@ -1,6 +1,6 @@
 {
   "parent": "item/generated",
   "textures": {
-    "layer0": "sanguinaire:item/gold_goblet_4"
+    "layer0": "sanguinaire:item/glass_goblet_0"
   }
 }

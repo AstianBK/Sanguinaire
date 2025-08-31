@@ -1,0 +1,56 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "sanguinaire:item/glass_goblet_0"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "sanguinaire:blood": 0
+      },
+      "model": "sanguinaire:item/glass_goblet_0"
+    },
+    {
+      "predicate": {
+        "sanguinaire:blood": 1
+      },
+      "model": "sanguinaire:item/glass_goblet_1"
+    },
+    {
+      "predicate": {
+        "sanguinaire:blood": 2
+      },
+      "model": "sanguinaire:item/glass_goblet_2"
+    },
+    {
+      "predicate": {
+        "sanguinaire:blood": 3
+      },
+      "model": "sanguinaire:item/glass_goblet_3"
+    },
+    {
+      "predicate": {
+        "sanguinaire:blood": 4
+      },
+      "model": "sanguinaire:item/glass_goblet_4"
+    },
+    {
+      "predicate": {
+        "sanguinaire:blood": 5
+      },
+      "model": "sanguinaire:item/glass_goblet_5"
+    },
+    {
+      "predicate": {
+        "sanguinaire:blood": 6
+      },
+      "model": "sanguinaire:item/glass_goblet_6"
+    },
+    {
+      "predicate": {
+        "sanguinaire:blood": 7
+      },
+      "model": "sanguinaire:item/glass_goblet_7"
+    }
+  ]
+}
