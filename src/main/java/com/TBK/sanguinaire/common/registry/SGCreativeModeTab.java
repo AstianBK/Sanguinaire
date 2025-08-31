@@ -20,6 +20,7 @@ public class SGCreativeModeTab {
                 a.accept(SGItems.VAMPIRE_HEART.get());
                 a.accept(SGItems.ANCIENT_BLOOD.get());
                 a.accept(SGItems.CRIMSON_MIRROR.get());
+                a.accept(SGItems.VAMPILLER_SPAWN_EGG.get());
             })
             .build());
 }
