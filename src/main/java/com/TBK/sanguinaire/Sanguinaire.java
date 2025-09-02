@@ -53,6 +53,7 @@ public class Sanguinaire
         SGParticles.register(modEventBus);
         SGAttribute.ATTRIBUTES.register(modEventBus);
         SGItems.ITEMS.register(modEventBus);
+        SGBlocks.BLOCKS.register(modEventBus);
         SGCreativeModeTab.TABS.register(modEventBus);
         SGEntityType.ENTITY_TYPES.register(modEventBus);
         SGEffect.MOB_EFFECT.register(modEventBus);
