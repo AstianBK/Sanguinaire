@@ -242,7 +242,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
             if(instance!=null){
                 float porcentBlood=instance.getCooldownPercent();
                 float f=3.0F*porcentBlood;
-                ParticleOptions particleoptions = SGParticles.BLOOD_PARTICLES.get();
+                ParticleOptions particleoptions = SGParticles.BLOOD_DOT_PARTICLES.get();
                 int i;
                 float f1;
                 i = Mth.ceil((float)Math.PI * f * f);

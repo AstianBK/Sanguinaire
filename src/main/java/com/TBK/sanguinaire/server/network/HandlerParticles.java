@@ -19,7 +19,7 @@ public class HandlerParticles {
             double xp = living.getX() + random.nextDouble(-box, box);
             double yp = living.getY() + random.nextDouble(0.0d, living.getBbHeight());
             double zp = living.getZ() + random.nextDouble(-box, box);
-            living.level().addParticle(SGParticles.SLICE_PARTICLES.get(),xp,yp,zp,0.0F,0.0F,0.0F);
+            living.level().addParticle(SGParticles.BLOOD_TRAIL_PARTICLES.get(),xp,yp,zp,0.0F,0.0F,0.0F);
         }
     }
     public static void spawnBlood(LivingEntity living){
@@ -29,7 +29,7 @@ public class HandlerParticles {
             double xp = living.getX() + random.nextDouble(-box, box);
             double yp = living.getY() + random.nextDouble(0.0d, living.getBbHeight());
             double zp = living.getZ() + random.nextDouble(-box, box);
-            living.level().addParticle(SGParticles.BLOOD_PARTICLES.get(),xp,yp,zp,0.0F,0.0F,0.0F);
+            living.level().addParticle(SGParticles.BLOOD_DOT_PARTICLES.get(),xp,yp,zp,0.0F,0.0F,0.0F);
         }
     }
     public static void spawnChargedBlood(Entity entity){

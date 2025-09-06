@@ -42,14 +42,17 @@ public class EventClient {
         if(SGParticles.BLOOD_PARTICLES.isPresent()){
             event.registerSpriteSet(SGParticles.BLOOD_PARTICLES.get(), BloodBKParticles.Factory::new);
         }
-        if(SGParticles.SLICE_PARTICLES.isPresent()){
-            event.registerSpriteSet(SGParticles.SLICE_PARTICLES.get(), SliceParticles.Factory::new);
+        if(SGParticles.BLOOD_DOT_PARTICLES.isPresent()){
+            event.registerSpriteSet(SGParticles.BLOOD_DOT_PARTICLES.get(), BloodDotParticles.Factory::new);
         }
         if(SGParticles.BLOOD_TRAIL_PARTICLES.isPresent()){
             event.registerSpriteSet(SGParticles.BLOOD_TRAIL_PARTICLES.get(), BloodTrailParticles.Factory::new);
         }
         if(SGParticles.BLOOD_EXPLOSION_PARTICLES.isPresent()){
             event.registerSpriteSet(SGParticles.BLOOD_EXPLOSION_PARTICLES.get(), BloodExplosionParticles.Factory::new);
+        }
+        if(SGParticles.BLOOD_BUBBLE_PARTICLES.isPresent()){
+            event.registerSpriteSet(SGParticles.BLOOD_BUBBLE_PARTICLES.get(), BloodExplosionParticles.Factory::new);
         }
     }
 
