@@ -284,6 +284,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
             return true;
         }
     }
+
     public int getRegTimer(){
         return (int) (140-140*(0.5F*(this.age/100)+0.36F*(1.0F-this.generation/10.0F)));
     }
@@ -302,7 +303,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
 
     public boolean canRevive() {
-        return this.getBlood()>=4;
+        return this.getBlood()>=4 && !this.getPlayer().isOnFire();
     }
 
 

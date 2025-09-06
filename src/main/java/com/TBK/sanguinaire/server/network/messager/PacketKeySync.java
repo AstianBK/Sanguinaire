@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire.server.network.messager;
 
+import com.TBK.sanguinaire.common.keybind.SGKeybinds;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import net.minecraft.client.Minecraft;
@@ -64,11 +65,14 @@ public class PacketKeySync implements Packet<PacketListener>{
                     }
                 }
             }
-            case 0x43->{
-                downPower(skillPlayerCapability);
-            }
-            case 0x56->{
-                upPower(skillPlayerCapability);
+            case 0x12->{
+                if( SGKeybinds.attackKey3.isDown()){
+                    if(action==0){
+                        upPower(skillPlayerCapability);
+                    }else {
+                        downPower(skillPlayerCapability);
+                    }
+                }
             }
             default ->{
                 bite(player);

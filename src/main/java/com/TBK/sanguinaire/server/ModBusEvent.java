@@ -40,6 +40,48 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber()
 public class ModBusEvent {
     @SubscribeEvent
+    public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
+        if(event.getItemStack().is(Items.STICK)){
+            if(event.getEntity().isShiftKeyDown()){
+            }else {
+                Sanguinaire.x-=1D;
+            }
+            Sanguinaire.LOGGER.debug("X :" + Sanguinaire.x);
+        }
+
+        if(event.getItemStack().is(Items.BLAZE_ROD)){
+            if(event.getEntity().isShiftKeyDown()){
+            }else {
+                Sanguinaire.y-=1D;
+            }
+            Sanguinaire.LOGGER.debug("Y :" + Sanguinaire.y);
+        }
+        if(event.getItemStack().is(Items.PRISMARINE_SHARD)){
+            Sanguinaire.y+=1D;
+
+            Sanguinaire.LOGGER.debug("Z :" + Sanguinaire.z);
+        }
+
+        if(event.getItemStack().is(Items.HEART_OF_THE_SEA)){
+            if(event.getEntity().isShiftKeyDown()){
+            }else {
+                Sanguinaire.x+=1D;
+            }
+            Sanguinaire.LOGGER.debug("XQ :" + Sanguinaire.xq);
+        }
+        if(event.getItemStack().is(Items.GOLD_INGOT)){
+            Sanguinaire.z+=0.1D;
+        }
+
+        if(event.getItemStack().is(Items.NETHERITE_INGOT)){
+            Sanguinaire.z-=0.1D;
+        }
+        Sanguinaire.LOGGER.debug("X :" + Sanguinaire.x + " Y :"+Sanguinaire.y+
+                " Z :" + Sanguinaire.z + " XQ :"+Sanguinaire.xq+
+                " YQ :" + Sanguinaire.yq + " ZQ :"+Sanguinaire.zq);
+
+    }
+    @SubscribeEvent
     public static void onJoinGame(EntityJoinLevelEvent event) {
         if(event.getEntity() instanceof Player){
             SkillPlayerCapability cap = SGCapability.getEntityCap(event.getEntity(), SkillPlayerCapability.class);

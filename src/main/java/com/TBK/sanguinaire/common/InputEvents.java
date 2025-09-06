@@ -2,6 +2,7 @@ package com.TBK.sanguinaire.common;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.keybind.SGKeybinds;
+import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketKeySync;
@@ -28,10 +29,9 @@ public class InputEvents {
         if (mc.level == null) return;
         onInput(mc, event.getButton(), event.getAction());
     }
-
     private static void onInput(Minecraft mc, int key, int action) {
-        if (mc.screen == null && (SGKeybinds.attackKey2.consumeClick() ||
-                SGKeybinds.attackKey3.consumeClick() || SGKeybinds.attackKey4.consumeClick()) || (key == 0x52 && action==0)) {
+        if (mc.screen == null && (
+                SGKeybinds.attackKey4.consumeClick()) || (key == 0x52 && action==0)) {
             PacketHandler.sendToServer(new PacketKeySync(key,action,-1));
         }else if(mc.screen==null && SGKeybinds.attackKey1.consumeClick() && mc.hitResult!=null && mc.hitResult.getType()== HitResult.Type.ENTITY){
             PacketHandler.sendToServer(new PacketKeySync(key,action,((EntityHitResult)mc.hitResult).getEntity().getId()));

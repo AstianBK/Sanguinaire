@@ -79,15 +79,21 @@ public class BiterEntityCap implements IBiterEntity {
     @Override
     public void tick(LivingEntity living) {
         if(this.unBlooded() && living.tickCount%20==0){
-            living.hurt(living.damageSources().generic(),5);
+            living.hurt(living.damageSources().generic(),2);
         }
+
         if(!living.level().isClientSide){
             if(!this.unBlooded()){
                 if(this.getBlood()<this.getMaxBlood()){
-                    if(this.regBlood++>6000){
-                        this.regBlood(2);
+                    if(this.regBlood++>2400){
+                        this.regBlood(1);
                         this.regBlood=0;
                     }
+                }
+            }else {
+                if(this.regBlood++>200){
+                    this.regBlood(1);
+                    this.regBlood=0;
                 }
             }
             PacketHandler.sendToAllTracking(new PacketSyncBloodEntity(this.getBlood(), living), (LivingEntity) living);

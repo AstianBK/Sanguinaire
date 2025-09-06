@@ -38,11 +38,16 @@ import org.slf4j.Logger;
 public class Sanguinaire
 {
     public static final String MODID = "sanguinaire";
-    private static final Logger LOGGER = LogUtils.getLogger();
+    public static final Logger LOGGER = LogUtils.getLogger();
     private static final ResourceKey<StructureProcessorList> EMPTY_PROCESSOR_LIST_KEY = ResourceKey.create(
             Registries.PROCESSOR_LIST, new ResourceLocation("minecraft", "empty"));
 
-
+    public static double x=0;
+    public static double y=0;
+    public static double z=0;
+    public static double xq=0;
+    public static double yq=0;
+    public static double zq=0;
 
     public Sanguinaire()
     {

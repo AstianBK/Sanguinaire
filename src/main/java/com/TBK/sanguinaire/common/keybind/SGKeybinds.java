@@ -2,6 +2,7 @@ package com.TBK.sanguinaire.common.keybind;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -12,7 +13,6 @@ import java.awt.event.KeyEvent;
 @Mod.EventBusSubscriber(modid = Sanguinaire.MODID,bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class SGKeybinds {
     public static KeyMapping attackKey1;
-    public static KeyMapping attackKey2;
     public static KeyMapping attackKey3;
     public static KeyMapping attackKey4;
 
@@ -20,12 +20,10 @@ public class SGKeybinds {
     @SubscribeEvent
     public static void register(final RegisterKeyMappingsEvent event) {
         attackKey1 = create("attack_key1", KeyEvent.VK_F);
-        attackKey2 = create("attack_key2", KeyEvent.VK_C);
-        attackKey3 = create("attack_key3", KeyEvent.VK_V);
+        attackKey3 = create("attack_key3", 342);
         attackKey4 = create("attack_key4", KeyEvent.VK_R);
 
         event.register(attackKey1);
-        event.register(attackKey2);
         event.register(attackKey3);
         event.register(attackKey4);
     }

@@ -55,6 +55,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public ActiveEffectDuration durationEffect=new ActiveEffectDuration();
     public boolean isTransform=false;
     public Forms form=Forms.NONE;
+    public boolean hotbarActive = false;
 
     public static SkillPlayerCapability get(Player player){
         return SGCapability.getEntityCap(player,SkillPlayerCapability.class);
