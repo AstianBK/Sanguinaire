@@ -12,7 +12,7 @@
 		{
 			"name": "bottombase",
 			"from": [0, 0, 0],
-			"to": [16, 12, 15],
+			"to": [16, 12, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8.2625, 5]},
 			"faces": {
 				"north": {"uv": [4, 7.5, 8, 10.5], "texture": "#0"},
@@ -40,7 +40,7 @@
 		{
 			"name": "bottominner",
 			"from": [1, 1, 2],
-			"to": [2, 12, 15],
+			"to": [2, 12, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8.2625, 5]},
 			"faces": {
 				"north": {"uv": [0, 0, 0.25, 2.75], "texture": "#0"},
@@ -54,7 +54,7 @@
 		{
 			"name": "bottominner",
 			"from": [14, 1, 2],
-			"to": [15, 12, 15],
+			"to": [15, 12, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8.2625, 5]},
 			"faces": {
 				"north": {"uv": [0, 0, 0.25, 2.75], "texture": "#0"},
@@ -68,7 +68,7 @@
 		{
 			"name": "bottominner",
 			"from": [2, 1, 2],
-			"to": [14, 2, 15],
+			"to": [14, 2, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8.2625, 5]},
 			"faces": {
 				"north": {"uv": [0, 0, 3, 0.25], "texture": "#0"},
@@ -180,7 +180,7 @@
 		{
 			"name": "bottomupper",
 			"from": [0, 12, -1],
-			"to": [16, 15, 15],
+			"to": [16, 15, 16],
 			"rotation": {"angle": 0, "axis": "y", "origin": [8, 8.2625, 5]},
 			"faces": {
 				"north": {"uv": [8, 6, 12, 6.75], "texture": "#0"},

@@ -84,11 +84,6 @@ public class Sanguinaire
         });
     }
 
-    private void registerBlockEntityRenderers(final EntityRenderersEvent.RegisterRenderers event) {
-        event.registerBlockEntityRenderer(SGBlockEntities.STONE_COFFIN.get(), CoffinBlockEntityRenderer::new);
-    }
-
-
     @OnlyIn(Dist.CLIENT)
     public void onRenderFoodBar(RenderGuiOverlayEvent.Pre event) {
         Minecraft mc=Minecraft.getInstance();

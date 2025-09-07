@@ -2,6 +2,7 @@ package com.TBK.sanguinaire.server;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.api.IVampirePlayer;
+import com.TBK.sanguinaire.common.block.CoffinBlock;
 import com.TBK.sanguinaire.common.registry.SGEffect;
 import com.TBK.sanguinaire.common.registry.SGItems;
 import com.TBK.sanguinaire.common.registry.SGSounds;
@@ -14,8 +15,10 @@ import com.TBK.sanguinaire.server.manager.RegenerationInstance;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodEntity;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
@@ -25,6 +28,7 @@ import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -34,8 +38,14 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.event.entity.player.SleepingTimeCheckEvent;
+import net.minecraftforge.event.level.SleepFinishedTimeEvent;
+import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Optional;
 
 @Mod.EventBusSubscriber()
 public class ModBusEvent {
@@ -279,6 +289,34 @@ public class ModBusEvent {
         if(living.hasEffect(SGEffect.BLEEDING.get())){
             if(event.getSource().getEntity() instanceof IVampirePlayer vampirePlayer){
                 vampirePlayer.loseBlood(1);
+            }
+        }
+    }
+
+    public static boolean isDay(LevelAccessor level) {
+        float angle = level.getTimeOfDay(1.0F);
+        return angle > 0.78 || angle < 0.24;
+    }
+    @SubscribeEvent
+    public void sleepTimeCheck(@NotNull SleepingTimeCheckEvent event) {
+            event.getSleepingLocation().ifPresent((blockPos -> {
+                if (event.getEntity().level().getBlockState(blockPos).getBlock() instanceof CoffinBlock) {
+                    event.setResult(isDay(event.getEntity().level()) ? Event.Result.ALLOW : Event.Result.DENY);
+                }}));
+
+    }
+
+    @SubscribeEvent
+    public void sleepTimeFinish(@NotNull SleepFinishedTimeEvent event) {
+        if (event.getLevel() instanceof ServerLevel && ((ServerLevel) event.getLevel()).isDay()) {
+            boolean sleepingInCoffin = event.getLevel().players().stream().anyMatch(player -> {
+                Optional<BlockPos> pos = player.getSleepingPos();
+                return pos.isPresent() && event.getLevel().getBlockState(pos.get()).getBlock() instanceof CoffinBlock;
+            });
+            if (sleepingInCoffin) {
+                long dist = ((ServerLevel) event.getLevel()).getDayTime() % 24000L > 12000L ? 13000 : -11000; //Make sure we don't go backwards in time (in special case sleeping at 23500)
+                event.setTimeAddition(event.getNewTime() + dist);
+
             }
         }
     }
