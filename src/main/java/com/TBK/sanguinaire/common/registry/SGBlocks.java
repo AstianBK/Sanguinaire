@@ -1,6 +1,8 @@
 package com.TBK.sanguinaire.common.registry;
 
 import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.common.block.BloodBlock;
+import com.TBK.sanguinaire.common.block.CoffinBlock;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -18,6 +20,10 @@ public class SGBlocks {
     public static final DeferredRegister<Block> BLOCKS =
             DeferredRegister.create(ForgeRegistries.BLOCKS, Sanguinaire.MODID);
 
+    public static final RegistryObject<Block> DIRT_BLOOD_PATH = registerBlock("dirt_blood_path",
+            () -> new BloodBlock(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()));
+
 
     public static final RegistryObject<Block> DREADWOOD_LOG = registerBlock("dreadwood_log",
             () -> new Block(BlockBehaviour.Properties.of()
@@ -28,8 +34,7 @@ public class SGBlocks {
                     .mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()));
 
     public static final RegistryObject<Block> STONE_COFFIN = registerBlock("stone_coffin",
-            () -> new Block(BlockBehaviour.Properties.of()
-                    .mapColor(MapColor.STONE).strength(2.0F).sound(SoundType.STONE).ignitedByLava().requiresCorrectToolForDrops()));
+            CoffinBlock::new);
 
 
 

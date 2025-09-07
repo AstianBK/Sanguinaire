@@ -42,14 +42,13 @@ public class CoffinBlock extends BedBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.MODEL;
     }
 
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-
-        return new BedBlockEntity(pos, state);
+        return new CoffinBlockEntity(pos, state);
     }
 
     @Override

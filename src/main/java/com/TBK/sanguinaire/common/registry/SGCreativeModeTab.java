@@ -17,12 +17,14 @@ public class SGCreativeModeTab {
             .displayItems((s,a)-> {
                 a.accept(SGItems.MUSIC_DISC_WASTED_BLOOD.get());
                 a.accept(SGItems.GOLD_GOBLET.get());
+                a.accept(SGBlocks.STONE_COFFIN.get());
                 a.accept(SGItems.VAMPIRE_HEART.get());
                 a.accept(SGItems.ANCIENT_BLOOD.get());
                 a.accept(SGItems.CRIMSON_MIRROR.get());
                 a.accept(SGItems.VAMPILLER_SPAWN_EGG.get());
                 a.accept(SGBlocks.DREADWOOD_LOG.get());
                 a.accept(SGBlocks.DREADWOOD_STRIPPED_LOG.get());
+                a.accept(SGBlocks.DIRT_BLOOD_PATH.get());
             })
             .build());
 }
