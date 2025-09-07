@@ -11,6 +11,7 @@ import com.TBK.sanguinaire.server.manager.PlayerCooldowns;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import com.TBK.sanguinaire.server.skill.drakul.BloodOrb;
 import com.TBK.sanguinaire.server.skill.drakul.BloodSlash;
+import com.TBK.sanguinaire.server.skill.drakul.BloodSpikes;
 import com.TBK.sanguinaire.server.skill.drakul.BloodTendrils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -362,8 +363,7 @@ public class VampillerEntity extends Monster implements GeoEntity, RangedAttackM
     }
     public void initSkill(){
         this.skills.put(0,new BloodOrb());
-        this.skills.put(1,new BloodSlash());
-        this.skills.put(2,new BloodTendrils());
+        this.skills.put(1,new BloodSpikes());
     }
 
     @Override

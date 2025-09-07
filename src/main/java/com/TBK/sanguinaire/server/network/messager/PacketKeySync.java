@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire.server.network.messager;
 
+import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.keybind.SGKeybinds;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
@@ -57,16 +58,23 @@ public class PacketKeySync implements Packet<PacketListener>{
         assert skillPlayerCapability != null;
         switch (this.key){
             case 0x52->{
-                if(skillPlayerCapability.isVampire()){
-                    if(this.action==0){
-                        skillPlayerCapability.stopCasting(player);
-                    }else if(this.action==1){
-                        skillPlayerCapability.startCasting(player);
+                if(skillPlayerCapability.isVampire() && SGKeybinds.attackKey3.isDown() && skillPlayerCapability.cooldownReUse<=0){
+                    if(skillPlayerCapability.getSelectSkill().isCasting){
+                        if(this.action==0){
+                            skillPlayerCapability.stopCasting(player);
+                        }else if(this.action==1){
+                            skillPlayerCapability.startCasting(player);
+                        }
+                    }else {
+                        if(this.action==1){
+                            skillPlayerCapability.startCasting(player);
+                        }
                     }
+                    skillPlayerCapability.cooldownReUse=10;
                 }
             }
             case 0x12->{
-                if( SGKeybinds.attackKey3.isDown()){
+                if(SGKeybinds.attackKey3.isDown()){
                     if(action==0){
                         upPower(skillPlayerCapability);
                     }else {

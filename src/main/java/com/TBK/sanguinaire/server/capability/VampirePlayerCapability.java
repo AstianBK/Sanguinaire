@@ -184,6 +184,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
         if (this.clientDrink>0){
             this.clientDrink--;
         }
+
         if(this.growTimer++>=this.growTimerMax){
             this.growTimer=0;
             this.age++;

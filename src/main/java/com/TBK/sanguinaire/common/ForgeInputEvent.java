@@ -40,15 +40,17 @@ public class ForgeInputEvent {
         }
     }
 
-    private static void onInput(Minecraft mc, int key, int action) {
+    private static boolean onInput(Minecraft mc, int key, int action) {
         SkillPlayerCapability cap = SkillPlayerCapability.get(mc.player);
         if(cap!=null){
             cap.hotbarActive = SGKeybinds.attackKey3.isDown();
         }
-        if (mc.screen == null && ( SGKeybinds.attackKey4.consumeClick()) || (key == 0x52 && action==0)) {
-            PacketHandler.sendToServer(new PacketKeySync(key,action,-1));
+        if (mc.screen == null && (key==1)) {
+            PacketHandler.sendToServer(new PacketKeySync(0x52,action,-1));
+            return true;
         }else if(mc.screen==null && SGKeybinds.attackKey1.consumeClick() && mc.hitResult!=null && mc.hitResult.getType()== HitResult.Type.ENTITY){
             PacketHandler.sendToServer(new PacketKeySync(key,action,((EntityHitResult)mc.hitResult).getEntity().getId()));
         }
+        return false;
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.world.entity.player.Player;
 
 public abstract class TransformSkill extends SkillAbstract{
     public TransformSkill(String name,int cooldown,int lauchTime,boolean canReActive,int costBloodBase) {
-        super(name,999999,1,cooldown,lauchTime,true,true,canReActive,false,false,costBloodBase);
+        super(name,999999,1,cooldown,lauchTime,false,true,canReActive,false,false,costBloodBase);
     }
 
     @Override

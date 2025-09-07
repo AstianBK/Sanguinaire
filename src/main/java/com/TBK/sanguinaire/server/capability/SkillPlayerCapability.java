@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire.server.capability;
 
+import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.api.ISkillPlayer;
 import com.TBK.sanguinaire.server.Util;
 import com.TBK.sanguinaire.server.manager.*;
@@ -7,9 +8,7 @@ import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketHandlerPowers;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncPosHotBar;
 import com.TBK.sanguinaire.server.skill.*;
-import com.TBK.sanguinaire.server.skill.drakul.BloodOrb;
-import com.TBK.sanguinaire.server.skill.drakul.BloodSlash;
-import com.TBK.sanguinaire.server.skill.drakul.BloodTendrils;
+import com.TBK.sanguinaire.server.skill.drakul.*;
 import com.google.common.collect.Maps;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -56,6 +55,8 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public boolean isTransform=false;
     public Forms form=Forms.NONE;
     public boolean hotbarActive = false;
+    public int cooldownReUse = 0;
+
 
     public static SkillPlayerCapability get(Player player){
         return SGCapability.getEntityCap(player,SkillPlayerCapability.class);
@@ -151,6 +152,9 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     @Override
     public void tick(Player player) {
         if(Util.isVampire(player)){
+            if (this.cooldownReUse>0){
+                this.cooldownReUse--;
+            }
             if(player instanceof ServerPlayer){
                 if (this.cooldowns.hasCooldownsActive()){
                     this.cooldowns.tick(1);
@@ -201,14 +205,14 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         SkillAbstracts skillAbstracts=new SkillAbstracts(new HashMap<>());
         skillAbstracts.addSkillAbstracts(0,new BatForm());
         skillAbstracts.addSkillAbstracts(1,new BloodOrb());
-        skillAbstracts.addSkillAbstracts(2,new BloodSlash());
-        skillAbstracts.addSkillAbstracts(3,new BloodTendrils());
+        skillAbstracts.addSkillAbstracts(2,new BloodSpikes());
+        skillAbstracts.addSkillAbstracts(3,new BloodPool());
         this.setSetHotbar(skillAbstracts);
         this.passives.addSkillAbstracts(0,new SpeedPassive());
     }
 
     public void setSetHotbar(SkillAbstracts skillAbstracts){
-        this.skills =skillAbstracts;
+        this.skills = skillAbstracts;
     }
 
     @Override
@@ -278,9 +282,11 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void startCasting(Player player) {
+
         if(!this.level.isClientSide){
             PacketHandler.sendToPlayer(new PacketHandlerPowers(0,player, player), (ServerPlayer) player);
         }
+
         if(this.canUseSkill(this.getSelectSkill())){
             boolean skillActive=this.durationEffect.hasDurationForSkill(this.getSelectSkill());
             if(!skillActive || this.getSelectSkill().isCanReActive()){
@@ -291,6 +297,9 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
                 }else {
                     if(power.isCasting){
                         this.startCasting(power,player);
+                    }else if(power.instantUse){
+                        this.setLastUsingSkill(this.getSelectSkill());
+                        this.handledSkill(power);
                     }else {
                         DurationInstance instance=new DurationInstance(power.name,power.level,power.duration+50*power.level,200);
                         this.addActiveEffect(instance,player);
@@ -341,7 +350,6 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     public void addActiveEffect(DurationInstance instance, Player player){
         this.durationEffect.addDuration(instance,this);
-
     }
 
     @Override
@@ -350,6 +358,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         tag.putBoolean("isTransform",this.isTransform);
         this.skills.save(tag);
         tag.putInt("select_power",this.posSelectSkillAbstract);
+        tag.putString("form",this.getForm().name());
         if(this.cooldowns.hasCooldownsActive()){
             tag.put("cooldowns",this.cooldowns.saveNBTData());
         }
@@ -365,6 +374,12 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         this.skills =new SkillAbstracts(nbt);
         this.posSelectSkillAbstract=nbt.getInt("select_power");
         this.isTransform=nbt.getBoolean("isTransform");
+        if(nbt.contains("form")){
+            this.setForm(Forms.valueOf(nbt.getString("form")));
+        }else {
+            this.setForm(Forms.NONE);
+        }
+
         if(nbt.contains("cooldowns")){
             ListTag listTag=nbt.getList("cooldowns",10);
             this.cooldowns.loadNBTData(listTag);

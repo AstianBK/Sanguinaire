@@ -10,6 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
@@ -41,7 +42,10 @@ public class PacketHandlerPowers implements Packet<PacketListener> {
     }
 
     public void handle(Supplier<NetworkEvent.Context> context) {
-        context.get().enqueueWork(this::handlerAnim);
+        context.get().enqueueWork(()->{
+            assert context.get().getDirection() == NetworkDirection.PLAY_TO_CLIENT;
+            this.handlerAnim();
+        });
         context.get().setPacketHandled(true);
     }
     @OnlyIn(Dist.CLIENT)
