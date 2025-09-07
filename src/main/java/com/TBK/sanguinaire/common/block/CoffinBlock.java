@@ -42,7 +42,6 @@ public class CoffinBlock extends BedBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        // We want a custom model via BER (BlockEntityRenderer)
         return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
