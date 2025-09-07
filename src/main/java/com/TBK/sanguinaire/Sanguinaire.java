@@ -1,6 +1,7 @@
 package com.TBK.sanguinaire;
 
 import com.TBK.sanguinaire.client.renderer.BloodOrbRenderer;
+import com.TBK.sanguinaire.client.renderer.CoffinBlockEntityRenderer;
 import com.TBK.sanguinaire.client.renderer.SlashBloodRenderer;
 import com.TBK.sanguinaire.client.renderer.VampillerRenderer;
 import com.TBK.sanguinaire.common.registry.*;
@@ -19,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
@@ -49,6 +51,10 @@ public class Sanguinaire
     public static double yq=0;
     public static double zq=0;
 
+
+
+
+
     public Sanguinaire()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -62,6 +68,7 @@ public class Sanguinaire
         SGCreativeModeTab.TABS.register(modEventBus);
         SGEntityType.ENTITY_TYPES.register(modEventBus);
         SGEffect.MOB_EFFECT.register(modEventBus);
+        SGBlockEntities.BLOCK_ENTITIES.register(modEventBus);
         LootModifiers.register(modEventBus);
         SGSkillAbstract.init();
         SGSounds.register(modEventBus);
@@ -76,6 +83,11 @@ public class Sanguinaire
             modEventBus.addListener(this::registerRenderers);
         });
     }
+
+    private void registerBlockEntityRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(SGBlockEntities.STONE_COFFIN.get(), CoffinBlockEntityRenderer::new);
+    }
+
 
     @OnlyIn(Dist.CLIENT)
     public void onRenderFoodBar(RenderGuiOverlayEvent.Pre event) {

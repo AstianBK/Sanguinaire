@@ -27,7 +27,9 @@ public class SGBlocks {
             () -> new Block(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()));
 
-
+    public static final RegistryObject<Block> STONE_COFFIN = registerBlock("stone_coffin",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.STONE).strength(2.0F).sound(SoundType.STONE).ignitedByLava().requiresCorrectToolForDrops()));
 
 
 
