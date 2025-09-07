@@ -1,8 +1,12 @@
 {
   "variants": {
-    "facing=north": { "model": "sanguinaire:block/stone_coffin" },
-    "facing=east": { "model": "sanguinaire:block/stone_coffin" },
-    "facing=south": { "model": "sanguinaire:block/stone_coffin" },
-    "facing=west": { "model": "sanguinaire:block/stone_coffin" }
+    "facing=north, part=head": { "model": "sanguinaire:block/stone_coffin_top" },
+    "facing=east, part=head": { "model": "sanguinaire:block/stone_coffin_top" },
+    "facing=south, part=head": { "model": "sanguinaire:block/stone_coffin_top" },
+    "facing=west, part=head": { "model": "sanguinaire:block/stone_coffin_top" },
+    "facing=north, part=foot": { "model": "sanguinaire:block/stone_coffin_bottom" },
+    "facing=east, part=foot": { "model": "sanguinaire:block/stone_coffin_bottom" },
+    "facing=south, part=foot": { "model": "sanguinaire:block/stone_coffin_bottom" },
+    "facing=west, part=foot": { "model": "sanguinaire:block/stone_coffin_bottom" }
   }
 }

@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class CoffinBlockEntityRenderer implements BlockEntityRenderer<CoffinBlockEntity> {
-    private static final ResourceLocation MODEL_LOCATION = new ResourceLocation("sanguinaire:block/stonecoffin");
+    private static final ResourceLocation MODEL_LOCATION = new ResourceLocation("sanguinaire:block/stone_coffin");
 
     public CoffinBlockEntityRenderer(BlockEntityRendererProvider.Context ctx) {
     }
