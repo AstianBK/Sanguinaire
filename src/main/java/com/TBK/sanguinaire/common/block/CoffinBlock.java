@@ -49,14 +49,14 @@ public class CoffinBlock extends BedBlock {
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
-        // You’ll create a CoffinBlockEntity that extends BedBlockEntity
+
         return new BedBlockEntity(pos, state);
     }
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos,
                                  Player player, InteractionHand hand, BlockHitResult hit) {
-        // This keeps the vanilla sleeping logic, but you could override to add coffin-specific behavior
+
         if (!level.isClientSide) {
             player.startSleeping(pos);
             player.playSound(SoundEvents.WOOD_PLACE, 1.0F, 0.8F);
@@ -66,7 +66,7 @@ public class CoffinBlock extends BedBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        // Uses vanilla bed placement logic
+
         return super.getStateForPlacement(context);
     }
 }

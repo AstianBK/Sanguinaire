@@ -7,6 +7,7 @@ import com.TBK.sanguinaire.common.item.VampireHeartItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.food.Foods;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.RecordItem;
@@ -35,6 +36,8 @@ public class SGItems {
     public static final RegistryObject<Item> VAMPILLER_SPAWN_EGG = ITEMS.register("vampiller_spawn_egg",
             () -> new ForgeSpawnEggItem(SGEntityType.VAMPILLER,0xf7fafa, 0xc6e2f5,
                     new Item.Properties()));
+
+
 
     public static final RegistryObject<Item> MUSIC_DISC_WASTED_BLOOD = ITEMS.register("music_disc_vamp",()->new RecordItem(14, SoundEvents.MUSIC_DISC_RELIC, (new Item.Properties()).stacksTo(1).rarity(Rarity.RARE), 218));
 }

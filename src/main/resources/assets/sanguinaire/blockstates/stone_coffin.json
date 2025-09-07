@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=north": { "model": "sanguinaire:block/stone_coffin" },
+    "facing=east": { "model": "sanguinaire:block/stone_coffin" },
+    "facing=south": { "model": "sanguinaire:block/stone_coffin" },
+    "facing=west": { "model": "sanguinaire:block/stone_coffin" }
+  }
+}

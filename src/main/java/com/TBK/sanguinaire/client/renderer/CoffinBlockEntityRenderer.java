@@ -21,13 +21,13 @@ public class CoffinBlockEntityRenderer implements BlockEntityRenderer<CoffinBloc
                        MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
         poseStack.pushPose();
 
-        // Get baked model
+
         var model = Minecraft.getInstance().getBlockRenderer()
                 .getBlockModelShaper()
                 .getModelManager()
                 .getModel(MODEL_LOCATION);
 
-        // Render it using block state
+
         BlockState state = blockEntity.getBlockState();
         Minecraft.getInstance().getBlockRenderer().getModelRenderer().renderModel(
                 poseStack.last(),
