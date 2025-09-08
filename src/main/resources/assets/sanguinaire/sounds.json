@@ -1,4 +1,10 @@
 {
+  "blood_puddle_step": {
+  "subtitle": "sounds.sanguinaire.blood_puddle_step",
+  "sounds": [
+    "sanguinaire:blood_puddle_step"
+  ]
+},
   "blood_drink": {
     "subtitle": "sounds.sanguinaire.blood_drink",
     "sounds": [
@@ -27,6 +33,18 @@
     "subtitle": "sounds.sanguinaire.vampire_resurrect",
     "sounds": [
       "sanguinaire:vampire_resurrect"
+    ]
+  },
+  "skill_blood_spike_cast": {
+    "subtitle": "sounds.sanguinaire.skill_blood_spike_cast",
+    "sounds": [
+      "sanguinaire:skill_blood_spike_cast"
+    ]
+  },
+  "skill_blood_spike_emerge": {
+    "subtitle": "sounds.sanguinaire.skill_blood_spike_emerge",
+    "sounds": [
+      "sanguinaire:skill_blood_spike_emerge"
     ]
   },
   "wasted_blood_ivan_duch": {

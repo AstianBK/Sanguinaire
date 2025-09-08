@@ -12,8 +12,20 @@ public class SGSounds {
         public static final DeferredRegister<SoundEvent> SOUND_EVENTS =
                 DeferredRegister.create(ForgeRegistries.SOUND_EVENTS, Sanguinaire.MODID);
 
+
+        //BLOCKS
+
+        public static final RegistryObject<SoundEvent> BLOOD_PUDDLE_STEP =
+                registerSoundEvent("blood_puddle_step");
+
         //SKILLS & INTERACTIONS
 
+
+        public static final RegistryObject<SoundEvent> SKILL_BLOOD_SPIKE_CAST =
+                registerSoundEvent("skill_blood_spike_cast");
+
+        public static final RegistryObject<SoundEvent> SKILL_BLOOD_SPIKE_emerge =
+                registerSoundEvent("skill_blood_spike_emerge");
         public static final RegistryObject<SoundEvent> VAMPIRE_RESURRECT =
                 registerSoundEvent("vampire_resurrect");
 
