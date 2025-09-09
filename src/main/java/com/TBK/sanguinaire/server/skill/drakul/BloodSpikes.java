@@ -1,7 +1,9 @@
 package com.TBK.sanguinaire.server.skill.drakul;
 
+import com.TBK.sanguinaire.common.block.BloodBlockEntity;
 import com.TBK.sanguinaire.common.registry.SGBlocks;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
+import com.TBK.sanguinaire.server.entity.summon.BloodSpikesEntity;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -66,10 +68,13 @@ public class BloodSpikes extends SkillAbstract {
             for (BlockPos pos : BlockPos.betweenClosed(initialPos.offset(1,0,1),initialPos.offset(-1,0,-1))){
                 BlockState oldState = player.level().getBlockState(pos);
                 if(!oldState.isAir()){
-                    player.level().setBlock(pos,SGBlocks.DIRT_BLOOD_PATH.get().defaultBlockState(),3);
+                   if ((player.level().getBlockState(pos.above()).isAir())){
+                       player.level().setBlock(pos.above(),SGBlocks.DIRT_BLOOD_PATH.get().defaultBlockState(),3);
+                       BloodBlockEntity.startDegra(player.level(),pos.above(),player.level().getBlockState(pos.above()),((BloodBlockEntity)player.level().getBlockEntity(pos.above())));
+                   }
                 }
             }
-            player.level().addFreshEntity(new EvokerFangs(player.level(), pX, (double)blockpos.getY() + d0, pZ, pYRot, pWarmupDelay, player));
+            player.level().addFreshEntity(new BloodSpikesEntity(player.level(), pX, (double)blockpos.getY() + d0, pZ, pYRot, pWarmupDelay, player));
         }
 
     }

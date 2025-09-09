@@ -5,6 +5,7 @@ import com.TBK.sanguinaire.client.gui.*;
 import com.TBK.sanguinaire.client.layer.CastingLayer;
 import com.TBK.sanguinaire.client.layer.RegenerationLayer;
 import com.TBK.sanguinaire.client.layer.VampireLayer;
+import com.TBK.sanguinaire.client.model.BloodSpikesModel;
 import com.TBK.sanguinaire.client.particle.custom.*;
 import com.TBK.sanguinaire.common.registry.SGParticles;
 import net.minecraftforge.api.distmarker.Dist;
@@ -25,7 +26,11 @@ public class EventClient {
             event.getSkin(s).addLayer(new VampireLayer(event.getSkin(s)));
         });
     }
+    @SubscribeEvent
+    public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        event.registerLayerDefinition(BloodSpikesModel.LAYER_LOCATION,BloodSpikesModel::createBodyLayer);
 
+    }
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void registerGui(RegisterGuiOverlaysEvent event){
         event.registerAbove(VanillaGuiOverlay.CROSSHAIR.id(), "bite",new BiteIndicator());

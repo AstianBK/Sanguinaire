@@ -2,7 +2,7 @@
   "parent": "block/block",
   "textures": {
     "particle": "block/dirt",
-    "top": "sanguinaire:block/blood_puddle_top",
+    "top": "sanguinaire:block/blood_puddle_fade_1",
     "side": "sanguinaire:block/blood_puddle_side",
     "bottom": "block/dirt"
   },

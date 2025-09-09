@@ -1,7 +1,25 @@
 {
   "variants": {
-    "": {
+    "age=0": {
       "model": "sanguinaire:block/dirt_blood_path"
+    },
+    "age=1": {
+      "model": "sanguinaire:block/dirt_blood_path_1"
+    },
+    "age=2": {
+      "model": "sanguinaire:block/dirt_blood_path_2"
+    },
+    "age=3": {
+      "model": "sanguinaire:block/dirt_blood_path_3"
+    },
+    "age=4": {
+      "model": "sanguinaire:block/dirt_blood_path_4"
+    },
+    "age=5": {
+      "model": "sanguinaire:block/dirt_blood_path_5"
+    },
+    "age=6": {
+      "model": "sanguinaire:block/dirt_blood_path_6"
     }
   }
 }

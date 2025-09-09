@@ -1,9 +1,6 @@
 package com.TBK.sanguinaire;
 
-import com.TBK.sanguinaire.client.renderer.BloodOrbRenderer;
-import com.TBK.sanguinaire.client.renderer.CoffinBlockEntityRenderer;
-import com.TBK.sanguinaire.client.renderer.SlashBloodRenderer;
-import com.TBK.sanguinaire.client.renderer.VampillerRenderer;
+import com.TBK.sanguinaire.client.renderer.*;
 import com.TBK.sanguinaire.common.registry.*;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
@@ -81,8 +78,14 @@ public class Sanguinaire
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->{
             MinecraftForge.EVENT_BUS.addListener(this::onRenderFoodBar);
             modEventBus.addListener(this::registerRenderers);
+            modEventBus.addListener(this::registerBlockEntityRenderers);
         });
     }
+
+    private void registerBlockEntityRenderers(final EntityRenderersEvent.RegisterRenderers event) {
+        event.registerBlockEntityRenderer(SGBlockEntities.BLOOD.get(), BloodBlockRenderer::new);
+    }
+
 
     @OnlyIn(Dist.CLIENT)
     public void onRenderFoodBar(RenderGuiOverlayEvent.Pre event) {
@@ -102,7 +105,7 @@ public class Sanguinaire
         EntityRenderers.register(SGEntityType.BLOOD_SLASH.get(), SlashBloodRenderer::new);
         EntityRenderers.register(SGEntityType.BLOOD_ORB.get(), BloodOrbRenderer::new);
         EntityRenderers.register(SGEntityType.VAMPILLER.get(), VampillerRenderer::new);
-
+        EntityRenderers.register(SGEntityType.BLOOD_SPIKES.get(),BloodSpikesRenderer::new);
     }
 
 
