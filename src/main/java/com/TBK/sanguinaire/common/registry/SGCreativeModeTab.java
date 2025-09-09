@@ -22,8 +22,7 @@ public class SGCreativeModeTab {
                 a.accept(SGItems.ANCIENT_BLOOD.get());
                 a.accept(SGItems.CRIMSON_MIRROR.get());
                 a.accept(SGItems.VAMPILLER_SPAWN_EGG.get());
-                a.accept(SGBlocks.DREADWOOD_LOG.get());
-                a.accept(SGBlocks.DREADWOOD_STRIPPED_LOG.get());
+                a.accept(SGItems.CRIMSON_OATH.get());
                 a.accept(SGBlocks.DIRT_BLOOD_PATH.get());
             })
             .build());
