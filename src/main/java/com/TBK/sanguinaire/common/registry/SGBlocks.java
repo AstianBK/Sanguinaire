@@ -24,6 +24,9 @@ public class SGBlocks {
             () -> new BloodBlock(BlockBehaviour.Properties.of()
                     .mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()));
 
+    public static final RegistryObject<Block> BLOOD = registerBlock("blood",
+            () -> new Block(BlockBehaviour.Properties.of()
+                    .mapColor(MapColor.WOOD).strength(1.0F).sound(SoundType.WOOD).ignitedByLava().requiresCorrectToolForDrops()));
 
     public static final RegistryObject<Block> DREADWOOD_LOG = registerBlock("dreadwood_log",
             () -> new Block(BlockBehaviour.Properties.of()

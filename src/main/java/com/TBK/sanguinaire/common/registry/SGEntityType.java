@@ -3,6 +3,7 @@ package com.TBK.sanguinaire.common.registry;
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.server.entity.projetile.BloodOrbProjetile;
 import com.TBK.sanguinaire.server.entity.projetile.SlashBloodProjetile;
+import com.TBK.sanguinaire.server.entity.summon.BloodSpikesEntity;
 import com.TBK.sanguinaire.server.entity.vampire.VampillerEntity;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -29,5 +30,9 @@ public class SGEntityType {
     public static final RegistryObject<EntityType<BloodOrbProjetile>> BLOOD_ORB = ENTITY_TYPES
             .register("blood_orb", () -> EntityType.Builder.<BloodOrbProjetile>of(BloodOrbProjetile::new, MobCategory.MISC)
                     .fireImmune().sized(0.2F, 0.2F).build(Sanguinaire.MODID+ "blood_orb"));
+
+    public static final RegistryObject<EntityType<BloodSpikesEntity>> BLOOD_SPIKES = ENTITY_TYPES
+            .register("blood_spikes", () -> EntityType.Builder.<BloodSpikesEntity>of(BloodSpikesEntity::new, MobCategory.MISC)
+                    .fireImmune().sized(0.2F, 0.5F).build(Sanguinaire.MODID+ "blood_spikes"));
 
 }
