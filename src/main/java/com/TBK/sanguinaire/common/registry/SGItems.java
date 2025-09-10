@@ -26,19 +26,18 @@ public class SGItems {
 
     //ITEMS
 
-    public static final RegistryObject<Item> CRIMSON_OATH = ITEMS.register("crimson_oath",
-            ()->new SwordItem(SGTiers.VAMPIRE_RELIC,15,-3.0F,new Item.Properties().rarity(Rarity.EPIC)));
-
     public static final RegistryObject<Item> GOLD_GOBLET = ITEMS.register("glass_goblet",
             ()-> new GobletItem(new Item.Properties().stacksTo(1).durability(7).defaultDurability(0)));
 
-    public static final RegistryObject<Item> CRIMSON_MIRROR = ITEMS.register("crimson_mirror",
-            ()-> new Item(new Item.Properties().stacksTo(1)));
+    //RELICS
 
-    //WEAPONS
+    public static final RegistryObject<Item> CRIMSON_OATH = ITEMS.register("crimson_oath",
+            ()->new SwordItem(SGTiers.VAMPIRE_RELIC,15,-3.0F,new Item.Properties().rarity(Rarity.EPIC)));
 
-
-
+    public static final RegistryObject<Item> SANGUINE_STONE = ITEMS.register("sanguine_stone",
+            ()-> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
+    public static final RegistryObject<Item> CRIMSON_MIRROR = ITEMS.register("blood_mirror",
+            ()-> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
     //ARMOR
 
 
