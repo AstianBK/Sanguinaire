@@ -8,6 +8,8 @@ import com.TBK.sanguinaire.client.layer.VampireLayer;
 import com.TBK.sanguinaire.client.model.BloodSpikesModel;
 import com.TBK.sanguinaire.client.particle.custom.*;
 import com.TBK.sanguinaire.common.registry.SGParticles;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.*;
@@ -25,6 +27,7 @@ public class EventClient {
             event.getSkin(s).addLayer(new CastingLayer(event.getSkin(s)));
             event.getSkin(s).addLayer(new VampireLayer(event.getSkin(s)));
         });
+
     }
     @SubscribeEvent
     public static void registerLayerDefinition(EntityRenderersEvent.RegisterLayerDefinitions event) {
