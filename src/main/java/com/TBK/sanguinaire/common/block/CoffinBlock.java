@@ -97,7 +97,6 @@ public class CoffinBlock extends BedBlock {
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-
         return super.getStateForPlacement(context);
     }
 }
