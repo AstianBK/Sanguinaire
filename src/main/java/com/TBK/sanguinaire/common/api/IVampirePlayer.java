@@ -17,6 +17,6 @@ public interface IVampirePlayer extends INBTSerializable<CompoundTag> {
     void setGeneration(int generation);
     void setClan(Clan clan);
     void bite(Player player, Entity target);
-    SkillPlayerCapability getSkillCap(Player player);
+    //SkillPlayerCapability getSkillCap(Player player);
     void tick(Player player);
 }

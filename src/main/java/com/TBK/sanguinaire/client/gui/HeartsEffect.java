@@ -87,11 +87,12 @@ public class HeartsEffect implements IGuiOverlay {
 
             int left = screenWidth / 2 - 91;
             int top = screenHeight - ((ForgeGui)Minecraft.getInstance().gui).leftHeight + healthRows * rowHeight;
-            if (rowHeight != 10){
+            if (rowHeight != 10) {
                 top += 10 - rowHeight;
             }
 
-            gui.leftHeight += extraHealthRows * extraRowHeight;
+            top -= 10;
+
 
             ResourceLocation texture=new ResourceLocation(Sanguinaire.MODID, "textures/gui/icons_vampire.png");
             for (int i = absorptionHearts + hearts; i > absorptionHearts + hearts; -- i) {

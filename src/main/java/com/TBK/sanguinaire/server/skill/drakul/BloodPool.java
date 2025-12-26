@@ -32,7 +32,7 @@ public class BloodPool extends InstantSkill {
         super("blood_pool", 100, 1, 10);
     }
 
-    @Override
+    /*@Override
     public void startSkillAbstract(SkillPlayerCapability skill) {
         super.startSkillAbstract( skill);
         Player player = skill.getPlayer();
@@ -44,8 +44,8 @@ public class BloodPool extends InstantSkill {
             BlockPos pos=player.blockPosition();
             teleportSafePosition(new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP,pos,false),skill,player);
         }
-    }
-    protected void teleportSafePosition (BlockHitResult blockEnd,SkillPlayerCapability cap,Player player){
+    }/*
+    /*protected void teleportSafePosition (BlockHitResult blockEnd,SkillPlayerCapability cap,Player player){
         BlockPos pos = blockEnd.getBlockPos();
         BlockState state = player.level().getBlockState(pos);
         if(state.is(SGBlocks.DIRT_BLOOD_PATH.get())){
@@ -60,9 +60,9 @@ public class BloodPool extends InstantSkill {
                 }
             }
         }
-    }
+    }*/
 
-    protected void teleport(SkillPlayerCapability cap,Player player,BlockPos pos){
+    /*protected void teleport(SkillPlayerCapability cap,Player player,BlockPos pos){
         Sanguinaire.LOGGER.debug("Initial Teleport");
         ModBusEvent.loseBody(cap.getPlayerVampire(),player);
         player.teleportTo(pos.getX(),pos.getY()+2,pos.getZ());
@@ -80,7 +80,7 @@ public class BloodPool extends InstantSkill {
                 cap.getActiveEffectDuration().removeDuration(instance, DurationResult.TIMEOUT);
             }
         }
-    }
+    }*/
     protected final Vec3 calculateViewVector(float p_20172_, float p_20173_) {
         float f = p_20172_ * ((float)Math.PI / 180F);
         float f1 = -p_20173_ * ((float)Math.PI / 180F);

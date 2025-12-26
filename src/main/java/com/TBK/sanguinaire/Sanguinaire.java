@@ -4,6 +4,7 @@ import com.TBK.sanguinaire.client.renderer.*;
 import com.TBK.sanguinaire.common.registry.*;
 import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
+import com.TBK.sanguinaire.server.commands.SanguinaireCommands;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.world.biomes.BKBiomeSpawn;
 import com.TBK.sanguinaire.server.world.loot.LootModifiers;
@@ -22,7 +23,9 @@ import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.world.BiomeModifier;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -82,6 +85,16 @@ public class Sanguinaire
         });
     }
 
+    @Mod.EventBusSubscriber(modid = Sanguinaire.MODID)
+    public class CommandEvents {
+        @SubscribeEvent
+        public static void onRegisterCommands(RegisterCommandsEvent event) {
+            SanguinaireCommands.register(event.getDispatcher());
+        }
+    }
+
+
+
     private void registerBlockEntityRenderers(final EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(SGBlockEntities.BLOOD.get(), BloodBlockRenderer::new);
     }
@@ -89,16 +102,21 @@ public class Sanguinaire
 
     @OnlyIn(Dist.CLIENT)
     public void onRenderFoodBar(RenderGuiOverlayEvent.Pre event) {
-        Minecraft mc=Minecraft.getInstance();
-        VampirePlayerCapability cap=VampirePlayerCapability.get(mc.player);
-        if (mc.player == null || !mc.player.isAlive() || cap==null || !cap.isVampire()) return;
-        if (event.getOverlay().id() == VanillaGuiOverlay.FOOD_LEVEL.id()  && mc.gameMode.hasExperience()) {
+        Minecraft mc = Minecraft.getInstance();
+        VampirePlayerCapability cap = VampirePlayerCapability.get(mc.player);
+        if (mc.player == null || !mc.player.isAlive() || cap == null || !cap.isVampire()) return;
+
+        if (event.getOverlay().id() == VanillaGuiOverlay.FOOD_LEVEL.id() && mc.gameMode.hasExperience()) {
             event.setCanceled(true);
         }
         if (event.getOverlay().equals(VanillaGuiOverlay.AIR_LEVEL.type())) {
             event.setCanceled(true);
         }
+        if (event.getOverlay().id() == VanillaGuiOverlay.PLAYER_HEALTH.id()) {
+            event.setCanceled(true); // hide vanilla hearts
+        }
     }
+
 
     @OnlyIn(Dist.CLIENT)
     private void registerRenderers(FMLCommonSetupEvent event){

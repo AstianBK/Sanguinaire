@@ -11,17 +11,21 @@ import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -29,6 +33,7 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 
 public class VampirePlayerCapability implements IVampirePlayer {
@@ -47,6 +52,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
 
     public static VampirePlayerCapability get(Player player){
         return SGCapability.getEntityVam(player, VampirePlayerCapability.class);
+
     }
 
     public boolean legsLess(){
@@ -86,27 +92,27 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.setIsVampire(!isVampire);
         if(!isVampire){
             this.age=0;
-            this.setGeneration(10);
             this.setClan(Clan.DRAKUL);
-        }else {
+        }/*else {
             SkillPlayerCapability capability=this.getSkillCap(player);
             capability.passives.getSkills().forEach(e->e.getSkillAbstract().stopSkillAbstract(capability));
-        }
+        }*/
         if(!this.level.isClientSide){
             PacketHandler.sendToPlayer(new PacketConvertVampire(isVampire), (ServerPlayer) this.player);
         }
     }
 
     public int getMaxBlood(){
-        return ((this.age/10)*2)+((11-this.generation)*2);
+        return Math.max(2, this.age * 2);
     }
+
 
     @Override
     public void setGeneration(int generation) {
         this.generation=Math.max(generation,1);
     }
     public void setAge(int age){
-        this.age=Math.min(age,100);
+        this.age=Math.min(age,10);
     }
 
     @Override
@@ -122,9 +128,28 @@ public class VampirePlayerCapability implements IVampirePlayer {
                 this.drainBlood(1);
                 cap.onBite(this,target);
                 this.clientDrink=10;
-                this.hugeTick=0;
+                if (!player.level().isClientSide) {
+                    this.hugeTick = 0;
+                }
                 player.level().playSound(null,target, SGSounds.BLOOD_DRINK.get(), SoundSource.PLAYERS,1.0F,1.0F);
                 player.level().playSound(null,target, SoundEvents.GLOW_INK_SAC_USE, SoundSource.PLAYERS,1.0F,1.0F);
+                if (!player.level().isClientSide && player.level() instanceof ServerLevel serverLevel) {
+                    for (int i = 0; i < 25; i++) {
+                        double sx = target.getX() + (serverLevel.random.nextDouble() - 0.5) * target.getBbWidth();
+                        double sy = target.getY() + serverLevel.random.nextDouble() * target.getBbHeight();
+                        double sz = target.getZ() + (serverLevel.random.nextDouble() - 0.5) * target.getBbWidth();
+
+                        serverLevel.sendParticles(
+                                SGParticles.BLOOD_DOT_PARTICLES.get(),
+                                sx, sy, sz,
+                                1,
+                                0.0, 0.0, 0.0,
+                                0.02
+                        );
+                    }
+                }
+
+
             }else if(this.canFillGobletItem(player)){
                 ItemStack goblet=getGobletInHand(player);
                 int finalBlood =GobletItem.getBlood(goblet)+1;
@@ -142,6 +167,8 @@ public class VampirePlayerCapability implements IVampirePlayer {
             PacketHandler.sendToAllTracking(new PacketSyncBiteTarget(target.getId(),target.getUUID()),player);
         }
     }
+
+
     public ItemStack getGobletInHand(Player player){
         return GobletItem.canFillGoblet(player.getMainHandItem()) ? player.getMainHandItem()  : player.getOffhandItem();
     }
@@ -174,10 +201,11 @@ public class VampirePlayerCapability implements IVampirePlayer {
             this.limbsPartRegeneration.syncPlayer();
         }
     }
-    @Override
+
+    /*@Override
     public SkillPlayerCapability getSkillCap(Player player) {
         return SkillPlayerCapability.get(player);
-    }
+    }*/
 
     @Override
     public void tick(Player player) {
@@ -185,17 +213,33 @@ public class VampirePlayerCapability implements IVampirePlayer {
             this.clientDrink--;
         }
 
-        if(this.growTimer++>=this.growTimerMax){
-            this.growTimer=0;
+        if (this.age < 10 && this.growTimer++ >= this.growTimerMax) {
+            this.growTimer = 0;
             this.age++;
         }
-        if(this.getBlood()>0){
-            if(this.hugeTick++>2000){
-                this.loseBlood(2);
-                this.hugeTick=0;
+
+        if (!player.level().isClientSide) {
+            if (this.getBlood() > 0) {
+                if (this.hugeTick++ >= 600) { // 30 seconds
+                    this.loseBlood(2);
+                    this.hugeTick = 0;
+
+                    player.level().playSound(
+                            null,
+                            player.getX(),
+                            player.getY(),
+                            player.getZ(),
+                            SoundEvents.HONEYCOMB_WAX_ON,
+                            SoundSource.PLAYERS,
+                            0.6F,
+                            1.0F
+                    );
+                }
             }
         }
-        if (player.isAlive() && !this.getSkillCap(player).isTransform) {
+
+
+        if (player.isAlive() /*&& !this.getSkillCap(player).isTransform*/) {
             boolean flag = this.isSunBurnTick(player);
             if (flag) {
                 ItemStack itemstack = player.getItemBySlot(EquipmentSlot.HEAD);
@@ -224,11 +268,12 @@ public class VampirePlayerCapability implements IVampirePlayer {
             if(this.getLimbsPartRegeneration().hasRegenerationLimbs()){
                 this.getLimbsPartRegeneration().tick(player);
             }
-            if(this.isDurationEffectTick(player.tickCount,this.age/10)  && !player.isOnFire()){
-                if (player.getHealth() < player.getMaxHealth()) {
-                    float f = player.getHealth();
-                    if (f > 0.0F) {
-                        player.setHealth(f + 1);
+            if (!player.isOnFire()) {
+                int regenInterval = getRegenIntervalTicks();
+
+                if (player.tickCount % regenInterval == 0) {
+                    if (player.getHealth() < player.getMaxHealth()) {
+                        player.setHealth(player.getHealth() + 1.0F);
                     }
                 }
             }
@@ -264,6 +309,23 @@ public class VampirePlayerCapability implements IVampirePlayer {
         }
     }
 
+
+
+    public int getRegenIntervalTicks() {
+        int age = Mth.clamp(this.age, 0, 10);
+
+        int maxInterval = 50; // min-age regen
+        int minInterval = 3;  // max-age regen
+
+        float progress = age / 10.0F;
+        float curved = progress * progress;
+
+        return Mth.floor(
+                maxInterval - curved * (maxInterval - minInterval)
+        );
+    }
+
+
     protected boolean isSunBurnTick(Player player) {
         if (this.level.isDay() && !this.level.isClientSide) {
             float f = player.getLightLevelDependentMagicValue();
@@ -287,7 +349,7 @@ public class VampirePlayerCapability implements IVampirePlayer {
     }
 
     public int getRegTimer(){
-        return (int) (140-140*(0.5F*(this.age/100)+0.36F*(1.0F-this.generation/10.0F)));
+        return (int) (140-140*(0.5F*(this.age/100)+0.36F));
     }
 
     public void syncCap(Player player){
@@ -325,7 +387,6 @@ public class VampirePlayerCapability implements IVampirePlayer {
         this.initialize(newPlayer);
         this.setClan(capability.getClan());
         this.setIsVampire(capability.isVampire);
-        this.setGeneration(capability.getGeneration());
         this.setBlood(0);
     }
 

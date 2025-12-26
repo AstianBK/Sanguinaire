@@ -37,7 +37,7 @@ public class EventClient {
         event.registerAbove(VanillaGuiOverlay.PLAYER_HEALTH.id(), "heart_vampire",new HeartsEffect());
         event.registerAbove(VanillaGuiOverlay.HELMET.id(), "bleeding",new BleedingOverlay());
         event.registerAbove(VanillaGuiOverlay.FOOD_LEVEL.id(), "blood",new BloodOverlay());
-        event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "skill_hotbar",new SkillOverlay());
+        //event.registerAbove(VanillaGuiOverlay.HOTBAR.id(), "skill_hotbar",new SkillOverlay());
     }
 
 

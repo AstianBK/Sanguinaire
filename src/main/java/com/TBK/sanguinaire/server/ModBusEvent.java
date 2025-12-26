@@ -164,12 +164,12 @@ public class ModBusEvent {
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "vampire_cap"), prov);
             }
 
-            if (oldCap == null) {
+            /*if (oldCap == null) {
                 SkillPlayerCapability.SkillPlayerProvider prov = new SkillPlayerCapability.SkillPlayerProvider();
                 SkillPlayerCapability cap=prov.getCapability(SGCapability.POWER_CAPABILITY).orElse(null);
                 cap.init(player);
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "skill_cap"), prov);
-            }
+            }*/
         }else if(event.getObject() instanceof LivingEntity living){
             BiterEntityCap oldVamp = SGCapability.getEntityEntity(event.getObject(), BiterEntityCap.class);
 
@@ -202,7 +202,7 @@ public class ModBusEvent {
         player.invalidateCaps();
     }
 
-    @SubscribeEvent
+   /* @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void renderHandEvent(RenderHandEvent event){
         if(Minecraft.getInstance().player!=null){
@@ -211,7 +211,7 @@ public class ModBusEvent {
                 event.setCanceled(cap.getSkillCap(Minecraft.getInstance().player).isTransform);
             }
         }
-    }
+    }*/
 
     @SubscribeEvent
     public static void deathEntity(LivingDeathEvent event){

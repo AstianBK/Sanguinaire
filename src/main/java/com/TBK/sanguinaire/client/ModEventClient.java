@@ -27,7 +27,7 @@ import net.minecraftforge.fml.common.Mod;
 public class ModEventClient {
     @SubscribeEvent
     public static void renderPreEvent(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event){
-        if(event.getEntity() instanceof Player player && SkillPlayerCapability.get(player).isTransform){
+        if(event.getEntity() instanceof Player player /*&& SkillPlayerCapability.get(player).isTransform*/){
             Minecraft mc = Minecraft.getInstance();
             Entity entity = event.getEntity();
             EntityRendererProvider.Context context = new EntityRendererProvider.Context(mc.getEntityRenderDispatcher(),

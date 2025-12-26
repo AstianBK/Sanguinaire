@@ -58,7 +58,7 @@ public class PacketKeySync implements Packet<PacketListener>{
         assert skillPlayerCapability != null;
         switch (this.key){
             case 0x52->{
-                if(skillPlayerCapability.isVampire() && SGKeybinds.attackKey3.isDown() && skillPlayerCapability.cooldownReUse<=0){
+                if(skillPlayerCapability.isVampire() /*&& SGKeybinds.attackKey3.isDown()*/ && skillPlayerCapability.cooldownReUse<=0){
                     if(skillPlayerCapability.getSelectSkill().isCasting){
                         if(this.action==0){
                             skillPlayerCapability.stopCasting(player);
@@ -73,7 +73,7 @@ public class PacketKeySync implements Packet<PacketListener>{
                     skillPlayerCapability.cooldownReUse=10;
                 }
             }
-            case 0x12->{
+            /*case 0x12->{
                 if(SGKeybinds.attackKey3.isDown()){
                     if(action==0){
                         upPower(skillPlayerCapability);
@@ -81,7 +81,7 @@ public class PacketKeySync implements Packet<PacketListener>{
                         downPower(skillPlayerCapability);
                     }
                 }
-            }
+            }*/
             default ->{
                 bite(player);
             }

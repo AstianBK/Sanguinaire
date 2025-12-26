@@ -52,7 +52,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     int maxCastingClientTimer=0;
     public PlayerCooldowns cooldowns=new PlayerCooldowns();
     public ActiveEffectDuration durationEffect=new ActiveEffectDuration();
-    public boolean isTransform=false;
+    //public boolean isTransform=false;
     public Forms form=Forms.NONE;
     public boolean hotbarActive = false;
     public int cooldownReUse = 0;
@@ -83,9 +83,9 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         this.player=player;
     }
 
-    public void setIsTransform(boolean isTransform){
+    /*public void setIsTransform(boolean isTransform){
         this.isTransform=isTransform;
-    }
+    }*/
 
     public boolean isVampire(){
         return this.getPlayerVampire().isVampire();
@@ -203,11 +203,11 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     @Override
     public void onJoinGame(Player player, EntityJoinLevelEvent event) {
         SkillAbstracts skillAbstracts=new SkillAbstracts(new HashMap<>());
-        skillAbstracts.addSkillAbstracts(0,new BatForm());
-        skillAbstracts.addSkillAbstracts(1,new BloodOrb());
-        skillAbstracts.addSkillAbstracts(2,new BloodSpikes());
-        skillAbstracts.addSkillAbstracts(3,new BloodPool());
-        this.setSetHotbar(skillAbstracts);
+        //skillAbstracts.addSkillAbstracts(0,new BatForm());
+        //skillAbstracts.addSkillAbstracts(1,new BloodOrb());
+        //skillAbstracts.addSkillAbstracts(2,new BloodSpikes());
+        //skillAbstracts.addSkillAbstracts(3,new BloodPool());
+       //this.setSetHotbar(skillAbstracts);
         this.passives.addSkillAbstracts(0,new SpeedPassive());
     }
 
@@ -354,7 +354,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public CompoundTag serializeNBT() {
-        CompoundTag tag=new CompoundTag();
+        /*CompoundTag tag=new CompoundTag();
         tag.putBoolean("isTransform",this.isTransform);
         this.skills.save(tag);
         tag.putInt("select_power",this.posSelectSkillAbstract);
@@ -367,11 +367,13 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         }
 
         return tag;
+         */
+        return null;
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        this.skills =new SkillAbstracts(nbt);
+        /*this.skills =new SkillAbstracts(nbt);
         this.posSelectSkillAbstract=nbt.getInt("select_power");
         this.isTransform=nbt.getBoolean("isTransform");
         if(nbt.contains("form")){
@@ -387,7 +389,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         if(nbt.contains("activeEffect")){
             ListTag listTag=nbt.getList("activeEffect",10);
             this.durationEffect.loadNBTData(listTag);
-        }
+        }*/
     }
 
     public void init(Player player) {
