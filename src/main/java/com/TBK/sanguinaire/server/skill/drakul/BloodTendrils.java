@@ -4,6 +4,9 @@ import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import net.minecraft.world.entity.LivingEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BloodTendrils extends SkillAbstract {
     private int extraCooldown=0;
     public BloodTendrils() {
@@ -28,12 +31,14 @@ public class BloodTendrils extends SkillAbstract {
         if(flag){
             this.extraCooldown+=50;
         }
+        if(this.extraCooldown>1000){
+            this.getTargets().clear();
+            player.getCooldowns().addCooldown(this,this.cooldown+this.extraCooldown);
+        }
     }
 
     @Override
     public void stopSkillAbstract(SkillPlayerCapability skill) {
-        this.getTargets().clear();
-        skill.getCooldowns().addCooldown(this,this.cooldown+this.extraCooldown);
     }
 
     @Override
@@ -46,5 +51,14 @@ public class BloodTendrils extends SkillAbstract {
             }
         });
         this.extraCooldown=0;
+    }
+
+    @Override
+    public List<String> getSequence() {
+        List<String> sequenceRequest = new ArrayList<>();
+        sequenceRequest.add("UP");
+        sequenceRequest.add("UP");
+        sequenceRequest.add("UP");
+        return sequenceRequest;
     }
 }

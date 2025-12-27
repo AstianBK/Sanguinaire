@@ -12,12 +12,26 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.projectile.EvokerFangs;
+import net.minecraft.world.phys.Vec3;
+
+import java.util.List;
 
 public class BloodSpikesRenderer<T extends BloodSpikesEntity> extends EntityRenderer<T> {
     private final BloodSpikesModel<T> model;
+    private Vec3[] offsetPos = new Vec3[]{
+            new Vec3(1,0,1),
+            new Vec3(0,0,1),
+            new Vec3(1,0,0),
+            new Vec3(-1,0,-1),
+            new Vec3(-1,0,1),
+            new Vec3(-1,0,-1),
+            new Vec3(0,0,-1),
+            new Vec3(-1,0,0),
 
+    };
     public BloodSpikesRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
         this.model = new BloodSpikesModel<>(pContext.bakeLayer(BloodSpikesModel.LAYER_LOCATION));
@@ -40,6 +54,14 @@ public class BloodSpikesRenderer<T extends BloodSpikesEntity> extends EntityRend
                 this.model.setupAnim(pEntity, f, 0.0F, 0.0F, pEntity.getYRot(), pEntity.getXRot());
                 VertexConsumer vertexconsumer = pBuffer.getBuffer(this.model.renderType(getTextureLocation(pEntity)));
                 this.model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                for (Vec3 vec3  : offsetPos){
+                    pPoseStack.pushPose();
+                    pPoseStack.scale(0.5F,0.5F,0.5F);
+                    pPoseStack.translate(vec3.x, -0.5F, vec3.z);
+                    this.model.setupAnim(pEntity, f, 0.0F, 0.0F, pEntity.getYRot(), pEntity.getXRot());
+                    this.model.renderToBuffer(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+                    pPoseStack.popPose();
+                }
                 pPoseStack.popPose();
                 super.render(pEntity, pEntityYaw, pPartialTicks, pPoseStack, pBuffer, pPackedLight);
             }

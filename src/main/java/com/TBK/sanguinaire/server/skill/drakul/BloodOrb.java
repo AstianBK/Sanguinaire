@@ -6,19 +6,12 @@ import com.TBK.sanguinaire.server.entity.projetile.SlashBloodProjetile;
 import com.TBK.sanguinaire.server.skill.ChargedSkill;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BloodOrb extends ChargedSkill {
     public BloodOrb() {
         super("blood_orb",20, 20, 1);
-    }
-
-    @Override
-    public void startSkillAbstract(SkillPlayerCapability skill) {
-        super.startSkillAbstract(skill);
-    }
-
-    @Override
-    public void stopSkillAbstract(SkillPlayerCapability skill) {
-        super.stopSkillAbstract(skill);
     }
 
 
@@ -30,5 +23,14 @@ public class BloodOrb extends ChargedSkill {
         orb.setIsCharging(true);
         skill.getPlayer().level().addFreshEntity(orb);
         this.castingProjectileId=orb.getId();
+    }
+
+    @Override
+    public List<String> getSequence() {
+        List<String> sequenceRequest = new ArrayList<>();
+        sequenceRequest.add("LEFT");
+        sequenceRequest.add("UP");
+        sequenceRequest.add("LEFT");
+        return sequenceRequest;
     }
 }

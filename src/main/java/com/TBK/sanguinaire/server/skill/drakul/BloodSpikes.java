@@ -14,9 +14,12 @@ import net.minecraft.world.entity.projectile.EvokerFangs;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class BloodSpikes extends SkillAbstract {
     public BloodSpikes() {
-        super("blood_spikes", 20, 20, 200, 1, false, false, false, true, false, 2);
+        super("blood_spikes", 20, 20, 20, 1, false, false, false, true, false, 2);
     }
 
     @Override
@@ -77,5 +80,14 @@ public class BloodSpikes extends SkillAbstract {
             player.level().addFreshEntity(new BloodSpikesEntity(player.level(), pX, (double)blockpos.getY() + d0, pZ, pYRot, pWarmupDelay, player));
         }
 
+    }
+
+    @Override
+    public List<String> getSequence() {
+        List<String> sequenceRequest = new ArrayList<>();
+        sequenceRequest.add("UP");
+        sequenceRequest.add("UP");
+        sequenceRequest.add("DOWN");
+        return sequenceRequest;
     }
 }

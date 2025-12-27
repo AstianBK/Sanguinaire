@@ -31,6 +31,6 @@ public interface ISkillPlayer extends INBTSerializable<CompoundTag> {
     void syncSkill(Player player);
     void upSkill();
     void downSkill();
-    void startCasting(Player player);
+    void startCasting(Player player,SkillAbstract skillAbstract);
 
 }

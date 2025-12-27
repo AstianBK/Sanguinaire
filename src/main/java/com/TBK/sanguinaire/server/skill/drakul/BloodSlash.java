@@ -6,6 +6,8 @@ import com.TBK.sanguinaire.server.entity.projetile.SlashBloodProjetile;
 import com.TBK.sanguinaire.server.skill.ChargedSkill;
 import net.minecraft.world.entity.Entity;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BloodSlash extends ChargedSkill {
@@ -13,10 +15,6 @@ public class BloodSlash extends ChargedSkill {
         super("blood_slash",80, 60,2);
     }
 
-    @Override
-    public void startSkillAbstract(SkillPlayerCapability skill) {
-        super.startSkillAbstract(skill);
-    }
 
     @Override
     public void summon(SkillPlayerCapability skill) {
@@ -28,9 +26,12 @@ public class BloodSlash extends ChargedSkill {
         this.castingProjectileId=slashBlood.getId();
     }
 
-
     @Override
-    public void stopSkillAbstract(SkillPlayerCapability skill) {
-        super.stopSkillAbstract(skill);
+    public List<String> getSequence() {
+        List<String> sequenceRequest = new ArrayList<>();
+        sequenceRequest.add("RIGHT");
+        sequenceRequest.add("DOWN");
+        sequenceRequest.add("LEFT");
+        return sequenceRequest;
     }
 }

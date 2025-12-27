@@ -47,6 +47,7 @@ public class BloodBlockEntity extends BlockEntity {
         int time = pBlockEntity.degraTime;
 
         if(time>0){
+
             pBlockEntity.degraTime--;
             if(pBlockEntity.degraTime<=0){
                 if(degra<6){

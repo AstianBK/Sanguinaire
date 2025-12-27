@@ -2,8 +2,11 @@ package com.TBK.sanguinaire.server.network.messager;
 
 import com.TBK.sanguinaire.Sanguinaire;
 import com.TBK.sanguinaire.common.keybind.SGKeybinds;
+import com.TBK.sanguinaire.common.registry.SGSkillAbstract;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
+import com.TBK.sanguinaire.server.skill.SkillAbstract;
+import com.TBK.sanguinaire.server.skill.SkillAbstracts;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketListener;
@@ -21,23 +24,31 @@ public class PacketKeySync implements Packet<PacketListener>{
     private final int key;
     private final int action;
     private final int idTarget;
-
+    private final String skill;
     public PacketKeySync(FriendlyByteBuf buf) {
         this.key=buf.readInt();
         this.action=buf.readInt();
         this.idTarget=buf.readInt();
+        this.skill=buf.readUtf();
     }
-
     public PacketKeySync(int key,int action,int idTarget) {
         this.key = key;
         this.action=action;
         this.idTarget=idTarget;
+        this.skill = "none";
+    }
+    public PacketKeySync(int key,int action,int idTarget,String skillname) {
+        this.key = key;
+        this.action=action;
+        this.idTarget=idTarget;
+        this.skill = skillname;
     }
 
     public void write(FriendlyByteBuf buf) {
         buf.writeInt(this.key);
         buf.writeInt(this.action);
         buf.writeInt(this.idTarget);
+        buf.writeUtf(this.skill);
     }
 
     @Override
@@ -58,16 +69,18 @@ public class PacketKeySync implements Packet<PacketListener>{
         assert skillPlayerCapability != null;
         switch (this.key){
             case 0x52->{
-                if(skillPlayerCapability.isVampire() /*&& SGKeybinds.attackKey3.isDown()*/ && skillPlayerCapability.cooldownReUse<=0){
-                    if(skillPlayerCapability.getSelectSkill().isCasting){
+                if(skillPlayerCapability.isVampire() && skillPlayerCapability.cooldownReUse<=0){
+                    SkillAbstract skillAbstract = SGSkillAbstract.getSkillAbstractForName(skill);
+
+                    if(skillAbstract.isCasting){
                         if(this.action==0){
                             skillPlayerCapability.stopCasting(player);
                         }else if(this.action==1){
-                            skillPlayerCapability.startCasting(player);
+                            skillPlayerCapability.startCasting(player,skillAbstract);
                         }
                     }else {
                         if(this.action==1){
-                            skillPlayerCapability.startCasting(player);
+                            skillPlayerCapability.startCasting(player,skillAbstract);
                         }
                     }
                     skillPlayerCapability.cooldownReUse=10;

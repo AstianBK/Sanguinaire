@@ -203,11 +203,12 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     @Override
     public void onJoinGame(Player player, EntityJoinLevelEvent event) {
         SkillAbstracts skillAbstracts=new SkillAbstracts(new HashMap<>());
-        //skillAbstracts.addSkillAbstracts(0,new BatForm());
-        //skillAbstracts.addSkillAbstracts(1,new BloodOrb());
-        //skillAbstracts.addSkillAbstracts(2,new BloodSpikes());
-        //skillAbstracts.addSkillAbstracts(3,new BloodPool());
-       //this.setSetHotbar(skillAbstracts);
+        skillAbstracts.addSkillAbstracts(0,new BloodSlash());
+        skillAbstracts.addSkillAbstracts(1,new BloodOrb());
+        skillAbstracts.addSkillAbstracts(2,new BloodSpikes());
+        skillAbstracts.addSkillAbstracts(3,new BloodPool());
+        skillAbstracts.addSkillAbstracts(4,new BloodTendrils());
+        this.setSetHotbar(skillAbstracts);
         this.passives.addSkillAbstracts(0,new SpeedPassive());
     }
 
@@ -260,51 +261,38 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void upSkill() {
-        this.posSelectSkillAbstract=this.posSelectSkillAbstract+1>=this.skills.powers.size() ? 0 : this.posSelectSkillAbstract+1;
-        if (this.getPlayer()!=null){
-            //this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al"+this.getSelectSkill().name));
-        }
-        if(!this.level.isClientSide && this.getPlayer()!=null){
-            this.syncPos(this.posSelectSkillAbstract,this.getPlayer());
-        }
+
     }
 
     @Override
     public void downSkill() {
-        this.posSelectSkillAbstract=this.posSelectSkillAbstract-1<0 ? this.skills.powers.size()-1 : this.posSelectSkillAbstract-1;
-        if (this.getPlayer()!=null){
-            //this.getPlayer().sendSystemMessage(Component.nullToEmpty(this.posSelectSkillAbstract+" Se cambio al "+this.getSelectSkill().name));
-        }
-        if(!this.level.isClientSide && this.getPlayer()!=null){
-            this.syncPos(this.posSelectSkillAbstract,this.getPlayer());
-        }
+
     }
 
     @Override
-    public void startCasting(Player player) {
+    public void startCasting(Player player,SkillAbstract skillAbstract) {
 
         if(!this.level.isClientSide){
-            PacketHandler.sendToPlayer(new PacketHandlerPowers(0,player, player), (ServerPlayer) player);
+            PacketHandler.sendToPlayer(new PacketHandlerPowers(0,player, player,skillAbstract.name), (ServerPlayer) player);
         }
 
-        if(this.canUseSkill(this.getSelectSkill())){
-            boolean skillActive=this.durationEffect.hasDurationForSkill(this.getSelectSkill());
-            if(!skillActive || this.getSelectSkill().isCanReActive()){
-                SkillAbstract power=this.getSelectSkill();
-                if(power.canReActive && skillActive){
-                    DurationInstance instance=this.durationEffect.getDurationInstance(power.name);
+        if(this.canUseSkill(skillAbstract)){
+            boolean skillActive=this.durationEffect.hasDurationForSkill(skillAbstract);
+            if(!skillActive || skillAbstract.isCanReActive()){
+                if(skillAbstract.canReActive && skillActive){
+                    DurationInstance instance=this.durationEffect.getDurationInstance(skillAbstract.name);
                     this.removeActiveEffect(instance);
                 }else {
-                    if(power.isCasting){
-                        this.startCasting(power,player);
-                    }else if(power.instantUse){
-                        this.setLastUsingSkill(this.getSelectSkill());
-                        this.handledSkill(power);
+                    if(skillAbstract.isCasting){
+                        this.startCasting(skillAbstract,player);
+                    }else if(skillAbstract.instantUse){
+                        this.setLastUsingSkill(skillAbstract);
+                        this.handledSkill(skillAbstract);
                     }else {
-                        DurationInstance instance=new DurationInstance(power.name,power.level,power.duration+50*power.level,200);
+                        DurationInstance instance=new DurationInstance(skillAbstract.name,skillAbstract.level,skillAbstract.duration+50*skillAbstract.level,200);
                         this.addActiveEffect(instance,player);
-                        this.setLastUsingSkill(this.getSelectSkill());
-                        this.handledSkill(power);
+                        this.setLastUsingSkill(skillAbstract);
+                        this.handledSkill(skillAbstract);
                     }
                 }
             }
@@ -330,7 +318,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
     public void startCasting(SkillAbstract power,Player player){
         DurationInstance instance=new DurationInstance(power.name,power.level,power.castingDuration,200);
         this.addActiveEffect(instance,player);
-        this.setLastUsingSkill(this.getSelectSkill());
+        this.setLastUsingSkill(power);
         this.handledSkill(power);
         if(this.level.isClientSide){
             this.castingClientTimer=power.castingDuration;
@@ -354,8 +342,8 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public CompoundTag serializeNBT() {
-        /*CompoundTag tag=new CompoundTag();
-        tag.putBoolean("isTransform",this.isTransform);
+        CompoundTag tag=new CompoundTag();
+        tag.putBoolean("isTransform",false);
         this.skills.save(tag);
         tag.putInt("select_power",this.posSelectSkillAbstract);
         tag.putString("form",this.getForm().name());
@@ -367,15 +355,13 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         }
 
         return tag;
-         */
-        return null;
+
     }
 
     @Override
     public void deserializeNBT(CompoundTag nbt) {
-        /*this.skills =new SkillAbstracts(nbt);
+        this.skills =new SkillAbstracts(nbt);
         this.posSelectSkillAbstract=nbt.getInt("select_power");
-        this.isTransform=nbt.getBoolean("isTransform");
         if(nbt.contains("form")){
             this.setForm(Forms.valueOf(nbt.getString("form")));
         }else {
@@ -389,7 +375,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         if(nbt.contains("activeEffect")){
             ListTag listTag=nbt.getList("activeEffect",10);
             this.durationEffect.loadNBTData(listTag);
-        }*/
+        }
     }
 
     public void init(Player player) {
@@ -412,17 +398,7 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-        controllers.add(new AnimationController<>(this, "controller", 0, state -> {
-            Player player1=this.getPlayer();
-            if (player1 == null) return PlayState.STOP;
-            boolean isMove= !(state.getLimbSwingAmount() > -0.15F && state.getLimbSwingAmount() < 0.15F);
-            if(isMove && player1.isSprinting()) {
-                state.getController().setAnimation(RawAnimation.begin().thenLoop("batform.move"));
-            }else {
-                state.getController().setAnimation(RawAnimation.begin().thenLoop("batform.idle"));
-            }
-            return PlayState.CONTINUE;
-        }));
+
     }
 
     public <P extends SkillPlayerCapability> P getPatch(LivingEntity replaced, Class<P> pClass){

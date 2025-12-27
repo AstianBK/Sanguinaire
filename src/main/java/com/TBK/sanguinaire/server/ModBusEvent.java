@@ -164,12 +164,12 @@ public class ModBusEvent {
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "vampire_cap"), prov);
             }
 
-            /*if (oldCap == null) {
+            if (oldCap == null) {
                 SkillPlayerCapability.SkillPlayerProvider prov = new SkillPlayerCapability.SkillPlayerProvider();
                 SkillPlayerCapability cap=prov.getCapability(SGCapability.POWER_CAPABILITY).orElse(null);
                 cap.init(player);
                 event.addCapability(new ResourceLocation(Sanguinaire.MODID, "skill_cap"), prov);
-            }*/
+            }
         }else if(event.getObject() instanceof LivingEntity living){
             BiterEntityCap oldVamp = SGCapability.getEntityEntity(event.getObject(), BiterEntityCap.class);
 

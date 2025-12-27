@@ -1,5 +1,6 @@
 package com.TBK.sanguinaire.server.network.messager;
 
+import com.TBK.sanguinaire.common.registry.SGSkillAbstract;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import net.minecraft.client.Minecraft;
@@ -19,12 +20,14 @@ public class PacketHandlerPowers implements Packet<PacketListener> {
     private final int id;
     private final Entity newEntity;
     private final Entity oldEntity;
+    private final String skill;
     public PacketHandlerPowers(FriendlyByteBuf buf) {
         Minecraft mc=Minecraft.getInstance();
         assert mc.level!=null;
         this.id=buf.readInt();
         this.newEntity =mc.level.getEntity(buf.readInt());
         this.oldEntity = mc.level.getEntity(buf.readInt());
+        this.skill = buf.readUtf();
     }
 
 
@@ -32,6 +35,14 @@ public class PacketHandlerPowers implements Packet<PacketListener> {
         this.id=id;
         this.newEntity =entity;
         this.oldEntity =player;
+        this.skill = "none";
+    }
+
+    public PacketHandlerPowers(int id, Entity entity, Player player,String skill) {
+        this.id=id;
+        this.newEntity =entity;
+        this.oldEntity =player;
+        this.skill = skill;
     }
 
     @Override
@@ -39,6 +50,7 @@ public class PacketHandlerPowers implements Packet<PacketListener> {
         buf.writeInt(this.id);
         buf.writeInt(this.newEntity.getId());
         buf.writeInt(this.oldEntity.getId());
+        buf.writeUtf(this.skill);
     }
 
     public void handle(Supplier<NetworkEvent.Context> context) {
@@ -75,7 +87,7 @@ public class PacketHandlerPowers implements Packet<PacketListener> {
     }
     @OnlyIn(Dist.CLIENT)
     public void start(SkillPlayerCapability cap,Player player){
-        cap.startCasting(player);
+        cap.startCasting(player, SGSkillAbstract.getSkillAbstractForName(skill));
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -1,7 +1,16 @@
 package com.TBK.sanguinaire.client;
 
+import com.TBK.sanguinaire.Sanguinaire;
+import com.TBK.sanguinaire.common.keybind.SGKeybinds;
+import com.TBK.sanguinaire.common.registry.SGSkillAbstract;
+import com.TBK.sanguinaire.server.Util;
+import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.capability.SGCapability;
+import com.TBK.sanguinaire.server.manager.SkillAbstractInstance;
+import com.TBK.sanguinaire.server.network.PacketHandler;
+import com.TBK.sanguinaire.server.network.messager.PacketKeySync;
+import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -39,9 +48,6 @@ public class VampireCastingHandler {
         return inputSequence;
     }
 
-    // ------------------------------
-    // Client tick for Alt detection
-    // ------------------------------
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
@@ -49,12 +55,13 @@ public class VampireCastingHandler {
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) return;
 
+
         VampirePlayerCapability cap = SGCapability.getEntityVam(player, VampirePlayerCapability.class);
         if (cap == null || !cap.isVampire()) return;
 
         long window = Minecraft.getInstance().getWindow().getWindow();
         boolean altDown = GLFW.glfwGetKey(window, GLFW.GLFW_KEY_LEFT_ALT) == GLFW.GLFW_PRESS
-                || GLFW.glfwGetKey(window, GLFW.GLFW_KEY_RIGHT_ALT) == GLFW.GLFW_PRESS;
+                || GLFW.glfwGetKey(window, GLFW.GLFW_KEY_RIGHT_ALT) == GLFW.GLFW_PRESS || SGKeybinds.attackKey3.isDown();
 
         if (altDown && !casting) {
             casting = true;
@@ -64,20 +71,17 @@ public class VampireCastingHandler {
         }
     }
 
-    // ------------------------------
-    // Key input while casting
-    // ------------------------------
+
     @SubscribeEvent
     public static void onKeyInput(InputEvent.Key event) {
         if (!casting) return;
+
 
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         if (player == null) return;
 
-        VampirePlayerCapability cap = SGCapability.getEntityVam(player, VampirePlayerCapability.class);
-        if (cap == null || !cap.isVampire()) return;
-
+        if (!Util.isVampire(player)) return;
         String input = switch (event.getKey()) {
             case GLFW.GLFW_KEY_UP -> "UP";
             case GLFW.GLFW_KEY_DOWN -> "DOWN";
@@ -89,7 +93,7 @@ public class VampireCastingHandler {
         if (input != null && event.getAction() == GLFW.GLFW_PRESS) {
             inputSequence.add(input);
 
-            if (checkSpell(inputSequence, cap, player)) {
+            if (checkSpell(inputSequence, player)) {
                 inputSequence.clear();
                 casting = false;
             } else if (inputSequence.size() >= 6) {
@@ -99,27 +103,11 @@ public class VampireCastingHandler {
         }
     }
 
-    // ------------------------------
-    // Spell check
-    // ------------------------------
-    private static boolean checkSpell(List<String> sequence, VampirePlayerCapability cap, Player player) {
-        // Example: LEFT LEFT LEFT --> levitation
-        if (sequence.size() == 3) {
-            if (sequence.get(0).equals("LEFT") &&
-                    sequence.get(1).equals("LEFT") &&
-                    sequence.get(2).equals("LEFT")) {
-
-                if (cap.getBlood() >= spellBloodCost) {
-                    cap.loseBlood(spellBloodCost);
-
-                    player.level().getEntities(player, player.getBoundingBox().inflate(5), e -> e instanceof LivingEntity)
-                            .forEach(e -> ((LivingEntity) e).addEffect(new MobEffectInstance(MobEffects.LEVITATION, 12 * 20, 0)));
-
-                    player.level().playSound(null, player.blockPosition(), SoundEvents.BEEHIVE_ENTER,
-                            player.getSoundSource(), 1.0F, 1.0F);
-
-                    return true;
-                }
+    private static boolean checkSpell(List<String> sequence, Player player) {
+        SkillPlayerCapability cap = SkillPlayerCapability.get(player);
+        for (SkillAbstractInstance skillAbstract : cap.getHotBarSkill().getSkills()){
+            if(skillAbstract.getSkillAbstract().checkSequence(sequence)){
+                PacketHandler.sendToServer(new PacketKeySync(0x52,1,-1,skillAbstract.getSkillAbstract().name));
             }
         }
         return false;

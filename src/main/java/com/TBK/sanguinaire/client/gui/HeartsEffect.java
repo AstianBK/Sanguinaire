@@ -75,7 +75,7 @@ public class HeartsEffect implements IGuiOverlay {
             }
 
             Random rand = new Random();
-            rand.setSeed((long) (ticks * 312871));
+            rand.setSeed(mc.gui.getGuiTicks() * 312871L);
 
             int absorptionHearts = Mth.ceil(absorb / 2.0f) - 1;
             int hearts = Mth.ceil(healthMax / 2.0f) - 1;

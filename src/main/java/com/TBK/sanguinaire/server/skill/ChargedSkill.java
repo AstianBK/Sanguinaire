@@ -24,6 +24,17 @@ public abstract class ChargedSkill extends SkillAbstract {
         super.startSkillAbstract(skill);
         if(!skill.getPlayer().level().isClientSide){
             this.summon(skill);
+            Entity entity=skill.getPlayer().level().getEntity(this.castingProjectileId);
+            if(entity instanceof LeveableProjectile projectile){
+                projectile.setPos(this.getPos(skill.getPlayer().getEyePosition(),skill.getPlayer()));
+                reRot(projectile,skill.getPlayer().getXRot(),skill.getPlayer().getYRot(),1.0F,1.0F);
+                projectile.setIsCharging(false);
+                projectile.setChargedLevel(6);
+                projectile.setPowerLevel(level);
+                projectile.refreshDimensions();
+                projectile.shootFromRotation(skill.getPlayer(),skill.getPlayer().getXRot(),skill.getPlayer().getYRot(), 0.0F, 1F, 1.0F);
+                this.castingProjectileId=-1;
+            }
         }
     }
 
@@ -46,12 +57,6 @@ public abstract class ChargedSkill extends SkillAbstract {
                     skill.stopCasting(skill.getPlayer());
                 }
 
-            }
-        }
-        if(!skill.getPlayer().level().isClientSide){
-            if(entity instanceof  LeveableProjectile projectile){
-                projectile.setPos(this.getPos(skill.getPlayer().getEyePosition(),skill.getPlayer()));
-                reRot(projectile,skill.getPlayer().getXRot(),skill.getPlayer().getYRot(),1.0F,1.0F);
             }
         }
     }
@@ -77,12 +82,7 @@ public abstract class ChargedSkill extends SkillAbstract {
     public void stopSkillAbstract(SkillPlayerCapability skill) {
         super.stopSkillAbstract(skill);
         if(!skill.getPlayer().level().isClientSide){
-            Entity entity=skill.getPlayer().level().getEntity(this.castingProjectileId);
-            if(entity instanceof LeveableProjectile projectile){
-                projectile.setIsCharging(false);
-                projectile.shootFromRotation(skill.getPlayer(),skill.getPlayer().getXRot(),skill.getPlayer().getYRot(), 0.0F, 1.0F, 1.0F);
-                this.castingProjectileId=-1;
-            }
+
         }
     }
     public void reRot(LeveableProjectile projectile,float x, float y, float vel, float miss){

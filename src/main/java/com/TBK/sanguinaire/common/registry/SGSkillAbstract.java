@@ -8,35 +8,36 @@ import com.google.common.collect.Maps;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class SGSkillAbstract {
-    public static Map<ResourceLocation,SkillAbstract> POWERS= Maps.newHashMap();
+    public static Map<ResourceLocation, Supplier<SkillAbstract>> POWERS= Maps.newHashMap();
 
-    public static SkillAbstract register(ResourceLocation name, SkillAbstract power){
+    public static Supplier<SkillAbstract> register(ResourceLocation name, Supplier<SkillAbstract> power){
         return POWERS.put(name,power);
     }
 
-    public static BloodTendrils BLOOD_TENDRILS=new BloodTendrils();
-    public static BloodSpikes BLOOD_SPIKES = new BloodSpikes();
-    public static BloodSlash BLOOD_SLASH=new BloodSlash();
-    public static BloodOrb BLOOD_ORB=new BloodOrb();
-    public static BloodPool BLOOD_POOL=new BloodPool();
-    public static BatForm TRANSFORM_BAT=new BatForm();
+    public static Supplier<BloodTendrils> BLOOD_TENDRILS;
+    public static Supplier<SkillAbstract> BLOOD_SPIKES;
+    public static Supplier<SkillAbstract> BLOOD_SLASH;
+    public static Supplier<SkillAbstract> BLOOD_ORB;
+    public static Supplier<SkillAbstract> BLOOD_POOL;
+    public static Supplier<SkillAbstract> TRANSFORM_BAT;
     public static void init(){
-        register(new ResourceLocation(Sanguinaire.MODID,"blood_tendrils"),BLOOD_TENDRILS);
-        register(new ResourceLocation(Sanguinaire.MODID,"blood_slash"),BLOOD_SLASH);
-        register(new ResourceLocation(Sanguinaire.MODID,"blood_orb"),BLOOD_ORB);
-        register(new ResourceLocation(Sanguinaire.MODID,"transform_bat"),TRANSFORM_BAT);
-        register(new ResourceLocation(Sanguinaire.MODID,"blood_spikes"),BLOOD_SPIKES);
-        register(new ResourceLocation(Sanguinaire.MODID,"blood_pool"),BLOOD_POOL);
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_tendrils"),BloodTendrils::new);
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_slash"),BloodSlash::new);
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_orb"),BloodOrb::new);
+        //register(new ResourceLocation(Sanguinaire.MODID,"transform_bat"),TRANSFORM_BAT);
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_spikes"),BloodSpikes::new);
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_pool"),BloodPool::new);
     }
 
     public static SkillAbstract getSkillAbstractForName(String name){
         ResourceLocation resourceLocation=new ResourceLocation(Sanguinaire.MODID,name);
-        return POWERS.get(resourceLocation)!=null ? POWERS.get(resourceLocation) : SkillAbstract.NONE;
+        return POWERS.get(resourceLocation)!=null ? POWERS.get(resourceLocation).get() : SkillAbstract.NONE;
     }
 
     public static SkillAbstract getSkillAbstractForLocation(ResourceLocation resourceLocation){
-        return POWERS.get(resourceLocation)!=null ? POWERS.get(resourceLocation) : SkillAbstract.NONE;
+        return POWERS.get(resourceLocation)!=null ? POWERS.get(resourceLocation).get() : SkillAbstract.NONE;
     }
 }

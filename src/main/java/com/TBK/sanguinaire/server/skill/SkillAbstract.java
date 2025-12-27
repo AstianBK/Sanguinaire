@@ -198,9 +198,23 @@ public class SkillAbstract {
         }
 
     }
-
+    public List<String> getSequence(){
+        return null;
+    }
     @Override
     public boolean equals(Object obj) {
         return ((SkillAbstract) obj).name.equals(this.name);
+    }
+
+    public boolean checkSequence(List<String> sequence) {
+        if(getSequence()==null)return false;
+        if(sequence.size()<getSequence().size())return false;
+        for (int i=0 ; i < sequence.size() ; i++){
+            if(i==getSequence().size())return false;
+            if(!sequence.get(i).equals(getSequence().get(i))){
+                return false;
+            }
+        }
+        return true;
     }
 }
