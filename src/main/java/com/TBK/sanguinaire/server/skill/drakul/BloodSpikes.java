@@ -19,7 +19,7 @@ import java.util.List;
 
 public class BloodSpikes extends SkillAbstract {
     public BloodSpikes() {
-        super("blood_spikes", 20, 20, 20, 1, false, false, false, true, false, 2);
+        super("blood_spikes", 20, 20, 1, 1, false, false, false, true, false, 3);
     }
 
     @Override
@@ -85,9 +85,10 @@ public class BloodSpikes extends SkillAbstract {
     @Override
     public List<String> getSequence() {
         List<String> sequenceRequest = new ArrayList<>();
-        sequenceRequest.add("UP");
-        sequenceRequest.add("UP");
         sequenceRequest.add("DOWN");
+        sequenceRequest.add("UP");
+        sequenceRequest.add("UP");
+        sequenceRequest.add("LEFT");
         return sequenceRequest;
     }
 }

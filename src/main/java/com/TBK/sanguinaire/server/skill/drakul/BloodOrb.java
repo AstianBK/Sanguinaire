@@ -13,7 +13,7 @@ import java.util.List;
 
 public class BloodOrb extends ChargedSkill {
     public BloodOrb() {
-        super("blood_orb",20, 20, 1);
+        super("blood_orb",20, 0, 2);
     }
 
 
@@ -25,7 +25,7 @@ public class BloodOrb extends ChargedSkill {
     public void startSkillAbstract(SkillPlayerCapability skill) {
         super.startSkillAbstract(skill);
         if(!skill.getPlayer().level().isClientSide){
-            for(int i = -1 ; i<1 ;i++ ){
+            for(int i = -1 ; i<2 ;i++ ){
                 BloodOrbProjetile orb = new BloodOrbProjetile(skill.getPlayer().level(),skill.getPlayer(),this.level);
                 orb.setPos(this.getPos(skill.getPlayer().getEyePosition(),skill.getPlayer()));
                 reRot(orb,0.0F,skill.getPlayer().getYRot(),0.0F,1.0F,1.0F);
@@ -46,7 +46,7 @@ public class BloodOrb extends ChargedSkill {
         List<String> sequenceRequest = new ArrayList<>();
         sequenceRequest.add("LEFT");
         sequenceRequest.add("UP");
-        sequenceRequest.add("LEFT");
+        sequenceRequest.add("RIGHT");
         return sequenceRequest;
     }
 }

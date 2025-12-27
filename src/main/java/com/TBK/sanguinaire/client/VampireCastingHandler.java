@@ -96,7 +96,7 @@ public class VampireCastingHandler {
             if (checkSpell(inputSequence, player)) {
                 inputSequence.clear();
                 casting = false;
-            } else if (inputSequence.size() >= 6) {
+            } else if (inputSequence.size() >= 7) {
                 inputSequence.clear();
                 casting = false;
             }

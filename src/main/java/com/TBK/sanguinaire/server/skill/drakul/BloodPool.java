@@ -29,7 +29,7 @@ import java.util.List;
 
 public class BloodPool extends InstantSkill {
     public BloodPool() {
-        super("blood_pool", 100, 1, 10);
+        super("blood_pool", 1, 1, 10);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class BloodPool extends InstantSkill {
         List<String> sequenceRequest = new ArrayList<>();
         sequenceRequest.add("DOWN");
         sequenceRequest.add("DOWN");
-        sequenceRequest.add("DOWN");
+        sequenceRequest.add("UP");
         return sequenceRequest;
     }
 }

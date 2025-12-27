@@ -12,7 +12,7 @@ import java.util.List;
 
 public class BloodSlash extends ChargedSkill {
     public BloodSlash() {
-        super("blood_slash",80, 60,2);
+        super("blood_slash",80, 0,2);
     }
 
 
@@ -30,8 +30,8 @@ public class BloodSlash extends ChargedSkill {
     public List<String> getSequence() {
         List<String> sequenceRequest = new ArrayList<>();
         sequenceRequest.add("RIGHT");
-        sequenceRequest.add("DOWN");
         sequenceRequest.add("LEFT");
+        sequenceRequest.add("RIGHT");
         return sequenceRequest;
     }
 }

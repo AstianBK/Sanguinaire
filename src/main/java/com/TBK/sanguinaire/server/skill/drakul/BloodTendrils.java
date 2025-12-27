@@ -10,7 +10,7 @@ import java.util.List;
 public class BloodTendrils extends SkillAbstract {
     private int extraCooldown=0;
     public BloodTendrils() {
-        super("blood_tendrils", 35,60, 50, 1, true, false, false, true, false,5);
+        super("blood_tendrils", 35,60, 0, 1, true, false, false, true, false,5);
     }
 
     @Override
@@ -56,9 +56,12 @@ public class BloodTendrils extends SkillAbstract {
     @Override
     public List<String> getSequence() {
         List<String> sequenceRequest = new ArrayList<>();
+        sequenceRequest.add("LEFT");
+        sequenceRequest.add("LEFT");
         sequenceRequest.add("UP");
         sequenceRequest.add("UP");
-        sequenceRequest.add("UP");
+        sequenceRequest.add("RIGHT");
+        sequenceRequest.add("RIGHT");
         return sequenceRequest;
     }
 }
