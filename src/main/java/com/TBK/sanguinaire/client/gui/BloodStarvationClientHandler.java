@@ -20,7 +20,6 @@ public class BloodStarvationClientHandler {
     private static final ResourceLocation DESATURATE =
             new ResourceLocation("minecraft", "shaders/post/desaturate.json");
 
-
     @SubscribeEvent
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
@@ -30,18 +29,26 @@ public class BloodStarvationClientHandler {
 
         if (player == null) return;
 
-        VampirePlayerCapability cap = SGCapability.getEntityVam(player, VampirePlayerCapability.class);
+        if (player.isCreative() || player.isSpectator()) {
+            if (mc.gameRenderer.currentEffect() != null) {
+                mc.gameRenderer.shutdownEffect();
+            }
+            return;
+        }
+
+        VampirePlayerCapability cap =
+                SGCapability.getEntityVam(player, VampirePlayerCapability.class);
 
         if (cap == null) return;
 
-        boolean noBlood = cap.getBlood() <= 0;
-        boolean shaderActuallyActive = mc.gameRenderer.currentEffect() != null;
+        boolean starvingVampire = cap.isVampire() && cap.getBlood() <= 0;
+        boolean shaderActive = mc.gameRenderer.currentEffect() != null;
 
-        if (noBlood && !shaderActuallyActive) {
+        if (starvingVampire && !shaderActive) {
             mc.gameRenderer.loadEffect(DESATURATE);
         }
 
-        if (!noBlood && shaderActuallyActive) {
+        if (!starvingVampire && shaderActive) {
             mc.gameRenderer.shutdownEffect();
         }
     }

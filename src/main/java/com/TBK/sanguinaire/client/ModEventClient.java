@@ -1,6 +1,5 @@
 package com.TBK.sanguinaire.client;
 
-import com.TBK.sanguinaire.client.renderer.BatFormRenderer;
 import com.TBK.sanguinaire.client.renderer.SlashBloodRenderer;
 import com.TBK.sanguinaire.common.registry.SGEntityType;
 import com.TBK.sanguinaire.server.capability.SGCapability;

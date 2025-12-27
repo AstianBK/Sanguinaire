@@ -6,7 +6,6 @@ import com.TBK.sanguinaire.server.capability.SGCapability;
 import com.TBK.sanguinaire.server.capability.VampirePlayerCapability;
 import com.TBK.sanguinaire.server.commands.SanguinaireCommands;
 import com.TBK.sanguinaire.server.network.PacketHandler;
-import com.TBK.sanguinaire.server.world.biomes.BKBiomeSpawn;
 import com.TBK.sanguinaire.server.world.loot.LootModifiers;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
@@ -22,7 +21,6 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -74,9 +72,6 @@ public class Sanguinaire
         SGSounds.register(modEventBus);
         PacketHandler.registerMessages();
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-        final DeferredRegister<Codec<? extends BiomeModifier>> biomeModifiers = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIER_SERIALIZERS, Sanguinaire.MODID);
-        biomeModifiers.register(modEventBus);
-        biomeModifiers.register("sanguinaire_spawns", BKBiomeSpawn::makeCodec);
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT,()->()->{
             MinecraftForge.EVENT_BUS.addListener(this::onRenderFoodBar);
@@ -122,7 +117,6 @@ public class Sanguinaire
     private void registerRenderers(FMLCommonSetupEvent event){
         EntityRenderers.register(SGEntityType.BLOOD_SLASH.get(), SlashBloodRenderer::new);
         EntityRenderers.register(SGEntityType.BLOOD_ORB.get(), BloodOrbRenderer::new);
-        EntityRenderers.register(SGEntityType.VAMPILLER.get(), VampillerRenderer::new);
         EntityRenderers.register(SGEntityType.BLOOD_SPIKES.get(),BloodSpikesRenderer::new);
     }
 

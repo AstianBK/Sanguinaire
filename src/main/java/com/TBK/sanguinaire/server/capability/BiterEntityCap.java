@@ -1,7 +1,6 @@
 package com.TBK.sanguinaire.server.capability;
 
 import com.TBK.sanguinaire.common.api.IBiterEntity;
-import com.TBK.sanguinaire.server.entity.vampire.VampillerEntity;
 import com.TBK.sanguinaire.server.network.HandlerParticles;
 import com.TBK.sanguinaire.server.network.PacketHandler;
 import com.TBK.sanguinaire.server.network.messager.PacketSyncBloodEntity;
@@ -26,7 +25,7 @@ public class BiterEntityCap implements IBiterEntity {
     public int regBlood=0;
     @Override
     public boolean canBiter() {
-        return this.currentEntity!=null && this.currentEntity.getMobType()!= MobType.UNDEAD && !(this.currentEntity instanceof VampillerEntity) &&
+        return this.currentEntity!=null && this.currentEntity.getMobType()!= MobType.UNDEAD &&
                 !(this.currentEntity instanceof AbstractGolem) && !(this.currentEntity instanceof Slime) && !this.unBlooded();
     }
 

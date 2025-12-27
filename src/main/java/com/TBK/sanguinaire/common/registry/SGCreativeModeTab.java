@@ -21,7 +21,6 @@ public class SGCreativeModeTab {
                 a.accept(SGItems.VAMPIRE_HEART.get());
                 a.accept(SGItems.ANCIENT_BLOOD.get());
                 a.accept(SGItems.CRIMSON_MIRROR.get());
-                a.accept(SGItems.VAMPILLER_SPAWN_EGG.get());
                 a.accept(SGItems.CRIMSON_OATH.get());
                 a.accept(SGItems.SANGUINE_STONE.get());
                 a.accept(SGBlocks.DIRT_BLOOD_PATH.get());

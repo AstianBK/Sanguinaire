@@ -28,19 +28,12 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.core.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.core.animation.AnimatableManager;
-import software.bernie.geckolib.core.animation.AnimationController;
-import software.bernie.geckolib.core.animation.RawAnimation;
-import software.bernie.geckolib.core.object.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
+
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
-    public final AnimatableInstanceCache cache= GeckoLibUtil.createInstanceCache(this);
+public class SkillPlayerCapability implements ISkillPlayer{
     public SkillAbstract lastUsingSkillAbstract=SkillAbstract.NONE;
     Player player;
     Level level;
@@ -396,18 +389,9 @@ public class SkillPlayerCapability implements ISkillPlayer, GeoEntity {
         this.durationEffect=activeEffectDuration;
     }
 
-    @Override
-    public void registerControllers(AnimatableManager.ControllerRegistrar controllers) {
-
-    }
 
     public <P extends SkillPlayerCapability> P getPatch(LivingEntity replaced, Class<P> pClass){
         return SGCapability.getEntityCap(replaced,pClass);
-    }
-
-    @Override
-    public AnimatableInstanceCache getAnimatableInstanceCache() {
-        return this.cache;
     }
 
 

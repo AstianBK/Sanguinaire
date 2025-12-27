@@ -1,7 +1,6 @@
 package com.TBK.sanguinaire;
 
 import com.TBK.sanguinaire.Sanguinaire;
-import com.TBK.sanguinaire.server.world.biomes.BKBiomeConfig;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -62,7 +61,6 @@ public class Config
         items = ITEM_STRINGS.get().stream()
                 .map(itemName -> ForgeRegistries.ITEMS.getValue(new ResourceLocation(itemName)))
                 .collect(Collectors.toSet());
-        BKBiomeConfig.init();
 
     }
 }
