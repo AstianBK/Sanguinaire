@@ -32,12 +32,12 @@ public class BloodOrb extends ChargedSkill {
                 orb.setIsCharging(true);
                 skill.getPlayer().level().addFreshEntity(orb);
                 orb.setPos(this.getPos(skill.getPlayer().getEyePosition(),skill.getPlayer()));
-                reRot(orb,skill.getPlayer().getXRot(),skill.getPlayer().getYRot()+30.0F*i,1.0F,1.0F);
+                reRot(orb,skill.getPlayer().getXRot(),skill.getPlayer().getYRot(),1.0F,1.0F);
                 orb.setIsCharging(false);
                 orb.setChargedLevel(6);
                 orb.setPowerLevel(level);
                 orb.refreshDimensions();
-                orb.shootFromRotation(skill.getPlayer(),skill.getPlayer().getXRot(),skill.getPlayer().getYRot(), 0.0F, 1F, 1.0F);
+                orb.shootFromRotation(skill.getPlayer(),skill.getPlayer().getXRot(),skill.getPlayer().getYRot()+30.0F*i, 0.0F, 1F, 1.0F);
             }
         }
     }
