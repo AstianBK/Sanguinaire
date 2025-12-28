@@ -4,6 +4,8 @@ import com.TBK.sanguinaire.common.registry.SGParticles;
 import com.TBK.sanguinaire.server.capability.SkillPlayerCapability;
 import com.TBK.sanguinaire.server.skill.SkillAbstract;
 import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -18,7 +20,7 @@ public class BloodMistForm extends SkillAbstract {
     public BloodMistForm() {
         super(
                 "blood_mist_form",
-                DURATION_TICKS, 0, 2, 0, false, true, false, false, false, 2
+                DURATION_TICKS, 0, 0, 0, false, true, false, false, false, 4
         );
     }
 
@@ -29,6 +31,17 @@ public class BloodMistForm extends SkillAbstract {
 
         Player player = skill.getPlayer();
         player.getPersistentData().putInt(TAG_TIMER, DURATION_TICKS);
+
+        if (!player.level().isClientSide) {
+            player.level().playSound(
+                    null,
+                    player.blockPosition(),
+                    SoundEvents.ILLUSIONER_CAST_SPELL,
+                    SoundSource.PLAYERS,
+                    1.0F,
+                    0.8F
+            );
+        }
     }
 
     @Override
@@ -64,7 +77,7 @@ public class BloodMistForm extends SkillAbstract {
                     float dist = Mth.sqrt(player.getRandom().nextFloat()) * radius;
 
                     double x = player.getX() + Mth.cos(angle) * dist;
-                    double y = player.getY() + 0.9D + player.getRandom().nextDouble() * 0.9D; // higher spawn
+                    double y = player.getY() + 0.5D + player.getRandom().nextDouble() * 0.5D;
                     double z = player.getZ() + Mth.sin(angle) * dist;
 
                     player.level().addParticle(
