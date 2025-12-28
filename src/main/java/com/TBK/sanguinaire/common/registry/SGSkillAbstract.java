@@ -28,6 +28,7 @@ public class SGSkillAbstract {
         register(new ResourceLocation(Sanguinaire.MODID,"blood_slash"),BloodSlash::new);
         register(new ResourceLocation(Sanguinaire.MODID,"blood_orb"),BloodOrb::new);
         //register(new ResourceLocation(Sanguinaire.MODID,"transform_bat"),TRANSFORM_BAT);
+        register(new ResourceLocation(Sanguinaire.MODID,"blood_mist_form"),BloodMistForm::new);
         register(new ResourceLocation(Sanguinaire.MODID,"blood_spikes"),BloodSpikes::new);
         register(new ResourceLocation(Sanguinaire.MODID,"blood_pool"),BloodPool::new);
     }

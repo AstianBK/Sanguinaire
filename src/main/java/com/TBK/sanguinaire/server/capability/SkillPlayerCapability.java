@@ -201,6 +201,7 @@ public class SkillPlayerCapability implements ISkillPlayer{
         skillAbstracts.addSkillAbstracts(2,new BloodSpikes());
         skillAbstracts.addSkillAbstracts(3,new BloodPool());
         skillAbstracts.addSkillAbstracts(4,new BloodTendrils());
+        skillAbstracts.addSkillAbstracts(5,new BloodMistForm());
         this.setSetHotbar(skillAbstracts);
         this.passives.addSkillAbstracts(0,new SpeedPassive());
     }
