@@ -10,7 +10,12 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobType;
 import net.minecraft.world.entity.animal.AbstractGolem;
+import net.minecraft.world.entity.animal.allay.Allay;
+import net.minecraft.world.entity.monster.Blaze;
+import net.minecraft.world.entity.monster.Ghast;
 import net.minecraft.world.entity.monster.Slime;
+import net.minecraft.world.entity.monster.Vex;
+import net.minecraft.world.entity.monster.warden.Warden;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.capabilities.ICapabilitySerializable;
@@ -26,7 +31,7 @@ public class BiterEntityCap implements IBiterEntity {
     @Override
     public boolean canBiter() {
         return this.currentEntity!=null && this.currentEntity.getMobType()!= MobType.UNDEAD &&
-                !(this.currentEntity instanceof AbstractGolem) && !(this.currentEntity instanceof Slime) && !this.unBlooded();
+                !(this.currentEntity instanceof AbstractGolem) && !(this.currentEntity instanceof Slime) && !(this.currentEntity instanceof Warden) && !(this.currentEntity instanceof Allay) && !(this.currentEntity instanceof Vex) && !(this.currentEntity instanceof Blaze) && !(this.currentEntity instanceof Ghast) && !this.unBlooded();
     }
 
     @Override
@@ -78,7 +83,7 @@ public class BiterEntityCap implements IBiterEntity {
     @Override
     public void tick(LivingEntity living) {
         if(this.unBlooded() && living.tickCount%20==0){
-            living.hurt(living.damageSources().generic(),2);
+            living.hurt(living.damageSources().generic(),1);
         }
 
         if(!living.level().isClientSide){
